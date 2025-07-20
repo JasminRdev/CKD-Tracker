@@ -80,7 +80,7 @@ export default function UploadExtractSave() {
     let a_eisenVal; // relevant - falls Anämie abgeklärt wird
     let a_magnesiumVal; // kann relevant sein - zb bei Elektrolystörungen
     let a_naKQuotientVal; //Interessant - bei CNI oft verändert
-    let a_AVGQuotientVal; // Marker - aber eher unspezifisch
+    let a_AGQuotientVal; // ask chat gpt again
     let a_T4Val; // wichtig - schilddrüsenwert -> zur Abgrenzung zur Hyperthyreose die CNI maskieren kann
     let a_hämatokritVal; // relevant - anämiecheck
     let a_hämaglobinVal; // relevant - anämieprüfung, häufig bei cni erniedrigt
@@ -105,18 +105,18 @@ export default function UploadExtractSave() {
     let b_globulineVal; //nur bedingt nützlich - eher bei Erzündungen etc
 
     //weniger wichtig für CNI (aber allg interessant)
-    let c_leukozytenVal; //entzündungs- & infektionszeichen
+    // let c_leukozytenVal; //entzündungs- & infektionszeichen
     let c_neutrophileVal; //entzündungs- & infektionszeichen
-    let c_lymphozytenVal; //entzündungs- & infektionszeichen
-    let c_thrombozyten; //gerinnung
+    // let c_lymphozytenVal; //entzündungs- & infektionszeichen
+    // let c_thrombozyten; //gerinnung
     let c_MCV; //erythrozytenindizes - feindiagnostik bei anämie
     let c_MCH; //erythrozytenindizes - feindiagnostik bei anämie
     let c_MCHC; //erythrozytenindizes - feindiagnostik bei anämie
     let c_hypochromasie; //erythrozytenveränderungen
     let c_anisozytose; //erythrozytenveränderungen
-    let c_monozyten; //immunzellen
-    let c_eosinophile; //immunzellen
-    let c_basophile; //immunzellen
+    // let c_monozyten; //immunzellen
+    // let c_eosinophile; //immunzellen
+    // let c_basophile; //immunzellen
 
     linesArray.forEach((e) => {
       const expr = true;
@@ -178,51 +178,178 @@ export default function UploadExtractSave() {
           console.log("a_naKQuotientVal", a_naKQuotientVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("A/G-Quotient"):
+          e.match(/\d+/) && (a_AGQuotientVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("a_AGQuotientVal", a_AGQuotientVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("T4"):
+          e.match(/\d+/) && (a_T4Val = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("t4", a_T4Val)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("hämatokrit"):
+          e.match(/\d+/) && (a_hämatokritVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("a_hämatokritVal", a_hämatokritVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("hämaglobin"):
+          e.match(/\d+/) && (a_hämaglobinVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("a_hämaglobinVal", a_hämaglobinVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("Retikulozyten"):
+          e.match(/\d+/) && (a_retikulozytenVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("a_retikulozytenVal", a_retikulozytenVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("Ret-He"):
+          e.match(/\d+/) && (a_retHeVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("a_retHeVal", a_retHeVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("Amylase"):
+          e.match(/\d+/) && (b_alphaAmylaseVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_alphaAmylaseVal", b_alphaAmylaseVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("DGGR-Lipase"):
+          e.match(/\d+/) && (b_dggrLipaseVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_dggrLipaseVal", b_dggrLipaseVal)
           
           break;
-        case e.includes("blood"):
-          e.match(/\d+/) && (bloodVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
-          console.log("blood", bloodVal)
+        case e.includes("Glucose"):
+          e.match(/\d+/) && (b_glukoseVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_glukoseVal", b_glukoseVal)
           
           break;
+        case e.includes("Fructosamin"):
+          e.match(/\d+/) && (b_fuctosaminVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_fuctosaminVal", b_fuctosaminVal)
+          
+          break;
+        case e.includes("Trigiyceride"):
+        case e.includes("Triglyceride"):
+          e.match(/\d+/) && (b_triglyzerideVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_triglyzerideVal", b_triglyzerideVal)
+          
+          break;
+        case e.includes("Cholesterin"):
+          e.match(/\d+/) && (b_cholesterinVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_cholesterinVal", b_cholesterinVal)
+          
+          break;
+        case e.includes("Bilirubin"):
+        case e.includes("Bülrubin"):
+          e.match(/\d+/) && (b_bilirubinVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_bilirubinVal", b_bilirubinVal)
+          
+          break;
+        case e.includes("AP"):
+          e.match(/\d+/) && (b_APVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_APVal", b_APVal)
+          
+          break;
+        case e.includes("GLDH"):
+          e.match(/\d+/) && (b_GLDHVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_GLDHVal", b_GLDHVal)
+          
+          break;
+        case e.includes("G-GT"):
+          e.match(/\d+/) && (b_GGTVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_GGTVal", b_GGTVal)
+          
+          break;
+        case e.includes("ALT"):
+          e.match(/\d+/) && (b_ALTVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_ALTVal", b_ALTVal)
+          
+          break;
+        case e.includes("AST"):
+          e.match(/\d+/) && (b_ASTVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_ASTVal", b_ASTVal)
+          
+          break;
+        case e.includes("CK"):
+          e.match(/\d+/) && (b_CKVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_CKVal", b_CKVal)
+          
+          break;
+        case e.includes("Protein"):
+          e.match(/\d+/) && (b_gesamtProteinVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_gesamtProteinVal", b_gesamtProteinVal)
+          
+          break;
+        case e.includes("Globuline"):
+          e.match(/\d+/) && (b_globulineVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("b_globulineVal", b_globulineVal)
+          
+          break;
+        // case e.includes("Leukozyten"):
+        //   e.match(/\d+/) && (c_leukozytenVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_leukozytenVal", c_leukozytenVal)
+          
+        //   break;
+        case e.includes("Neutrophile"):
+          e.match(/\d+/) && (c_neutrophileVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_neutrophileVal", c_neutrophileVal)
+          
+          break;
+        // case e.includes("Lymphazyien"):
+        // case e.includes("Lymphozyten"):
+        //   e.match(/\d+/) && (c_lymphozytenVal = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_lymphozytenVal", c_lymphozytenVal)
+          
+        //   break;
+        // case e.includes("Thrombozyten"):
+        //   e.match(/\d+/) && (c_thrombozyten = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_thrombozyten", c_thrombozyten)
+          
+        //   break;
+        case e.includes("MCV"):
+          e.match(/\d+/) && (c_MCV = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_MCV", c_MCV)
+          
+          break;
+        case e.includes("MCH"):
+          e.match(/\d+/) && (c_MCH = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_MCH", c_MCH)
+          
+          break;
+        case e.includes("MCHC"):
+          e.match(/\d+/) && (c_MCHC = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_MCHC", c_MCHC)
+          
+          break;
+        case e.includes("Hypochromasie"):
+          e.match(/\d+/) && (c_hypochromasie = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_hypochromasie", c_hypochromasie)
+          
+          break;
+        case e.includes("Anisozytose"):
+          e.match(/\d+/) && (c_anisozytose = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+          console.log("c_anisozytose", c_anisozytose)
+          
+          break;
+        // case e.includes("Monozyten"):
+        // case e.includes("Monazyten"):
+        //   e.match(/\d+/) && (c_monozyten = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_monozyten", c_monozyten)
+          
+        //   break;
+        // case e.includes("Eosinophile"):
+        // case e.includes("Eoenophie"):
+        //   e.match(/\d+/) && (c_eosinophile = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_eosinophile", c_eosinophile)
+          
+        //   break;
+        // case e.includes("Basophile"):
+        // case e.includes("Basaph"):
+        //   e.match(/\d+/) && (c_basophile = Number(e.match(/\d+\.\d+|\d+/)?.[0]));
+        //   console.log("c_basophile", c_basophile)
+          
+        //   break;
+        
         default:
           console.log(`Sorry, we are out of ${expr}.`);
           setLoading(false);
