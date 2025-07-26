@@ -1,6 +1,7 @@
 // last step
-  // comp/bloodtest 
-  // extract single values (kreatinin done etc)
+  // comp/chart.jsx
+  // show val and styling
+  // ideas to missing months
 
 //todo 
   //visulize extracted data
@@ -13,12 +14,12 @@
   //medical informations to tracked values - to high / to low consequences
 
 //done
-  // extended blood values
+  // extract doc data /bloodtest
+  // started line chart /chart
 
 //old done
   // login/registration authentication
   // connection to supabase db
-
 
 
 

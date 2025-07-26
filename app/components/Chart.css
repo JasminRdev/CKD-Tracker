@@ -1,0 +1,31 @@
+.chart-body,
+.chart-wrapper{
+    height: 300px;
+    width: 400px;    
+}
+
+.chart-body button{
+    margin:15px;
+    padding:7px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.chart-body button:active{
+    opacity: .7;
+}
+
+.filter-off{
+    background-color: rgb(170, 170, 170);
+    color: black;
+}
+
+.filter-on{
+    background-color: rgb(55, 91, 158);
+    color: white;
+}
+
+.separate-chart{
+    display:flex;
+    gap:40px;
+}
