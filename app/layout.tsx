@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import {BloodTestProvider} from '../context/BloodTestContext';
+import {SupabaseProvider} from '../context/SupabaseContext'
+import {LoadingProvider} from '../context/LoadingContext'
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <LoadingProvider>
+          <BloodTestProvider>
+            <SupabaseProvider>
+                  {children}
+              </SupabaseProvider>
+            </BloodTestProvider>
+        </LoadingProvider>
       </body>
     </html>
   );

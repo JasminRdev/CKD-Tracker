@@ -1,27 +1,115 @@
 // last step
-  // comp/chart.jsx
-  // show val and styling
-  // ideas to missing months
+  // comp/Form.jsx context inputs + send to db 
 
-//todo 
-  //visulize extracted data
+  
+
+    
+// next
+  //useContext to handle test data input that gets saved to db
+    // -> from Form Comp (manual Input) or Bloodtest Comp (doc extraction)
+    // -> edit/add Inputs Comp not yet created
+
+//todo
+  //   visulize extracted data
   //add editable extracted data in the visualized data
   //add/delete datas
-  //dashboard for uploaded files 
+  //dashboard for uploaded files
   //dashboard for additional notes that are linked to the diagrams from visualized data
   //export function for vet etc
   //pets data overview
   //medical informations to tracked values - to high / to low consequences
+  // global Loading comp 
 
 //done
-  // extract doc data /bloodtest
-  // started line chart /chart
+  // Form Comp with their data input context + saving to db
+  //loading context
+  //supabase policy for bloodtest table read, add and delete
+  // add data to db from input
+  // added user specific data values for the tests, able to flag as important, fav etc
+  // filter test data in main chart
+  // separate charts for indivisual datas
 
 //old done
   // login/registration authentication
   // connection to supabase db
+  // extract doc data /bloodtest
+  // started line chart /chart
+
+// details
+  // ideas to missing months
+  // upload with only admin (upload general doent work with current security rules)
+  // form formular details ux like when val sdma not there then not 0 but no val for this test
+  // allow add data to db also without upload of doc -> only input form ui
+  // added user specific data values for the tests, able to flag as important, fav etc
+  // make as many inputs as we can find from the data vals from document that extracts the data
+    // create useContext for all possible values (comp/BloodTest)
+  // same for case of editing existing data in db, allow add/delete inputs
+    //-> when adding inputs, anything possible as name, logic in graph to include, for cases when i only have once f.e. smda and not for other tests, that there is not graph, then there is only point?
+    //-> then also in comp/chart.jsx adjust the toggle btn to how much we have at the db in our user specific table
+      //-> to that we have to keep track of our values when adding inputs/data to db -> for each user we know then how many test values they track, those can be then also tagged with fav/häufigkeit etc
 
 
+
+// comments to values
+
+    //get val
+    let a_kreatininVal; //sehr wichtig - maß für Nierenfunktion
+    let a_harnstoffVal; // wichtig - steigt bei eingeschränkter Nierenleistung
+    let a_phosphatVal; // wichtig - hoher Wert schädigt Nieren
+    let a_kaliumVal; // wichtig - hypokaliämie häufig bei cni
+    let a_kalziumVal; // wichtig - kontrollieren bei cni da Störungen im Mineralhaushalt auftreten 
+    let a_natriumVal; // wichtig - Flüssigkeitsstatus zb Dehydration
+    let a_chloridVal; // weniger relevant - aber im Gesamtkontext manchmal hilfreich
+    let a_albuminVal; // wichtig - hinweis auf Proteinverluste über Urin (Proteinurie)
+    let a_eisenVal; // relevant - falls Anämie abgeklärt wird
+    let a_magnesiumVal; // kann relevant sein - zb bei Elektrolystörungen
+    let a_naKQuotientVal; //Interessant - bei CNI oft verändert
+    let a_AGQuotientVal; // ask chat gpt again
+    let a_T4Val; // wichtig - schilddrüsenwert -> zur Abgrenzung zur Hyperthyreose die CNI maskieren kann
+    let a_hämatokritVal; // relevant - anämiecheck
+    let a_hämaglobinVal; // relevant - anämieprüfung, häufig bei cni erniedrigt
+    let a_retikulozytenVal; // relevant bei cni-anämie - marker für Knochenmarkaktivität
+    let a_retHeVal; // relevant - früher marker für eisenmangel bei cni anämie möglich
+
+    //laut chatgpt nicht für cni relavant
+    let b_alphaAmylaseVal; //bauchspeicheldrüse 
+    let b_dggrLipaseVal; //bauchspeicheldrüse 
+    let b_glukoseVal; //diabetesüberwachung
+    let b_fuctosaminVal; //diabetesüberwachung
+    let b_triglyzerideVal; //fettstoffwechsel - nur sekundär relevant 
+    let b_cholesterinVal; //fettstoffwechsel - nur sekundär relevant 
+    let b_bilirubinVal; //Leberwerte
+    let b_APVal; //Leberwerte
+    let b_GLDHVal; //Leberwerte
+    let b_GGTVal; //Leberwerte
+    let b_ALTVal; //Leberwerte
+    let b_ASTVal; //Leberwerte
+    let b_CKVal; //Muskelwerte (Kreatinkinase)
+    let b_gesamtProteinVal; //nur bedingt nützlich - eher bei Erzündungen etc
+    let b_globulineVal; //nur bedingt nützlich - eher bei Erzündungen etc
+
+    //weniger wichtig für CNI (aber allg interessant)
+    // let c_leukozytenVal; //entzündungs- & infektionszeichen
+    let c_neutrophileVal; //entzündungs- & infektionszeichen
+    // let c_lymphozytenVal; //entzündungs- & infektionszeichen
+    // let c_thrombozyten; //gerinnung
+    let c_MCV; //erythrozytenindizes - feindiagnostik bei anämie
+    let c_MCH; //erythrozytenindizes - feindiagnostik bei anämie
+    let c_MCHC; //erythrozytenindizes - feindiagnostik bei anämie
+    let c_hypochromasie; //erythrozytenveränderungen
+    let c_anisozytose; //erythrozytenveränderungen
+    // let c_monozyten; //immunzellen
+    // let c_eosinophile; //immunzellen
+    // let c_basophile; //immunzellen
+ 
+
+
+
+
+
+  if (user?.app_metadata?.role === 'admin') {
+  // show admin-only features
+}
 
 //upload file to supabase storage
 const uploadFile = async (file, userId) => {
@@ -34,7 +122,7 @@ const uploadFile = async (file, userId) => {
     console.error('File upload error:', error)
     return null
   }
-  
+
   const { publicURL } = supabase
     .storage
     .from('documents')
@@ -92,7 +180,7 @@ const signOut = async () => {
 
 
 
-//extract data from file 
+//extract data from file
 import Tesseract from 'tesseract.js'
 
 const extractTextFromImage = async (file) => {
@@ -105,7 +193,7 @@ const extractTextFromImage = async (file) => {
 
 
 
-//save extracted data 
+//save extracted data
 const saveExtractedData = async (userId, extractedData) => {
   const { data, error } = await supabase
     .from('bloodtest_data')
@@ -196,7 +284,7 @@ await supabase.auth.signIn({
 
 
 
-//test type 
+//test type
 const getTestsByType = async (userId, type) => {
   const { data, error } = await supabase
     .from('bloodtest_data')
@@ -206,9 +294,9 @@ const getTestsByType = async (userId, type) => {
 }
 
 
-// A React app to track my cat’s chronic kidney 
-// disease by visualizing blood and urine test results 
+// A React app to track my cat’s chronic kidney
+// disease by visualizing blood and urine test results
 // over time - . Built with Supabase (a new tool I’m learning)
-// as backend database and authentication service. 
-// Helps monitor health trends and supports better care 
+// as backend database and authentication service.
+// Helps monitor health trends and supports better care
 // through clear, interactive charts.

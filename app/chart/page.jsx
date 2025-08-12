@@ -1,7 +1,7 @@
 "use client"
 
 import useUser from '../lib/useUser'
-import Chart from '../components/Chart.jsx'
+import Chart from '../../components/Chart.jsx'
 
 export default function ChartPage() {
   const user = useUser();

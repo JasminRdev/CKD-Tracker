@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Chart.css';
+import './style.css';
 import {
   Chart as ChartJS,
   LineElement,
@@ -117,8 +118,8 @@ const Chart = () => {
   };
 
   const range = normRanges[metric];
-const yMin = range.min - 100;
-const yMax = range.max + 100;
+const yMin = range.min - (range.max*0.3);
+const yMax = range.max + (range.max*0.3);
 
 const options = {
   maintainAspectRatio: false,
@@ -143,8 +144,11 @@ const options = {
 };
 
   return (
+    <div className="comp-wrapper">
+      <h1>Chart comp</h1>
     <div key={metric} className="chart-wrapper ">
       <Line data={data} options={options} />
+    </div>
     </div>
   );
 })}
