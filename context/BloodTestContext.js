@@ -11,8 +11,10 @@ export const BloodTestProvider = ({ children }) => {
   
   const {setLoading} = useLoadingContext();
   const [extractedText, setExtractedText] = useState('')
-  
-    const [form, setForm] = useState([
+  const [file, setFile] = useState(null)
+
+    const getInitialForm = () => ([
+      { name : "a_Kreatinin", value:""},
       { name: "a_kaliumVal", value: "" },
       { name: "a_kalziumVal", value: "" },
       { name: "a_natriumVal", value: "" },
@@ -49,47 +51,62 @@ export const BloodTestProvider = ({ children }) => {
       { name: "c_hypochromasie", value: "" },
       { name: "c_anisozytose", value: "" }
     ]);
+    const [form, setForm] = useState(getInitialForm);
+    const resetForm = () => {
+      setForm(getInitialForm)
+    }
 
+    //Chart Comp
+      const testResults = [
+    { date: '01', Kreatinin: 139, Protein: 62.5 },
+    { date: '02', Kreatinin: 139, Protein: 62.5 },
+    { date: '03', Kreatinin: 133, Protein: 62.5 },
+    { date: '05', Kreatinin: 135, Protein: 62 },
+    { date: '07', Kreatinin: 133, Protein: 62 },
+  ];
+
+    //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
     const keywordMapping = [
-      { keyword: ["Kalium"], key: "a_kaliumVal" },
-      { keyword: ["Kalzium"], key: "a_kalziumVal" },
-      { keyword: ["Natrium"], key: "a_natriumVal" },
-      { keyword: ["Chlorid"], key: "a_chloridVal" },
-      { keyword: ["Albumin"], key: "a_albuminVal" },
-      { keyword: ["Eisen"], key: "a_eisenVal" },
-      { keyword: ["Magnesium"], key: "a_magnesiumVal" },
-      { keyword: ["Na-/K-Quotient"], key: "a_naKQuotientVal" },
-      { keyword: ["A/G-Quotient"], key: "a_AGQuotientVal" },
-      { keyword: ["T4"], key: "a_T4Val" },
-      { keyword: ["hämatokrit"], key: "a_hämatokritVal" },
-      { keyword: ["hämaglobin"], key: "a_hämaglobinVal" },
-      { keyword: ["Retikulozyten"], key: "a_retikulozytenVal" },
-      { keyword: ["Ret-He"], key: "a_retHeVal" },
-      { keyword: ["Amylase"], key: "b_alphaAmylaseVal" },
-      { keyword: ["DGGR-Lipase"], key: "b_dggrLipaseVal" },
-      { keyword: ["Glucose"], key: "b_glukoseVal" },
-      { keyword: ["Fructosamin"], key: "b_fuctosaminVal" },
-      { keyword: ["Triglyceride", "Trigiyceride"], key: "b_triglyzerideVal" },
-      { keyword: ["Cholesterin"], key: "b_cholesterinVal" },
-      { keyword: ["Bülrubin", "Bilirubin"], key: "b_bilirubinVal" },
-      { keyword: ["AP"], key: "b_APVal" },
-      { keyword: ["GLDH"], key: "b_GLDHVal" },
-      { keyword: ["G-GT"], key: "b_GGTVal" },
-      { keyword: ["ALT"], key: "b_ALTVal" },
-      { keyword: ["AST"], key: "b_ASTVal" },
-      { keyword: ["CK"], key: "b_CKVal" },
-      { keyword: ["Protein"], key: "b_gesamtProteinVal" },
-      { keyword: ["Globuline"], key: "b_globulineVal" },
-      { keyword: ["Neutrophile"], key: "c_neutrophileVal" },
-      { keyword: ["MCV"], key: "c_MCV" },
-      { keyword: ["MCH"], key: "c_MCH", exclude: "MCHC" },
-      { keyword: ["MCHC"], key: "c_MCHC" },
-      { keyword: ["Hypochromasie"], key: "c_hypochromasie" },
-      { keyword: ["Anisozytose"], key: "c_anisozytose" }
+      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max:94,value: ""  },
+      { keyword: ["Kreatinin"], key: "a_Kreatinin", min: 0, max:168, value: ""  },
+      { keyword: ["Kalium"], key: "a_kaliumVal", value: "" },
+      { keyword: ["Kalzium"], key: "a_kalziumVal", value: "" },
+      { keyword: ["Natrium"], key: "a_natriumVal", value: "" },
+      { keyword: ["Chlorid"], key: "a_chloridVal", value: "" },
+      { keyword: ["Albumin"], key: "a_albuminVal", value: "" },
+      { keyword: ["Eisen"], key: "a_eisenVal", value: "" },
+      { keyword: ["Magnesium"], key: "a_magnesiumVal", value: "" },
+      { keyword: ["Na-/K-Quotient"], key: "a_naKQuotientVal", value: "" },
+      { keyword: ["A/G-Quotient"], key: "a_AGQuotientVal", value: "" },
+      { keyword: ["T4"], key: "a_T4Val", value: "" },
+      { keyword: ["hämatokrit"], key: "a_hämatokritVal", value: "" },
+      { keyword: ["hämaglobin"], key: "a_hämaglobinVal", value: "" },
+      { keyword: ["Retikulozyten"], key: "a_retikulozytenVal", value: "" },
+      { keyword: ["Ret-He"], key: "a_retHeVal", value: "" },
+      { keyword: ["Amylase"], key: "b_alphaAmylaseVal", value: "" },
+      { keyword: ["DGGR-Lipase"], key: "b_dggrLipaseVal", value: "" },
+      { keyword: ["Glucose"], key: "b_glukoseVal", value: "" },
+      { keyword: ["Fructosamin"], key: "b_fuctosaminVal", value: "" },
+      { keyword: ["Triglyceride", "Trigiyceride"], key: "b_triglyzerideVal", value: "" },
+      { keyword: ["Cholesterin"], key: "b_cholesterinVal", value: "" },
+      { keyword: ["Bülrubin", "Bilirubin"], key: "b_bilirubinVal", value: "" },
+      { keyword: ["AP"], key: "b_APVal", value: "" },
+      { keyword: ["GLDH"], key: "b_GLDHVal", value: "" },
+      { keyword: ["G-GT"], key: "b_GGTVal", value: "" },
+      { keyword: ["ALT"], key: "b_ALTVal", value: "" },
+      { keyword: ["AST"], key: "b_ASTVal", value: "" },
+      { keyword: ["CK"], key: "b_CKVal", value: "" },
+      { keyword: ["Globuline"], key: "b_globulineVal", value: "" },
+      { keyword: ["Neutrophile"], key: "c_neutrophileVal", value: "" },
+      { keyword: ["MCV"], key: "c_MCV", value: "" },
+      { keyword: ["MCH"], key: "c_MCH", exclude: "MCHC", value: "" },
+      { keyword: ["MCHC"], key: "c_MCHC", value: "" },
+      { keyword: ["Hypochromasie"], key: "c_hypochromasie", value: "" },
+      { keyword: ["Anisozytose"], key: "c_anisozytose" , value: "" }
     ];
 
 
-  const handleExtractAndSave = async (file) => {
+  const handleExtractAndSave = async () => {
       // uploadDocToDB(file, user.id);
       const session = await supabase.auth.getSession();
       console.log(session.data.session?.user?.app_metadata);
@@ -126,7 +143,7 @@ export const BloodTestProvider = ({ children }) => {
   }
 
   return (
-    <BloodTestContext.Provider value={{ handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );

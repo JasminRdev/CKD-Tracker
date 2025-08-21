@@ -18,52 +18,17 @@ import './style.css';
 import { useBloodTestContext } from '../context/BloodTestContext';
 import { useLoadingContext } from '../context/LoadingContext';
 
-  
-//extract data from file 
-const extractTextFromImage = async (file) => {
-  const { data: { text } } = await Tesseract.recognize(file, 'eng', {
-    logger: m => console.log(m)
-  })
-  return text
-}
-
-
-
-
-
 export default function UploadExtractSave() {
   
   const {loading} = useLoadingContext();
-  const {handleExtractAndSave, extractedText} = useBloodTestContext();
-  const [file, setFile] = useState(null)
+  const {handleExtractAndSave, extractedText ,file, setFile, resetForm} = useBloodTestContext();
   const user = useUser();
   
 
   const handleFileChange = (e) => {
+    resetForm(); //if not choosen multi files ::TODO
     setFile(e.target.files[0])
   }
-
-// Upload file using standard upload
-  const uploadDocToDB = async(file, userId) => {
-    //upload file to supabase storage
-      const { data, error } = await supabase
-        .storage
-        .from('documents')
-        .upload(`${userId}/${file.name}`, file)
-    
-      if (error) {
-        console.error('File upload error:', error)
-        return null
-      }
-      
-      const { publicURL } = supabase
-        .storage
-        .from('documents')
-        .getPublicUrl(`${userId}/${file.name}`)
-    
-      return publicURL
-  }    
-
   
   function handleForm() {
     if (!file) return alert('Upload an image first!')
@@ -80,7 +45,7 @@ export default function UploadExtractSave() {
       <h1>Bloodtest comp</h1>
       <input type="file" onChange={handleFileChange} />     
         <Button onClick={handleForm} disabled={loading} variant="contained">
-        {loading ? 'Processing...' : 'Extract & Save'}
+        {loading ? 'Processing...' : 'Extract & Insert'}
         </Button>
       <pre>{extractedText}</pre>
 

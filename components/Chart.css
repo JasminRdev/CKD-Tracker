@@ -1,7 +1,12 @@
-.chart-body,
+
 .chart-wrapper{
-    height: 300px;
-    width: 400px;    
+    height: 250px;
+    width: 300px;    
+}
+
+.chart-body{
+    height: 600px;
+    width: 700px;    
 }
 
 .chart-body button{
@@ -16,8 +21,7 @@
 }
 
 .filter-off{
-    background-color: rgb(170, 170, 170);
-    color: black;
+    opacity: .4 !important;
 }
 
 .filter-on{
@@ -25,7 +29,19 @@
     color: white;
 }
 
+.filter-container{
+    border:1px solid red;
+    width: 100vw;
+}
+
 .separate-chart{
-    display:flex;
+    border:1px solid green;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
     gap:40px;
+}
+
+.btn-main-switch{
+    display: flex;
 }

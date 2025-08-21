@@ -1,16 +1,17 @@
 // last step
-  // comp/Form.jsx context inputs + send to db 
-
-  
+  // refactor into chartContext ::current step
+        
 
     
 // next
-  //useContext to handle test data input that gets saved to db
-    // -> from Form Comp (manual Input) or Bloodtest Comp (doc extraction)
-    // -> edit/add Inputs Comp not yet created
+  // how extract the date with different years, add range 
+  // refactor blood context - key/name to display the name in charts
+  //docs dashboard -> docs comp that gets also integrated with the other comps 
+    //(bloodtest and form etc?)
+  
 
 //todo
-  //   visulize extracted data
+  
   //add editable extracted data in the visualized data
   //add/delete datas
   //dashboard for uploaded files
@@ -21,6 +22,13 @@
   // global Loading comp 
 
 //done
+  //chart comp ->
+    // visulize extracted data 
+    //style (btns color bound to values and graphs, line charts)
+  // BloodTest comp when uploading file, hold globally, for Form comp when saveToDb gets triggered, to add File also to docs
+  // done global file state
+
+//old done
   // Form Comp with their data input context + saving to db
   //loading context
   //supabase policy for bloodtest table read, add and delete
@@ -29,13 +37,8 @@
   // filter test data in main chart
   // separate charts for indivisual datas
 
-//old done
-  // login/registration authentication
-  // connection to supabase db
-  // extract doc data /bloodtest
-  // started line chart /chart
-
 // details
+  //use abort in fetches
   // ideas to missing months
   // upload with only admin (upload general doent work with current security rules)
   // form formular details ux like when val sdma not there then not 0 but no val for this test
@@ -48,6 +51,20 @@
     //-> then also in comp/chart.jsx adjust the toggle btn to how much we have at the db in our user specific table
       //-> to that we have to keep track of our values when adding inputs/data to db -> for each user we know then how many test values they track, those can be then also tagged with fav/häufigkeit etc
 
+
+
+
+  //branches 
+    // *bloodtest visualization
+    // user profile - pets
+    // urinetest visualize
+    // overview dashboard
+    // notes dashboard? marker (travel, changes like food change, bladder infec. etc)
+    // details (ui ux)
+    // refactoring
+    // extending for more users?
+    // vet communitation
+    // ai analyse
 
 
 // comments to values

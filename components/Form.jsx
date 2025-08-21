@@ -22,14 +22,12 @@ import './style.css';
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm } = useBloodTestContext();
+  const { form, setForm, file, setFile } = useBloodTestContext();
   const {loading, setLoading} = useLoadingContext();
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
   const [selectedType, setSelectedType] = useState("Blood");
   const {getNextId} = useSupabaseContext();
-
-
 
   const testType = [
   {
@@ -43,13 +41,39 @@ export default function Form() {
 ];
 
   const handleChange = (name, newValue) => {
+    const numericValue = newValue === "" ? "" : parseFloat(newValue);
+    
     setForm((prev) =>
       prev.map((field) =>
-        field.name === name ? { ...field, value: newValue } : field
+        field.name === name ? { ...field, value: numericValue } : field
       )
     );
   };
 
+
+
+
+  //upload file to supabase storage
+  const uploadFile = async () => {
+    const { data, error } = await supabase
+      .storage
+      .from('documents')
+      .upload(`${user.id}/${file.name}`, file)
+
+    if (error) {
+      console.error('File upload error:', error)
+      return null
+    }
+
+    const { data: publicData } = supabase
+      .storage
+      .from('documents')
+      .getPublicUrl(`${user.id}/${file.name}`);
+
+    console.log(publicData.publicUrl);
+    return publicData.publicUrl
+    
+  }
 
    async function saveData() {
      const tableRow = await getNextId();
@@ -64,11 +88,10 @@ export default function Form() {
                 created_at : new Date(), 
                 test_type :selectedType, 
                 pet: "Test", 
-                file_url : "Test" }])
+                file_url : await uploadFile() }]) //
           if (error) console.error(error)
           else console.log('Data saved:', data)
     }
-
 
 
   return (
@@ -84,6 +107,12 @@ export default function Form() {
                 <TextField
                     key={f.name}
                     label={f.name}
+                    type="number"
+                    slotProps={{
+                      input: {
+                        step: "0.01", // allow decimals
+                      },
+                    }}
                     value={f.value}
                     onChange={(e) => handleChange(f.name, e.target.value)}
                     variant="outlined"

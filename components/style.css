@@ -2,7 +2,7 @@
     border:rgba(255, 0, 0, 0.63) 1px solid;
     margin:20px 0px;
     padding:10px;
-    background-color: rgba(175, 169, 169, 0.582);
+    background-color: rgba(211, 209, 209, 0.301);
 }
 
 h1{
@@ -22,4 +22,9 @@ h1{
 
 h1{
     width: 100%;
+}
+
+
+.identifier{
+    color:rgba(190, 33, 33, 0.534);
 }
