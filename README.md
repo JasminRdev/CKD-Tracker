@@ -1,6 +1,7 @@
 In progress - current state in bloodTestData_visualize
 <img width="798" height="763" alt="image" src="https://github.com/user-attachments/assets/02bd9c48-47b1-47c9-b004-ebfd14d83a0b" />
-<img width="954" height="871" alt="image" src="https://github.com/user-attachments/assets/7856901a-736a-444d-bf65-573c8c5962ed" />
+<img width="1127" height="758" alt="image" src="https://github.com/user-attachments/assets/da0a244f-3523-43cb-8956-f1dba055b182" />
+
 more informations about the current state and features in the -> branch "bloodTestData_visualize" -> folder "notes" 
 
 
