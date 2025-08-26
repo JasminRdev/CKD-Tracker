@@ -66,7 +66,6 @@ ChartJS.register(
 
 const Chart = () => {
   const [searchValue, setSearchValue] = useState("")
-  const [calenderActive, setCalenderActive] = useState("")
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [testResults, setTestResults] = useState([])
