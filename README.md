@@ -1,3 +1,5 @@
+Informations about the current state and features in folder of notes, with images and text explained
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

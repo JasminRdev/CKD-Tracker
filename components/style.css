@@ -20,11 +20,13 @@ h1{
     justify-content: center;
 }
 
-h1{
-    width: 100%;
-}
 
 
 .identifier{
     color:rgba(190, 33, 33, 0.534);
+    grid-column: 1 / -1;
+}
+
+.calender{
+    background-color: white;
 }

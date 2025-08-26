@@ -1,12 +1,32 @@
+@media (max-width: 1024px) {
+    body {
+        /* background-color: rgba(172, 255, 47, 0.38); */
+    }
+  
+    .filter-container, .chart-body{
+       grid-column: 1 / -1;
+    }
+
+    .chart-body {
+        height: 600px;
+    }
+
+}
+
+
+.chart-grand{
+    display: flex;
+    height: calc(100vh - 50px);
+}
 
 .chart-wrapper{
     height: 250px;
     width: 300px;    
 }
 
-.chart-body{
-    height: 600px;
-    width: 700px;    
+
+.chart-body {
+    width: calc(100vw - 215px);
 }
 
 .chart-body button{
@@ -21,7 +41,7 @@
 }
 
 .filter-off{
-    opacity: .4 !important;
+    opacity: .5 !important;
 }
 
 .filter-on{
@@ -30,8 +50,10 @@
 }
 
 .filter-container{
-    border:1px solid red;
-    width: 100vw;
+    background: black;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0 3px 3px 0;
 }
 
 .separate-chart{
@@ -44,4 +66,98 @@
 
 .btn-main-switch{
     display: flex;
+    padding: 12px 0 13px 0;
+}
+
+.button-rainbow-container{
+    width: 200px;
+    height: 95%;
+    margin: auto;
+    overflow-y: auto;
+    margin: 0 5px;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: gray;
+  box-shadow: 0 0 1px white;
+}
+
+
+.button-rainbow-container::-webkit-scrollbar {
+  width: 10px;        
+  height: 10px;      
+}
+.button-rainbow-container button{
+    width: 100%;
+    padding:5px 20px; 
+    border: none;
+}
+
+.filter-menu{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    color:white;
+    padding: 2px 0;
+}
+
+.show{
+    display: block;
+    height: 92%;
+}
+.hide{
+    display: none;
+}
+
+.full-width{
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+
+.filter-controller {
+    width: 100%;
+    padding: 7px 10px;
+}
+
+.filter-menu svg, .filter-container :not(.noColorChange)  svg{
+    color: white;
+    background: black;
+}
+
+.space-between{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    gap:5px;
+}
+
+.menu-navi{
+    display: flex;
+}
+
+.searchMUI{
+    margin: 5px !important;
+}
+
+div.calender{
+    color: white;
+    background-color: black;
+    padding: 19px 0;
+    margin-left: 6px;
+}
+
+svg.calender{
+    margin-right: auto;
+}
+
+.noColorChange .react-daterange-picker__clear-button.react-daterange-picker__button, .noColorChange .react-daterange-picker__calendar-button.react-daterange-picker__button{
+    display:none;
 }

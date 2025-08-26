@@ -57,13 +57,13 @@ export const BloodTestProvider = ({ children }) => {
     }
 
     //Chart Comp
-      const testResults = [
-    { date: '01', Kreatinin: 139, Protein: 62.5 },
-    { date: '02', Kreatinin: 139, Protein: 62.5 },
-    { date: '03', Kreatinin: 133, Protein: 62.5 },
-    { date: '05', Kreatinin: 135, Protein: 62 },
-    { date: '07', Kreatinin: 133, Protein: 62 },
-  ];
+  //     const testResults = [
+  //   { date: '01', Kreatinin: 139, Protein: 62.5 },
+  //   { date: '02', Kreatinin: 139, Protein: 62.5 },
+  //   { date: '03', Kreatinin: 133, Protein: 62.5 },
+  //   { date: '05', Kreatinin: 135, Protein: 62 },
+  //   { date: '07', Kreatinin: 133, Protein: 62 },
+  // ];
 
     //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
     const keywordMapping = [
@@ -117,7 +117,7 @@ export const BloodTestProvider = ({ children }) => {
       setExtractedText(text)
 
       // 2. Parse text here to structured data (example: just raw text for now)
-      const parsedData = { raw_text: text }
+      // const parsedData = { raw_text: text }
 
     const linesArray = text.split('\n').map(line => line.trim()).filter(line => line !== '')
 

@@ -1,7 +1,20 @@
 "use client"
 
 import { supabase } from '../app/lib/supabaseClient'
-import React, { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import TextField from '@mui/material/TextField';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
+import 'react-calendar/dist/Calendar.css'; 
+
+
 import './Chart.css';
 import './style.css';
 import {
@@ -17,7 +30,7 @@ import {
 import { Line } from 'react-chartjs-2';
 
 import { useBloodTestContext } from "../context/BloodTestContext";
-
+import { useChartContext } from "../context/ChartContext";
 
 const backgroundRangePlugin = {
   id: 'backgroundRange',
@@ -52,9 +65,17 @@ ChartJS.register(
 
 
 const Chart = () => {
+  const [searchValue, setSearchValue] = useState("")
+  const [calenderActive, setCalenderActive] = useState("")
+  const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
+  const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [testResults, setTestResults] = useState([])
+  const [filterSpanOpen, setFilterSpanOpen] = useState(false)
+
+
 
   const { keywordMapping } = useBloodTestContext();
+  const { dateFilter, dateRangeRaw, handleDateRangePicker } = useChartContext();
   // setTestResults([
   //   { date: '01', Kreatinin: 139, Protein: 62.5, 
   //   b_gesamtProteinVal: 139, a_Kreatinin: 62.5 },
@@ -84,13 +105,24 @@ const Chart = () => {
     const rawData = await getBloodTestData();
 
     const testResults_func = rawData
-      .filter(item => new Date(item.test_date).getFullYear() === 2025) 
+      .filter(item => {
+        const itemDate = new Date(item.test_date);
+
+        const [startMonth, startYear] = dateFilter.startDate.split(".").map(Number);
+        const [endMonth, endYear] = dateFilter.endDate.split(".").map(Number);
+
+        const start = new Date(startYear, startMonth - 1, 1); // first day of month
+        const end = new Date(endYear, endMonth, 0, 23, 59, 59); // last day of month
+
+        return itemDate >= start && itemDate <= end;
+      })
+      .sort((a, b) => new Date(a.test_date) - new Date(b.test_date)) 
       .map(item => {
         const monthDate = new Date(item.test_date);
         const month = String(monthDate.getMonth() + 1).padStart(2, '0');
+        const year = monthDate.getFullYear();
 
-        const result = { date: month }; 
-
+        let result = { date: `${month}.${year}` };
         // Convert array of JSON strings to object
         item.data.forEach(str => {
           const { name, value } = JSON.parse(str);
@@ -101,25 +133,21 @@ const Chart = () => {
             result[name] = numValue;
           }
         });
-
-        return result;
-      })
-      .sort((a, b) => Number(a.date) - Number(b.date));
+        return result; 
+      });
 
       console.log("testResults", testResults_func);
       setTestResults(testResults_func);
     };
 
     fetchData();
-  }, []);
-
+  }, [dateFilter]);
 
 
   const labels = testResults.map((r) => r.date);
 
   // const allMetrics = ['a_kaliumVal', 'a_Kreatinin'];
-  const allMetrics = keywordMapping.map(item => item.key); //  const allMetrics = keywordMapping.map(item => item.keyword[0]);
-  console.log("allMetrics", allMetrics)
+  const allMetrics = keywordMapping.map(item => item.key); 
   const [visibleMetrics, setVisibleMetrics] = useState(allMetrics);
 
   const toggleMetric = (metric) => {
@@ -130,10 +158,7 @@ const Chart = () => {
     );
   };
 
-  
   // const datasetColors = {
-  //   Kreatinin: 'red',
-  //   Protein: 'blue',
   //   b_gesamtProteinVal: 'green',
   //   a_Kreatinin: 'pink'
   // };
@@ -144,7 +169,7 @@ const Chart = () => {
 
     keys.forEach((key, i) => {
       const hue = Math.round(i * step); 
-      colors[key] = `hsl(${hue}, 50%, 50%)`;
+      colors[key] = `hsl(${hue}, 50%, 40%)`;
     });
 
     return colors;
@@ -161,54 +186,136 @@ const Chart = () => {
 
   const data = { labels, datasets };
 
+  
+
   return (
-    <div>   
-      <div className='chart-body'>
+    <div> 
+
+      <div className='wrapper'>
         <h1 className='identifier'>Main Chart</h1>
-        <div className="filter-container">Filters
-          <div className='btn-main-switch'>
-            <button
-              onClick={() => setVisibleMetrics([])}
-              className="filter-off"
-              style={{
-                backgroundColor: "gray",
-                color: "white",
-                marginBottom: "1rem",
-              }}
-            >
-              Hide All
-            </button>
+        <div className='chart-grand'>
+          <div className="filter-container">
+            <div className='menu-navi'>
+              {filterSpanOpen && ( 
+                <div className="space-between">
+                  <SearchOutlinedIcon onClick={() => {
+                    setSearchValue("")
+                    setSideMenuOption(rawSideMenuOption[2])} 
+                  } /> 
+                  <TuneOutlinedIcon onClick={() => {
+                    setSearchValue("")
+                    setSideMenuOption(rawSideMenuOption[0])}
+                    } /> 
+                  <CalendarMonthOutlinedIcon className="calender" onClick={() => {
+                    setSearchValue("")
+                    setSideMenuOption(rawSideMenuOption[1])}} //calender
+                  /> 
+                </div>
+              )}
+              <span 
+                  onClick={() => {setFilterSpanOpen(prev => !prev)}}
+                  className='filter-menu'
+                > 
+                  {filterSpanOpen ? <> Filter <KeyboardArrowLeftIcon /> </> : <KeyboardArrowRightIcon />}
+              </span>
+            </div>
+            
+            <div className={`full-height ${filterSpanOpen ? "show" : "hide"}`}>
+             {sideMenuOption === "Calender" && (
+                <div className="calender noColorChange">
+                  <DateRangePicker
+                    onChange={handleDateRangePicker}
+                    value={dateRangeRaw}
+                  />
+                </div>
+              )}
 
-            <button
-              onClick={() => setVisibleMetrics(allMetrics)}
-              className="filter-on"
-              style={{
-                backgroundColor: "black",
-                color: "white",
-                marginBottom: "1rem",
-              }}
-            >
-              Show All
-            </button>
+              {sideMenuOption === "Search" && (
+                <TextField
+                  className="searchMUI"
+                  size="small"
+                  sx={{
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    "& .MuiFilledInput-root": {
+                      backgroundColor: "#222",
+                      "&:hover": { backgroundColor: "#333" },
+                      "&.Mui-focused": {
+                        backgroundColor: "#333",
+                        borderColor: "white"
+                      }
+                    }
+                  }}
+                  id="filled-search"
+                  label="Search field"
+                  type="search"
+                  variant="filled"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+              )}
+
+              {sideMenuOption === "SwitchButton" && (
+                <div className="btn-main-switch">
+                  <button
+                    onClick={() => setVisibleMetrics([])}
+                    className="filter-controller"
+                    style={{ backgroundColor: "gray", color: "white" }}
+                  >
+                    Hide All
+                  </button>
+
+                  <button
+                    onClick={() => setVisibleMetrics(allMetrics)}
+                    className="filter-controller"
+                    style={{ backgroundColor: "black", color: "white" }}
+                  >
+                    Show All
+                  </button>
+                </div>
+              )}
+              
+              <div className='button-rainbow-container'>
+
+                { allMetrics.map((metric) => (
+                  searchValue ? (metric.includes(searchValue) && <button
+                    key={metric}
+                    onClick={() => toggleMetric(metric)}
+                    className={visibleMetrics.includes(metric) ? "filter-on" : "filter-off"}
+                    style={{
+                      backgroundColor: datasetColors[metric], // use your generated color
+                      color: "white", // ensure text is readable
+                      width: "100%",
+                    }}
+                  >
+                    {metric}
+                  </button>) :
+                  <button
+                    key={metric}
+                    onClick={() => toggleMetric(metric)}
+                    className={visibleMetrics.includes(metric) ? "filter-on" : "filter-off"}
+                    style={{
+                      backgroundColor: datasetColors[metric], // use your generated color
+                      color: "white", // ensure text is readable
+                      width: "100%",
+                    }}
+                  >
+                    {metric}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          {allMetrics.map((metric) => (
-            <button
-              key={metric}
-              onClick={() => toggleMetric(metric)}
-              className={visibleMetrics.includes(metric) ? "filter-on" : "filter-off"}
-              style={{
-                backgroundColor: datasetColors[metric], // use your generated color
-                color: "white" // ensure text is readable
-              }}
-            >
-              {metric}
-            </button>
-          ))}
+          
+          <div className={`chart-body ${!filterSpanOpen && "full-width"} `}>
+            <Line data={data}  options={{ maintainAspectRatio: false }} />
+          </div>
+          
         </div>
+      </div>
 
-        <Line data={data}  options={{ maintainAspectRatio: false }} />
 
-        <br></br>
+      <div >
 
         <h1 className='identifier'>Separate Charts</h1>
         

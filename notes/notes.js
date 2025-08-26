@@ -1,17 +1,19 @@
 // last step
-  // refactor into chartContext ::current step
+ 
         
+// vet note
+  // einheiten 
 
     
 // next
-  // how extract the date with different years, add range 
-  // refactor blood context - key/name to display the name in charts
+  // refactor - chart comp etc comps
   //docs dashboard -> docs comp that gets also integrated with the other comps 
     //(bloodtest and form etc?)
+  // chart comp side menu height of rainbow btns fix
   
 
 //todo
-  
+  // pdf print from graph
   //add editable extracted data in the visualized data
   //add/delete datas
   //dashboard for uploaded files
@@ -22,13 +24,18 @@
   // global Loading comp 
 
 //done
+  // style chart comp - add side menu
+    // btns (show all/hide all values)-> graph always 100% in view 
+    // add search to filter in side menu values -> neatless switch 
+    // add date picker range 
+  
+
+//old done
   //chart comp ->
     // visulize extracted data 
     //style (btns color bound to values and graphs, line charts)
   // BloodTest comp when uploading file, hold globally, for Form comp when saveToDb gets triggered, to add File also to docs
   // done global file state
-
-//old done
   // Form Comp with their data input context + saving to db
   //loading context
   //supabase policy for bloodtest table read, add and delete
@@ -38,6 +45,8 @@
   // separate charts for indivisual datas
 
 // details
+  // refactor blood context - key/name to display the name in charts
+  // refactor into chartContext 
   //use abort in fetches
   // ideas to missing months
   // upload with only admin (upload general doent work with current security rules)
@@ -50,7 +59,8 @@
     //-> when adding inputs, anything possible as name, logic in graph to include, for cases when i only have once f.e. smda and not for other tests, that there is not graph, then there is only point?
     //-> then also in comp/chart.jsx adjust the toggle btn to how much we have at the db in our user specific table
       //-> to that we have to keep track of our values when adding inputs/data to db -> for each user we know then how many test values they track, those can be then also tagged with fav/häufigkeit etc
-
+  // data db in testResult_data -> stores data of inscrease or descreased value? -
+    // - creatinine ^5
 
 
 
