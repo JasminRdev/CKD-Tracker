@@ -1,12 +1,20 @@
-// last step
- 
-        
+// (undone) last step
+  // 
+
 // vet note
   // einheiten 
+  // fehlende tests
+    //blut
+      //03.25 (von 15.06.2024 - märz.2025 kein blut getestet??)
+      //22.05 fehlt mir auch
+      //01.07.2025 //screenshot aber per mail besser
+    //urin
+      //26.03.25 nichts weiter als das komische ungewöhnliche testergebnis
+      //22.05 //screenshot ber per email besser
+      //01.07.25 //screenshot ber per email besser
 
     
 // next
-  // refactor - chart comp etc comps
   //docs dashboard -> docs comp that gets also integrated with the other comps 
     //(bloodtest and form etc?)
   // chart comp side menu height of rainbow btns fix
@@ -23,16 +31,26 @@
   //medical informations to tracked values - to high / to low consequences
   // global Loading comp 
 
+
 //done
-  // style chart comp - add side menu
-    // btns (show all/hide all values)-> graph always 100% in view 
-    // add search to filter in side menu values -> neatless switch 
-    // add date picker range 
-  
+  //blood comp 
+    // added preview img
+    // style - scrollable extracted text
+      // done - overlayer for preview img
+      // done - fix shadow style and point when to start
+  //chart comp 
+    // style val color
+    // (only separated charts) white val numbers
+    // refactor into context
+   
 
 //old done
   //chart comp ->
     // visulize extracted data 
+    // style chart comp - add side menu
+      // btns (show all/hide all values)-> graph always 100% in view 
+      // add search to filter in side menu values -> neatless switch 
+      // add date picker range 
     //style (btns color bound to values and graphs, line charts)
   // BloodTest comp when uploading file, hold globally, for Form comp when saveToDb gets triggered, to add File also to docs
   // done global file state
@@ -45,6 +63,10 @@
   // separate charts for indivisual datas
 
 // details
+  // chart comp
+    // side menu - calender - add date range from last saved localstorage
+    // chart all -> show data that are out of range from there min max 
+    // chart all -> show an up or down trend from vals in their graph -> creatinin ^ or opposite
   // refactor blood context - key/name to display the name in charts
   // refactor into chartContext 
   //use abort in fetches
@@ -59,19 +81,17 @@
     //-> when adding inputs, anything possible as name, logic in graph to include, for cases when i only have once f.e. smda and not for other tests, that there is not graph, then there is only point?
     //-> then also in comp/chart.jsx adjust the toggle btn to how much we have at the db in our user specific table
       //-> to that we have to keep track of our values when adding inputs/data to db -> for each user we know then how many test values they track, those can be then also tagged with fav/häufigkeit etc
-  // data db in testResult_data -> stores data of inscrease or descreased value? -
-    // - creatinine ^5
 
 
 
   //branches 
-    // *bloodtest visualization
+    // bloodtest visualization ::includes
+    // *refactor_chart_and_bloodtest_input_comp
     // user profile - pets
     // urinetest visualize
     // overview dashboard
     // notes dashboard? marker (travel, changes like food change, bladder infec. etc)
     // details (ui ux)
-    // refactoring
     // extending for more users?
     // vet communitation
     // ai analyse
@@ -116,7 +136,8 @@
     let b_globulineVal; //nur bedingt nützlich - eher bei Erzündungen etc
 
     //weniger wichtig für CNI (aber allg interessant)
-    // let c_leukozytenVal; //entzündungs- & infektionszeichen
+    // ::check let c_leukozytenVal; //entzündungs- & infektionszeichen
+    // ::check neu Erythrozyten
     let c_neutrophileVal; //entzündungs- & infektionszeichen
     // let c_lymphozytenVal; //entzündungs- & infektionszeichen
     // let c_thrombozyten; //gerinnung

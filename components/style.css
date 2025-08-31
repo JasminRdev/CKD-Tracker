@@ -1,3 +1,15 @@
+@media (max-width: 570px) {
+   
+  .extractedElement img{
+    width: calc(100vw - 65px);
+}
+
+}
+
+
+
+
+
 .comp-wrapper{
     border:rgba(255, 0, 0, 0.63) 1px solid;
     margin:20px 0px;
@@ -30,3 +42,73 @@ h1{
 .calender{
     background-color: white;
 }
+
+
+.extractedElement{
+    width: fit-content;
+    border: 2px solid rgb(182 182 182);
+    border-radius: 4px;
+    padding:20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+}
+.extractedElement:hover{
+    opacity: .8;
+}
+
+
+.data-extract-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap:15px;
+    margin:15px 0;
+}
+
+.data-extract-container button{
+    height: fit-content;
+}
+
+.extractedElement img{
+    margin-top: 20px;
+    max-width: 489px;
+}
+
+.extractedElement img{
+    cursor: pointer;
+}
+
+.extractedText{
+    width: 300px;
+    overflow: auto;
+    padding: 7px;
+    
+    background-color: rgb(197, 196, 196);
+}
+.nowExtractInfo::before{
+    content:"Please extract";
+    display: block;        
+    color: red;           
+    font-weight: bold;    
+    margin-bottom: 4px;   
+}
+
+
+.extractedText.has-right-shadow {
+  box-shadow: inset -8px 0 6px -4px rgba(0, 0, 0, 0.3);
+}
+.extractedText.has-left-shadow {
+  box-shadow: inset 8px 0 6px -4px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: gray;
+  box-shadow: 0 0 1px white;
+}
+

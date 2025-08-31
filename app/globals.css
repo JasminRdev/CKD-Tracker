@@ -9,6 +9,7 @@ body , html{
   padding:0;
   margin: 0;
   box-sizing: border-box;
+  background-color: #d8cfc4;
 }
 *{
   padding:0;
@@ -17,17 +18,51 @@ body , html{
 }
 
 .absoluteLoading{
-    position: absolute;
-    border:red 1px solid;
-    height: 100vh;
-    width: 100vw;
-    background-color: gray;
-    opacity: .6;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  background-color: gray;
+  opacity: .6;
 }
 
 .loadingIcon{
-    left: 50% !important;
-    transform: translate(-50%, 0);
-    top: 32%;
+  left: 50% !important;
+  transform: translate(-50%, 0);
+  top: 32%;
+  position: absolute;
+}
+
+.overlayer{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: .8;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.overlayerPreviewImg{
     position: absolute;
+    background: white; 
+    width: 100%;
+    object-fit: contain;
+    z-index: 4;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 44px;
+}
+.closePreviewBig{
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #737373;
+  border-radius: 50%;
+  z-index: 6;
+  background: white;
+  right: 20px;
+  top: 6px;
+  cursor: pointer;
 }

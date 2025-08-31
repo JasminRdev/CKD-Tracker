@@ -18,16 +18,24 @@ import './style.css';
 import { useBloodTestContext } from '../context/BloodTestContext';
 import { useLoadingContext } from '../context/LoadingContext';
 
+import ScrollContainer from './ux/ScrollContainer'
+
 export default function UploadExtractSave() {
   
-  const {loading} = useLoadingContext();
+  const {loading, showOverlay, setShowOverlay, setOverlayerElement} = useLoadingContext();
   const {handleExtractAndSave, extractedText ,file, setFile, resetForm} = useBloodTestContext();
   const user = useUser();
+  const [selectedImage, setSelectedImage] = useState(null)
   
 
   const handleFileChange = (e) => {
     resetForm(); //if not choosen multi files ::TODO
-    setFile(e.target.files[0])
+
+    const file = e.target.files[0];
+    setFile(file)
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file)); // creates preview link
+    }
   }
   
   function handleForm() {
@@ -37,18 +45,41 @@ export default function UploadExtractSave() {
     handleExtractAndSave(file)
   }
 
+  function handleClickPreviewImg() {
+    setShowOverlay(true)
+    setOverlayerElement(<img 
+                className='overlayerPreviewImg'
+                src={selectedImage} 
+                alt="previewBig" 
+              />)
+  }
 
   
 
   return (
     <div className="comp-wrapper">
       <h1>Bloodtest comp</h1>
-      <input type="file" onChange={handleFileChange} />     
-        <Button onClick={handleForm} disabled={loading} variant="contained">
-        {loading ? 'Processing...' : 'Extract & Insert'}
-        </Button>
-      <pre>{extractedText}</pre>
-
+      <div className='data-extract-container'>
+        <input type="file" accept="image/*" onChange={handleFileChange} />     
+          <Button onClick={handleForm} disabled={loading} variant="contained">
+          {loading ? 'Processing...' : 'Extract & Insert'}
+          </Button>
+        <pre className="extractedElement">
+          {selectedImage && (
+            <>
+              <ScrollContainer >
+                {extractedText}
+              </ScrollContainer>
+              <img 
+                onClick={handleClickPreviewImg}
+                src={selectedImage} 
+                alt="preview" 
+              />
+            </>
+          )}
+        </pre>
+      </div>
+      
 
     </div>
   )

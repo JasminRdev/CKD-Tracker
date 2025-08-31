@@ -26,7 +26,6 @@ export const BloodTestProvider = ({ children }) => {
       { name: "a_AGQuotientVal", value: "" },
       { name: "a_T4Val", value: "" },
       { name: "a_hämatokritVal", value: "" },
-      { name: "a_hämaglobinVal", value: "" },
       { name: "a_retikulozytenVal", value: "" },
       { name: "a_retHeVal", value: "" },
       { name: "b_alphaAmylaseVal", value: "" },
@@ -49,7 +48,9 @@ export const BloodTestProvider = ({ children }) => {
       { name: "c_MCH", value: "" },
       { name: "c_MCHC", value: "" },
       { name: "c_hypochromasie", value: "" },
-      { name: "c_anisozytose", value: "" }
+      { name: "a_hämoglobinVal", value: "" },
+      { name: "c_erythrozytenVal", value: "" },
+      { name: "c_leukozytenVal", value: "" },
     ]);
     const [form, setForm] = useState(getInitialForm);
     const resetForm = () => {
@@ -66,8 +67,11 @@ export const BloodTestProvider = ({ children }) => {
   // ];
 
     //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
+    //05.03.24
     const keywordMapping = [
-      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max:94,value: ""  },
+      { keyword: ["Leukozyten", "Leukoz"], key: "c_leukozytenVal",min:3.9, max:12.5, value:"", currency:"G/l"},
+      { keyword: ["Erythrozyten"], key: "c_erythrozytenVal",min:7.2, max:11, value:"", currency:"T/l"},
+      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max: 94,value: "", currency:"" },
       { keyword: ["Kreatinin"], key: "a_Kreatinin", min: 0, max:168, value: ""  },
       { keyword: ["Kalium"], key: "a_kaliumVal", value: "" },
       { keyword: ["Kalzium"], key: "a_kalziumVal", value: "" },
@@ -80,7 +84,7 @@ export const BloodTestProvider = ({ children }) => {
       { keyword: ["A/G-Quotient"], key: "a_AGQuotientVal", value: "" },
       { keyword: ["T4"], key: "a_T4Val", value: "" },
       { keyword: ["hämatokrit"], key: "a_hämatokritVal", value: "" },
-      { keyword: ["hämaglobin"], key: "a_hämaglobinVal", value: "" },
+      { keyword: ["hämaglobin","hämoglobin"], key:"a_hämoglobinVal", value: "", min: 108, max:169, currency:"g/l" },
       { keyword: ["Retikulozyten"], key: "a_retikulozytenVal", value: "" },
       { keyword: ["Ret-He"], key: "a_retHeVal", value: "" },
       { keyword: ["Amylase"], key: "b_alphaAmylaseVal", value: "" },
@@ -108,8 +112,8 @@ export const BloodTestProvider = ({ children }) => {
 
   const handleExtractAndSave = async () => {
       // uploadDocToDB(file, user.id);
-      const session = await supabase.auth.getSession();
-      console.log(session.data.session?.user?.app_metadata);
+      // const session = await supabase.auth.getSession();
+      // console.log(session.data.session?.user?.app_metadata);
       setLoading(true)
 
       // 1. Extract text

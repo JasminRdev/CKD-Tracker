@@ -10,6 +10,7 @@ import BloodTest from '../../components/BloodTest.jsx'
 //comp
 import Documents from '../../components/Documents'
 import Form from '../../components/Form'
+import Overlayer from '../../components/Overlayer'
 
 //style
 import '../globals.css';
@@ -19,7 +20,7 @@ import { useLoadingContext } from '../../context/LoadingContext';
 
 export default function bloodTest() {
   // useLoadingContext
-  const { loading, setLoading} = useLoadingContext();
+  const { loading, setLoading,showOverlay} = useLoadingContext();
 
   const user = useUser();
   if(!user) {
@@ -27,6 +28,11 @@ export default function bloodTest() {
   } else {
     return (
         <div >
+          {showOverlay && 
+            <div>
+              <Overlayer />
+            </div>
+          }
           {loading && 
             <div className="absoluteLoading">
               <div className='loadingIcon'>

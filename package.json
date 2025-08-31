@@ -19,6 +19,7 @@
     "@wojtekmaj/react-daterange-picker": "^7.0.0",
     "chart.js": "^4.5.0",
     "chartjs-plugin-annotation": "^3.1.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.13",
     "mui": "^0.0.1",
     "next": "15.4.1",
