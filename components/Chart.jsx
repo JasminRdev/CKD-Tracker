@@ -34,6 +34,8 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useChartContext } from "../context/ChartContext";
 
+import PetNameInput from './fields/PetNameInput'
+
 const backgroundRangePlugin = {
   id: 'backgroundRange',
   beforeDraw: (chart) => {
@@ -73,7 +75,7 @@ const Chart = () => {
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
 
-  const { keywordMapping } = useBloodTestContext();
+  const { keywordMapping, chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
@@ -108,7 +110,14 @@ const Chart = () => {
 
   return (
     <div> 
-      <div className='wrapper'>
+       <div className='petNameInput__wrapper'>
+        <PetNameInput />
+      </div>
+      
+    {
+      chosenPetName &&
+      <div>
+        <div className='wrapper'>
         <h1 className='identifier'>Main Chart</h1>
         <div className='chart-grand'>
           <div className="filter-container">
@@ -223,32 +232,21 @@ const Chart = () => {
               </div>
             </div>
           </div>
-          
           <div className={`chart-body ${!filterSpanOpen && "full-width"} `}>
             <Line data={data}  options={{ maintainAspectRatio: false, 
             plugins: {
               colors: {
                 enabled: false
               },
-              // legend: {
-              //   labels: {
-              //     color: "black",   // legend text color
-              //   },
-              // },
               datalabels: {
                 color: "transparent",},}}
               }
             />
           </div>
-          
         </div>
       </div>
-
-
-      <div >
-
+      <div>
         <h1 className='identifier'>Separate Charts</h1>
-        
         <div className="separate-chart">
           {allMetrics
             .sort((a, b) => {
@@ -328,6 +326,9 @@ const Chart = () => {
             })}
         </div>
       </div>
+      </div>
+    }
+     
     </div>
   );
 };

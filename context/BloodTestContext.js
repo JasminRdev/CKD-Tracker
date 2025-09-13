@@ -1,10 +1,11 @@
 // BloodTestContext.js
 "use client"; 
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import Tesseract from 'tesseract.js'
 import { supabase } from '../app/lib/supabaseClient'
 import { useLoadingContext } from './LoadingContext';
+import { useChartContext } from './ChartContext';
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
@@ -12,6 +13,8 @@ export const BloodTestProvider = ({ children }) => {
   const {setLoading} = useLoadingContext();
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
+
+  const { chosenPetName } = useChartContext();
 
     const getInitialForm = () => ([
       { name : "a_Kreatinin", value:""},
@@ -146,8 +149,41 @@ export const BloodTestProvider = ({ children }) => {
 
   }
 
+  const getPetName = async () => {
+    let { data: testResult_data, error } = await supabase
+      .from('testResult_data')
+      .select('pet');
+  
+    if (error) {
+      console.error('Supabase error:', error);
+      return null;
+    }
+    return testResult_data;
+  };
+
+
+  const [allNames, setAllNames] = useState([])
+  const getNames = async () => {
+    let names = await getPetName();
+    setAllNames(prev => {
+      const newNames = names.map(item => Object.values(item)[0]);
+      return Array.from(new Set([...prev, ...newNames]));
+    });
+  }
+
+    
+  const savedPetNames = allNames.map(name => ({
+    value: name,
+    label: name
+  }))
+
+
+  useEffect(() => {
+    getNames();
+  },[])
+
   return (
-    <BloodTestContext.Provider value={{ keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );

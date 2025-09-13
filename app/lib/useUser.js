@@ -18,10 +18,12 @@ export default function useUser() {
       setUser(session?.user ?? null)
     })
 
+
     return () => {
       listener.subscription.unsubscribe()
     }
   }, [])
 
+  // console.log("user ", user)
   return user
 }

@@ -1,27 +1,20 @@
-
-// ChartContext.js
 "use client"; 
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { supabase } from '../app/lib/supabaseClient'
-
 const ChartContext = createContext();
 
 export const ChartProvider = ({ children }) => {
-  
+
   // setTestResults([
-  //   { date: '01', Kreatinin: 139, Protein: 62.5, 
-  //   b_gesamtProteinVal: 139, a_Kreatinin: 62.5 },
-  //   { date: '02', Kreatinin: 139, Protein: 62.5 ,
-  //   b_gesamtProteinVal: 133, a_Kreatinin: 62.5 },
-  //   { date: '03', Kreatinin: 133, Protein: 62.5 },
-  //   { date: '05', Kreatinin: 135, Protein: 62 },
+  //   { date: '01', Kreatinin: 139, Protein: 62.5, ...
   //   { date: '07', Kreatinin: 133, Protein: 62 },
   // ]);
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "10.2009", endDate: "12.2028"})
+  const [chosenPetName, setChosenPetName] = useState("Blus");
+  
   useEffect(() => {
     setDateRangeRaw([
     new Date(2009, 12, 1), 
@@ -29,8 +22,15 @@ export const ChartProvider = ({ children }) => {
   ])
   }, [])
 
+  const getBloodTestData = async () => {
+    const res = await fetch(`/api/getTestResults?pet=${chosenPetName}`);
+    const json = await res.json();
+    return json.data;
+  };
+
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAndTransform = async () => {
       const rawData = await getBloodTestData();
       const testResults_func = rawData
         .filter(item => {
@@ -63,27 +63,13 @@ export const ChartProvider = ({ children }) => {
           });
           return result; 
         });
-      console.log("testResults", testResults_func);
-      setTestResults(testResults_func);
-    };
-    fetchData();
-  }, [dateFilter]);
+        console.log("testResults", testResults_func);
+        setTestResults(testResults_func);
+      };
+      fetchAndTransform();    
+  }, [dateFilter, chosenPetName]);
 
-  
-  //::TODO add select only user_id data that matches our user.id
-  const getBloodTestData = async () => {
-    let { data: testResult_data, error } = await supabase
-      .from('testResult_data')
-      .select('*');
-  
-    if (error) {
-      console.error('Supabase error:', error);
-      return null;
-    }
-  
-    return testResult_data;
-  };
-
+ 
   const formatMonthYear = (date) => {
     if (!date) return "";
     const month = date.getMonth();
@@ -111,9 +97,9 @@ export const ChartProvider = ({ children }) => {
     return colors;
   };
 
-   
+
   return (
-    <ChartContext.Provider value={{generateColors, testResults, dateRangeRaw, handleDateRangePicker }}>
+    <ChartContext.Provider value={{ chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker }}>
       {children}
     </ChartContext.Provider>
   );

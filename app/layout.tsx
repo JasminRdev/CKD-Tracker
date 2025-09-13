@@ -36,7 +36,7 @@ export default function RootLayout({
           <ChartProvider>
             <BloodTestProvider>
               <SupabaseProvider>
-                    {children}
+                  {children}
                 </SupabaseProvider>
               </BloodTestProvider>
           </ChartProvider>

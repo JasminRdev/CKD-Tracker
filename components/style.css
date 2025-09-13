@@ -28,7 +28,7 @@ h1{
     display: flex;
     flex-wrap: wrap;
     gap:30px 10px;
-    
+    padding-bottom: 300px;
     justify-content: center;
 }
 
@@ -112,3 +112,29 @@ h1{
   box-shadow: 0 0 1px white;
 }
 
+
+.box{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.full-width{
+    display: flex;
+    flex: 0 0 100%;
+    gap: 15px;
+}
+
+.button-save-db{
+    height: fit-content;
+    align-self: center;
+}
+
+.input-wide{
+    width: 200px;
+}
+
+
+.petNameInput__wrapper{
+    padding:50px 100px;
+}
