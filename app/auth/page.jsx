@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { signIn, signInWithGoogle, signUp } from '../lib/auth'
+import { signIn, signInWithGoogle, signUp, signOut } from '../lib/auth'
 import { useRouter } from 'next/navigation'
 
 export default function Auth() {
@@ -40,6 +40,14 @@ export default function Auth() {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
     } catch (err) {
       console.error(err)
     }
@@ -90,6 +98,7 @@ export default function Auth() {
 
       <br></br>
       <button onClick={handleGoogleLogin}>Sign in with Google</button>
-    </div>
+      <button onClick={handleSignOut}>Sign out</button>
+      </div>
   )
 }

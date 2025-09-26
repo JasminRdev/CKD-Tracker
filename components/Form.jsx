@@ -19,10 +19,12 @@ import dayjs from 'dayjs';
 import { useLoadingContext } from '../context/LoadingContext';
 import './style.css';
 
+import PetNameInput from './fields/PetNameInput'
+
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm, file, setFile } = useBloodTestContext();
+  const { form, setForm, file, chosenPetName } = useBloodTestContext();
   const {loading, setLoading} = useLoadingContext();
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
@@ -30,15 +32,18 @@ export default function Form() {
   const {getNextId} = useSupabaseContext();
 
   const testType = [
-  {
-    value: 'Blood',
-    label: 'Blood',
-  },
-  {
-    value: 'Urine',
-    label: 'Urine',
-  },
-];
+    {
+      value: 'Blood',
+      label: 'Blood',
+    },
+    {
+      value: 'Urine',
+      label: 'Urine',
+    },
+  ];
+
+
+
 
   const handleChange = (name, newValue) => {
     const numericValue = newValue === "" ? "" : parseFloat(newValue);
@@ -87,7 +92,7 @@ export default function Form() {
                 test_date: valueDate, 
                 created_at : new Date(), 
                 test_type :selectedType, 
-                pet: "Test", 
+                pet: chosenPetName, 
                 file_url : await uploadFile() }]) //
           if (error) console.error(error)
           else console.log('Data saved:', data)
@@ -102,6 +107,7 @@ export default function Form() {
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
             noValidate
             autoComplete="off"
+            className='box'
         >
             {form && form.map((f) => (
                 <TextField
@@ -119,33 +125,39 @@ export default function Form() {
                     focused={f.value == ""}
                 />
             ))}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                    label="Select date of test result"
-                    value={valueDate}
-                    onChange={(newValue) => setValueDate(newValue)}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-            </LocalizationProvider>
+            <div className='full-width'>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                      label="Select date of test result"
+                      value={valueDate}
+                      onChange={(newValue) => setValueDate(newValue)}
+                      renderInput={(params) => <TextField {...params} />}
+                  />
+              </LocalizationProvider>
            
-                 <TextField
-                    select
-                    label="Select"
-                    value={selectedType}
-                    onChange={(e) => {
-                        setSelectedType(e.target.value);
-                    }}
-                    helperText="Please select your test type"
-                    >
-                    {testType.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            <Button onClick={saveData} disabled={loading} variant="contained">Save data inputs to system</Button>
-      </Box>
-
+              
+              <TextField
+                className='input-wide'
+                select
+                label="Please select your test type"
+                value={selectedType}
+                onChange={(e) => {
+                    setSelectedType(e.target.value);
+                }}
+                // helperText="Please select your test type"
+                >
+                {testType.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                    </MenuItem>
+                ))}
+              </TextField>
+               <PetNameInput />
+         
+              <Button className="button-save-db" onClick={saveData} disabled={loading} variant="contained">Save data</Button>
+            </div>
+        </Box>
       </div>
   );
 }
+   

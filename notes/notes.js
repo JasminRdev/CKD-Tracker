@@ -1,18 +1,20 @@
-// last step
- 
-        
-// vet note
-  // einheiten 
+// current
+  // ::next
 
-    
 // next
-  // refactor - chart comp etc comps
-  //docs dashboard -> docs comp that gets also integrated with the other comps 
-    //(bloodtest and form etc?)
-  // chart comp side menu height of rainbow btns fix
+  //refactor
+    //write data into db over api 
   
 
 //todo
+  // next we visually show for admin own and other uers data - batch from user?
+    // look whio i am as logged person! 
+  //docs dashboard -> docs comp that gets also integrated with the other comps 
+    //(bloodtest and form etc?)
+  // chart comp side menu height of rainbow btns fix
+  // git pushed to side branch refactor
+  // fill up all data in context like with first 3
+  // fill their min max and currency
   // pdf print from graph
   //add editable extracted data in the visualized data
   //add/delete datas
@@ -23,16 +25,44 @@
   //medical informations to tracked values - to high / to low consequences
   // global Loading comp 
 
+
 //done
-  // style chart comp - add side menu
-    // btns (show all/hide all values)-> graph always 100% in view 
-    // add search to filter in side menu values -> neatless switch 
-    // add date picker range 
-  
+  // refactor
+    // chart context (fetch Testdata) - to server side code from context for api in getTestResults.js
+  //security -admin supabase policies for vet and dev, show all rows 
+    //for other users show only own rows and dev row
+  //expand for parent profiles /animals
+    //form comp -> extend pet name
+      //fetch pet names as dropdown
+      //add new pet names
+    //filter chart comp by pet name chosen logic
+      // add same auto input in chart 
+      // petnameinput comp added
+      // chartcontext- fetching chart data based on petnameinput
+  //blood comp 
+    // added preview img
+    // style - scrollable extracted text
+      // overlayer for preview img
+      // fix shadow style and point when to start -ux style
+  //chart comp 
+    // style val color
+    // (only separated charts) white val numbers
+    // refactor into context
+   
+
+
+// vet note
+  // einheiten 
+
+
 
 //old done
   //chart comp ->
     // visulize extracted data 
+    // style chart comp - add side menu
+      // btns (show all/hide all values)-> graph always 100% in view 
+      // add search to filter in side menu values -> neatless switch 
+      // add date picker range 
     //style (btns color bound to values and graphs, line charts)
   // BloodTest comp when uploading file, hold globally, for Form comp when saveToDb gets triggered, to add File also to docs
   // done global file state
@@ -45,6 +75,12 @@
   // separate charts for indivisual datas
 
 // details
+  // chart comp
+    // side menu - calender - add date range from last saved localstorage
+    // chart all -> show data that are out of range from there min max 
+    // chart all -> show an up or down trend from vals in their graph -> creatinin ^ or opposite
+    // when value in sep.Chart gets out of the chart -> write val? changeable min max?
+    // overview in bottom sticky for values that changes quite (in minus and then the plus - gango lavoro bluo)
   // refactor blood context - key/name to display the name in charts
   // refactor into chartContext 
   //use abort in fetches
@@ -59,19 +95,17 @@
     //-> when adding inputs, anything possible as name, logic in graph to include, for cases when i only have once f.e. smda and not for other tests, that there is not graph, then there is only point?
     //-> then also in comp/chart.jsx adjust the toggle btn to how much we have at the db in our user specific table
       //-> to that we have to keep track of our values when adding inputs/data to db -> for each user we know then how many test values they track, those can be then also tagged with fav/häufigkeit etc
-  // data db in testResult_data -> stores data of inscrease or descreased value? -
-    // - creatinine ^5
 
 
 
-  //branches 
-    // *bloodtest visualization
+  //branches (+possible ones)
+    // bloodtest visualization
+    // *refactor_chart_and_bloodtest_input_comp
     // user profile - pets
     // urinetest visualize
     // overview dashboard
     // notes dashboard? marker (travel, changes like food change, bladder infec. etc)
     // details (ui ux)
-    // refactoring
     // extending for more users?
     // vet communitation
     // ai analyse
@@ -116,7 +150,8 @@
     let b_globulineVal; //nur bedingt nützlich - eher bei Erzündungen etc
 
     //weniger wichtig für CNI (aber allg interessant)
-    // let c_leukozytenVal; //entzündungs- & infektionszeichen
+    // ::check let c_leukozytenVal; //entzündungs- & infektionszeichen
+    // ::check neu Erythrozyten
     let c_neutrophileVal; //entzündungs- & infektionszeichen
     // let c_lymphozytenVal; //entzündungs- & infektionszeichen
     // let c_thrombozyten; //gerinnung
@@ -128,202 +163,3 @@
     // let c_monozyten; //immunzellen
     // let c_eosinophile; //immunzellen
     // let c_basophile; //immunzellen
- 
-
-
-
-
-
-  if (user?.app_metadata?.role === 'admin') {
-  // show admin-only features
-}
-
-//upload file to supabase storage
-const uploadFile = async (file, userId) => {
-  const { data, error } = await supabase
-    .storage
-    .from('documents')
-    .upload(`${userId}/${file.name}`, file)
-
-  if (error) {
-    console.error('File upload error:', error)
-    return null
-  }
-
-  const { publicURL } = supabase
-    .storage
-    .from('documents')
-    .getPublicUrl(`${userId}/${file.name}`)
-
-  return publicURL
-}
-
-
-
-//insert metadata in db
-const saveData = async (userId, testType, extractedData, fileUrl) => {
-  const { data, error } = await supabase
-    .from('bloodtest_data')
-    .insert([{
-      user_id: userId,
-      test_type: testType,
-      data: extractedData,
-      file_url: fileUrl
-    }])
-
-  if (error) console.error('DB insert error:', error)
-  else console.log('Saved to DB:', data)
-}
-
-
-
-//basic auth
-import { supabase } from '../lib/supabaseClient'
-
-// Sign up
-const signUp = async (email, password) => {
-  const { user, error } = await supabase.auth.signUp({ email, password })
-  if (error) console.error(error)
-  else console.log('User signed up:', user)
-}
-
-// Sign in
-const signIn = async (email, password) => {
-  const { user, error } = await supabase.auth.signIn({ email, password })
-  if (error) console.error(error)
-  else console.log('User signed in:', user)
-}
-
-// Sign out
-const signOut = async () => {
-  const { error } = await supabase.auth.signOut()
-  if (error) console.error(error)
-}
-
-
-
-
-
-
-
-
-//extract data from file
-import Tesseract from 'tesseract.js'
-
-const extractTextFromImage = async (file) => {
-  const { data: { text } } = await Tesseract.recognize(file, 'eng', {
-    logger: m => console.log(m)
-  })
-  return text
-}
-
-
-
-
-//save extracted data
-const saveExtractedData = async (userId, extractedData) => {
-  const { data, error } = await supabase
-    .from('bloodtest_data')
-    .insert([{ user_id: userId, data: extractedData }])
-  if (error) console.error(error)
-  else console.log('Data saved:', data)
-}
-
-
-
-
-//example flow react comp - Upload image → extract text → parse data → save to DB
-import { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
-import Tesseract from 'tesseract.js'
-
-export default function UploadExtractSave() {
-  const [file, setFile] = useState(null)
-  const [extractedText, setExtractedText] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0])
-  }
-
-  const handleExtractAndSave = async () => {
-    if (!file) return alert('Upload an image first!')
-    setLoading(true)
-
-    // 1. Extract text
-    const { data: { text } } = await Tesseract.recognize(file, 'eng')
-    setExtractedText(text)
-
-    // 2. Parse text here to structured data (example: just raw text for now)
-    const parsedData = { raw_text: text }
-
-    // 3. Get current user
-    const user = supabase.auth.user()
-    if (!user) return alert('Please sign in first!')
-
-    // 4. Save extracted data to DB
-    const { data, error } = await supabase
-      .from('bloodtest_data')
-      .insert([{ user_id: user.id, data: parsedData }])
-
-    if (error) console.error(error)
-    else alert('Data saved successfully!')
-
-    setLoading(false)
-  }
-
-  return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleExtractAndSave} disabled={loading}>
-        {loading ? 'Processing...' : 'Extract & Save'}
-      </button>
-      <pre>{extractedText}</pre>
-    </div>
-  )
-}
-
-
-
-
-
-//gmail auth
-
-import { supabase } from '../lib/supabaseClient'
-
-const signInWithGoogle = async () => {
-  const { user, session, error } = await supabase.auth.signIn({
-    provider: 'google',
-  })
-  if (error) console.error('Error:', error)
-  // The user will be redirected to Google login page
-}
-
-
-//and
-await supabase.auth.signIn({
-  provider: 'google',
-}, { redirectTo: 'https://yourappdomain.com/' })
-
-
-
-
-
-
-
-//test type
-const getTestsByType = async (userId, type) => {
-  const { data, error } = await supabase
-    .from('bloodtest_data')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('test_type', type) // 'blood' or 'urine'
-}
-
-
-// A React app to track my cat’s chronic kidney
-// disease by visualizing blood and urine test results
-// over time - . Built with Supabase (a new tool I’m learning)
-// as backend database and authentication service.
-// Helps monitor health trends and supports better care
-// through clear, interactive charts.

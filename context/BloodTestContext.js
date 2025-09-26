@@ -1,10 +1,11 @@
 // BloodTestContext.js
 "use client"; 
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import Tesseract from 'tesseract.js'
 import { supabase } from '../app/lib/supabaseClient'
 import { useLoadingContext } from './LoadingContext';
+import { useChartContext } from './ChartContext';
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
@@ -12,6 +13,8 @@ export const BloodTestProvider = ({ children }) => {
   const {setLoading} = useLoadingContext();
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
+
+  const { chosenPetName } = useChartContext();
 
     const getInitialForm = () => ([
       { name : "a_Kreatinin", value:""},
@@ -26,7 +29,6 @@ export const BloodTestProvider = ({ children }) => {
       { name: "a_AGQuotientVal", value: "" },
       { name: "a_T4Val", value: "" },
       { name: "a_hämatokritVal", value: "" },
-      { name: "a_hämaglobinVal", value: "" },
       { name: "a_retikulozytenVal", value: "" },
       { name: "a_retHeVal", value: "" },
       { name: "b_alphaAmylaseVal", value: "" },
@@ -49,7 +51,9 @@ export const BloodTestProvider = ({ children }) => {
       { name: "c_MCH", value: "" },
       { name: "c_MCHC", value: "" },
       { name: "c_hypochromasie", value: "" },
-      { name: "c_anisozytose", value: "" }
+      { name: "a_hämoglobinVal", value: "" },
+      { name: "c_erythrozytenVal", value: "" },
+      { name: "c_leukozytenVal", value: "" },
     ]);
     const [form, setForm] = useState(getInitialForm);
     const resetForm = () => {
@@ -66,8 +70,11 @@ export const BloodTestProvider = ({ children }) => {
   // ];
 
     //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
+    //05.03.24
     const keywordMapping = [
-      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max:94,value: ""  },
+      { keyword: ["Leukozyten", "Leukoz"], key: "c_leukozytenVal",min:3.9, max:12.5, value:"", currency:"G/l"},
+      { keyword: ["Erythrozyten"], key: "c_erythrozytenVal",min:7.2, max:11, value:"", currency:"T/l"},
+      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max: 94,value: "", currency:"" },
       { keyword: ["Kreatinin"], key: "a_Kreatinin", min: 0, max:168, value: ""  },
       { keyword: ["Kalium"], key: "a_kaliumVal", value: "" },
       { keyword: ["Kalzium"], key: "a_kalziumVal", value: "" },
@@ -80,7 +87,7 @@ export const BloodTestProvider = ({ children }) => {
       { keyword: ["A/G-Quotient"], key: "a_AGQuotientVal", value: "" },
       { keyword: ["T4"], key: "a_T4Val", value: "" },
       { keyword: ["hämatokrit"], key: "a_hämatokritVal", value: "" },
-      { keyword: ["hämaglobin"], key: "a_hämaglobinVal", value: "" },
+      { keyword: ["hämaglobin","hämoglobin"], key:"a_hämoglobinVal", value: "", min: 108, max:169, currency:"g/l" },
       { keyword: ["Retikulozyten"], key: "a_retikulozytenVal", value: "" },
       { keyword: ["Ret-He"], key: "a_retHeVal", value: "" },
       { keyword: ["Amylase"], key: "b_alphaAmylaseVal", value: "" },
@@ -108,8 +115,8 @@ export const BloodTestProvider = ({ children }) => {
 
   const handleExtractAndSave = async () => {
       // uploadDocToDB(file, user.id);
-      const session = await supabase.auth.getSession();
-      console.log(session.data.session?.user?.app_metadata);
+      // const session = await supabase.auth.getSession();
+      // console.log(session.data.session?.user?.app_metadata);
       setLoading(true)
 
       // 1. Extract text
@@ -142,8 +149,41 @@ export const BloodTestProvider = ({ children }) => {
 
   }
 
+  const getPetName = async () => {
+    let { data: testResult_data, error } = await supabase
+      .from('testResult_data')
+      .select('pet');
+  
+    if (error) {
+      console.error('Supabase error:', error);
+      return null;
+    }
+    return testResult_data;
+  };
+
+
+  const [allNames, setAllNames] = useState([])
+  const getNames = async () => {
+    let names = await getPetName();
+    setAllNames(prev => {
+      const newNames = names.map(item => Object.values(item)[0]);
+      return Array.from(new Set([...prev, ...newNames]));
+    });
+  }
+
+    
+  const savedPetNames = allNames.map(name => ({
+    value: name,
+    label: name
+  }))
+
+
+  useEffect(() => {
+    getNames();
+  },[])
+
   return (
-    <BloodTestContext.Provider value={{ keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );
