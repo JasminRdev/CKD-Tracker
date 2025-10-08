@@ -1,12 +1,19 @@
 // current
-  // ::next
+
 
 // next
   //refactor
     //write data into db over api 
+  // docs comp
+    // thwn with option of removing
   
 
 //todo
+  //update forms
+    //with einheiten
+    //options to add marker, values to form comp
+  //blooftest comp
+    //refresh once data saved from bloodtest input
   // next we visually show for admin own and other uers data - batch from user?
     // look whio i am as logged person! 
   //docs dashboard -> docs comp that gets also integrated with the other comps 
@@ -27,6 +34,22 @@
 
 
 //done
+  //menu comp
+    //login/logout and menu start
+  // docs comp
+    //img item now dynamic from db 
+    // fix style und save data refreshs doc wrapper
+  //refactor
+    //docs review overlay expansion
+   
+
+
+// vet note
+  // einheiten 
+
+
+
+//old done
   // refactor
     // chart context (fetch Testdata) - to server side code from context for api in getTestResults.js
   //security -admin supabase policies for vet and dev, show all rows 
@@ -48,15 +71,6 @@
     // style val color
     // (only separated charts) white val numbers
     // refactor into context
-   
-
-
-// vet note
-  // einheiten 
-
-
-
-//old done
   //chart comp ->
     // visulize extracted data 
     // style chart comp - add side menu
