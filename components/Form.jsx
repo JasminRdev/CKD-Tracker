@@ -24,7 +24,7 @@ import PetNameInput from './fields/PetNameInput'
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm, file, chosenPetName } = useBloodTestContext();
+  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, setBloodTestReset} = useBloodTestContext();
   const {loading, setLoading} = useLoadingContext();
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
@@ -93,9 +93,13 @@ export default function Form() {
                 created_at : new Date(), 
                 test_type :selectedType, 
                 pet: chosenPetName, 
-                file_url : await uploadFile() }]) //
+                file_url : await uploadFile() }]) 
           if (error) console.error(error)
           else console.log('Data saved:', data)
+
+          await getDocsImg()
+          resetForm();
+           setBloodTestReset(oldKey => oldKey + 1)
     }
 
 

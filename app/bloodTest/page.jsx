@@ -11,6 +11,7 @@ import BloodTest from '../../components/BloodTest.jsx'
 import Documents from '../../components/Documents'
 import Form from '../../components/Form'
 import Overlayer from '../../components/Overlayer'
+import Menu from '../../components/Menu'
 
 //style
 import '../globals.css';
@@ -20,31 +21,35 @@ import { useLoadingContext } from '../../context/LoadingContext';
 
 export default function bloodTest() {
   // useLoadingContext
-  const { loading, setLoading,showOverlay} = useLoadingContext();
+  const { loading, showOverlay} = useLoadingContext();
 
   const user = useUser();
-  if(!user) {
-    return <p>Please log in</p>
-  } else {
     return (
-        <div >
-          {showOverlay && 
-            <div>
-              <Overlayer />
-            </div>
-          }
-          {loading && 
-            <div className="absoluteLoading">
-              <div className='loadingIcon'>
-                <CircularProgress size="6rem" />
-              </div>
-            </div>
-          }
-            <BloodTest />
-            
-            <Documents />
-            <Form />
+        <div>
+          <Menu />
+          {!user ? (
+             <p>Please log in</p>
+          ) : (
+            <>
+              {showOverlay && 
+                <div>
+                  <Overlayer />
+                </div>
+              }
+              {loading && 
+                <div className="absoluteLoading">
+                  <div className='loadingIcon'>
+                    <CircularProgress size="6rem" />
+                  </div>
+                </div>
+              }
+              <BloodTest />
+              
+              <Documents />
+              <Form />
+            </>
+        )}
+          
         </div>
     );
-  };
-}
+  }

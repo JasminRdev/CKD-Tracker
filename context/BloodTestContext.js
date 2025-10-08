@@ -9,8 +9,8 @@ import { useChartContext } from './ChartContext';
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
+  const {loading, showOverlay, setLoading, setShowOverlay, setOverlayerElement} = useLoadingContext();
   
-  const {setLoading} = useLoadingContext();
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
 
@@ -128,8 +128,6 @@ export const BloodTestProvider = ({ children }) => {
 
     const linesArray = text.split('\n').map(line => line.trim()).filter(line => line !== '')
 
-    console.log(linesArray)
-    
     linesArray.forEach((line) => {
       const numMatch = line.match(/\d+\.\d+|\d+/)?.[0];
       if (!numMatch) return;
@@ -143,10 +141,7 @@ export const BloodTestProvider = ({ children }) => {
       });
     });
 
-    console.log(form);
-
     setLoading(false)
-
   }
 
   const getPetName = async () => {
@@ -176,14 +171,61 @@ export const BloodTestProvider = ({ children }) => {
     value: name,
     label: name
   }))
-
+;
+    
+  const getDocsImg = async () => {
+    const res = await fetch(`/api/getDocs`);
+    const json = await res.json();
+    console.log(json)
+    return setDocImg(json.data);
+  };
+  
+  const [getDocImg, setDocImg] = useState("")
 
   useEffect(() => {
-    getNames();
+    getNames()
+    getDocsImg()
+
   },[])
 
+
+
+  //overlay img to expand
+  const [selectedImage, setSelectedImage] = useState(null)
+  const handleFileChange = (e) => {
+    resetForm(); //if not choosen multi files ::TODO
+
+    const file = e.target.files[0];
+    setFile(file)
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file)); // creates preview link
+    }
+  }
+  
+  
+  function handleClickPreviewImg_forExtraction() {
+    setShowOverlay(true)
+    setOverlayerElement(<img 
+                className='overlayerPreviewImg'
+                src={selectedImage} 
+                alt="previewBig" 
+              />)
+  }
+
+  
+  function handleClickPreviewImg_fromDocs(src) {
+    setShowOverlay(true)
+    setOverlayerElement(<img  
+                className='overlayerPreviewImg'
+                src={src} 
+                alt="previewBig" 
+              />)
+  }
+
+  const [bloodTestCompReset, setBloodTestCompReset] = useState(0)
+
   return (
-    <BloodTestContext.Provider value={{ chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ bloodTestCompReset, setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );

@@ -18,15 +18,13 @@ export default function Overlayer() {
     return (
         <>
             {overlayerElement &&
-                <div>Overlayerobj
+                <div>
                     <div className='closePreviewBig'><CloseIcon onClick={handleClosePreviewBig} /></div>
                     {overlayerElement}
-
                 </div>
             }
             
             <div className="comp-wrapper overlayer">
-                <h1>Overlayer comp shadow</h1>
             </div>
         </>
     );
