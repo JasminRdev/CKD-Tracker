@@ -3,15 +3,17 @@
 import useUser from '../lib/useUser'
 import Chart from '../../components/Chart.jsx'
 
+
+import Menu from '../../components/Menu'
+
 export default function ChartPage() {
   const user = useUser();
-  if(!user) {
-    return <p>Please log in</p>
-  } else {
+  
     return (
         <div >
+        
+               <Menu />
             <Chart />
         </div>
     );
-  };
 }

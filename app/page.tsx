@@ -1,9 +1,12 @@
-import Image from "next/image";
+"use client"
+
+
+import Menu from '../components/Menu'
 
 export default function Home() {
   return (
     <div >
-     test
+       <Menu />
     </div>
   );
 }
