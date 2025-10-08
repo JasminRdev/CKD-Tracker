@@ -27,9 +27,7 @@ export default function bloodTest() {
     return (
         <div>
           <Menu />
-          {!user ? (
-             <p>Please log in</p>
-          ) : (
+          
             <>
               {showOverlay && 
                 <div>
@@ -48,7 +46,6 @@ export default function bloodTest() {
               <Documents />
               <Form />
             </>
-        )}
           
         </div>
     );
