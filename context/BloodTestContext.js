@@ -173,19 +173,18 @@ export const BloodTestProvider = ({ children }) => {
   }))
 ;
     
+
+  const [getDocImg, setDocImg] = useState("")
+
   const getDocsImg = async () => {
     const res = await fetch(`/api/getDocs`);
     const json = await res.json();
-    console.log(json)
     return setDocImg(json.data);
   };
   
-  const [getDocImg, setDocImg] = useState("")
-
   useEffect(() => {
     getNames()
     getDocsImg()
-
   },[])
 
 
@@ -224,8 +223,15 @@ export const BloodTestProvider = ({ children }) => {
 
   const [bloodTestCompReset, setBloodTestCompReset] = useState(0)
 
+  
+  const checkUsersLimit = async (user_id) => {
+    const res = await fetch(`/api/getUserSaveCount?user_id=${user_id}`);
+    const count = await res.json();
+    return count.data.length
+  };
+
   return (
-    <BloodTestContext.Provider value={{ bloodTestCompReset, setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ checkUsersLimit, bloodTestCompReset, setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );

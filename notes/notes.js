@@ -34,6 +34,13 @@
 
 
 //done
+  //blood test comp 
+    // limit users added blood test files to save to db
+    // notify message
+  //menu style - sticky 
+  //bloodtestcomp
+    //not logged users cant save -> error message
+  //login message comp and context
   //menu comp
     //login/logout and menu start
   // docs comp

@@ -11,12 +11,14 @@ import Button from '@mui/material/Button';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Filter1RoundedIcon from '@mui/icons-material/Filter1Rounded';
+import Filter2RoundedIcon from '@mui/icons-material/Filter2Rounded';
 
 import MenuItem from '@mui/material/MenuItem';
 
 import dayjs from 'dayjs';
 
-import { useLoadingContext } from '../context/LoadingContext';
+import { useLoadingContext} from '../context/LoadingContext';
 import './style.css';
 
 import PetNameInput from './fields/PetNameInput'
@@ -24,8 +26,11 @@ import PetNameInput from './fields/PetNameInput'
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, setBloodTestReset} = useBloodTestContext();
-  const {loading, setLoading} = useLoadingContext();
+  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, checkUsersLimit} = useBloodTestContext();
+  const {loading, setNotification_warn_message,
+      setNotification_warn_color,
+      setNotification_warn, 
+       } = useLoadingContext();
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
   const [selectedType, setSelectedType] = useState("Blood");
@@ -81,31 +86,45 @@ export default function Form() {
   }
 
    async function saveData() {
-     const tableRow = await getNextId();
-        console.log("data ", form)
-          const { data, error } = await supabase
-            .from('testResult_data')
-            .insert([{ 
-                user_id: user.id, 
-                id:tableRow,
-                data: form,
-                test_date: valueDate, 
-                created_at : new Date(), 
-                test_type :selectedType, 
-                pet: chosenPetName, 
-                file_url : await uploadFile() }]) 
-          if (error) console.error(error)
-          else console.log('Data saved:', data)
+    // change this logic 
+      let allowSave;
+      let countSavedOnes = await checkUsersLimit(user.id);
+      if(countSavedOnes > 4) {
+        allowSave = false;
+        setNotification_warn(true)
+        setNotification_warn_message("You have reached the limit of 4 uploads.")
+        setNotification_warn_color("warning")
+      } else {
+        allowSave = true;
+      };
 
-          await getDocsImg()
-          resetForm();
-           setBloodTestReset(oldKey => oldKey + 1)
+      if(allowSave){
+        const tableRow = await getNextId();
+            const { data, error } = await supabase
+              .from('testResult_data')
+              .insert([{ 
+                  user_id: user.id, 
+                  id:tableRow,
+                  data: form,
+                  test_date: valueDate, 
+                  created_at : new Date(), 
+                  test_type :selectedType, 
+                  pet: chosenPetName, 
+                  file_url : await uploadFile()}]) 
+            if (error) console.error(error)
+            else console.log('Data saved:', data)
+
+            await getDocsImg()
+            resetForm();
+      }
+      
     }
 
 
   return (
     <div className="comp-wrapper form-wrapper">
         <h1>Data inputs</h1>
+        <h2><Filter1RoundedIcon />Blutwerte</h2>
         <Box
             component="form"
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
@@ -129,6 +148,7 @@ export default function Form() {
                     focused={f.value == ""}
                 />
             ))}
+            <h2 className='top-line'><Filter2RoundedIcon />Restliche Daten</h2>
             <div className='full-width'>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -157,8 +177,23 @@ export default function Form() {
                 ))}
               </TextField>
                <PetNameInput />
-         
-              <Button className="button-save-db" onClick={saveData} disabled={loading} variant="contained">Save data</Button>
+              {
+                user  
+                ? (
+                  <Button className="button-save-db" onClick={saveData} disabled={loading} variant="contained">Save data</Button>
+                  )
+                :
+                  (
+                 <Button 
+                  className="button-save-db"
+                  onClick={() => setNotification_warn(true)}
+                  variant="contained"
+                  sx={{ backgroundColor: '#bdbdbd', color: '#fff' }} 
+                >
+                  Save data
+                </Button>
+                )
+              }
             </div>
         </Box>
       </div>

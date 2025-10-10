@@ -1,5 +1,7 @@
 "use client"
 
+import Notification_warn from "../components/Notification_warn"
+import { useLoadingContext } from '../context/LoadingContext';
 
 import * as React from 'react';
 import Button from '@mui/material/Button';
@@ -40,7 +42,13 @@ export default function Menu() {
 
   const user = useUser();
   return (
+    <>
+    <Notification_warn />
+    
+    <div className='menu-wrapper-space' >
+    </div>
     <div className='menu-wrapper' >
+       
         <span className={`menu-overlay ${!menuOpen ? 'hide' : ''}`}>
             <div>coming soon</div>
         </span>
@@ -74,5 +82,6 @@ export default function Menu() {
             )
         }
     </div>
+    </>
   );
 }
