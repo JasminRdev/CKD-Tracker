@@ -12,7 +12,6 @@ import Documents from '../../components/Documents'
 import Form from '../../components/Form'
 import Overlayer from '../../components/Overlayer'
 import Menu from '../../components/Menu'
-
 //style
 import '../globals.css';
 

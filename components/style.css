@@ -122,13 +122,17 @@ h1{
 .box{
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 0;
 }
 
 
 .full-width{
     display: flex;
+    flex-wrap: wrap;
     flex: 0 0 100%;
-    gap: 15px;
+    gap: 26px 25px;
+    padding: 0 54px;
 }
 
 .button-save-db{
@@ -221,9 +225,20 @@ h1{
     display: flex;
     gap: 20px;
     align-items: center;
-    margin: 12px 30px;
     justify-content: space-between;
-    position: relative;
+    position: fixed;
+    background: #b7b7b7;
+    width: 100%;
+    top: 0;
+    height: 78px;
+    z-index: 99;
+    padding:20px;
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.menu-wrapper-space{
+    height:79px;
 }
 
 .menu-logged{
@@ -239,7 +254,7 @@ h1{
     height: 100vh;
     width: 245px;
     left: -30px;
-    top: -12px;
+    top: 0;
     visibility: hidden;
 }
 
@@ -250,4 +265,70 @@ h1{
 
 .menu-icon{
     z-index: 99999;
+}
+
+
+
+
+.notifocation-message-abs{
+    display: flex;
+    justify-content: space-between;
+    padding: 25px 50px 20px 50px;
+    background: #fbc767;
+    z-index: 9999999;
+    position: fixed;
+    width: 100vw;
+    height: 70px;
+    top: 0;
+    align-items: center;
+    transition: top 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+    top: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.notifocation-message-abs p{
+    align-items: center;
+    display: flex;
+    font-size: 22px;
+    gap: 15px;
+    align-items: end;
+    color: #4b4b4b;
+    
+    align-items: center;
+}
+
+.notifocation-message-abs p svg{
+    margin-bottom: 10px;
+}
+.notifocation-message-abs.hide{
+    transition: top 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+    top:-75px
+}
+
+@media (max-width: 508px) {
+    .notifocation-message-abs p{
+        font-size: 16px;
+        width: 171px;
+    }
+
+    
+    .notifocation-message-abs p svg{
+        margin-bottom: 4px;
+    }
+
+}
+
+
+
+.top-line{
+    padding:30px 10px;
+    border-top:1px solid rgb(73, 73, 73);
+    margin: 61px 37px 0 37px !important;
+}
+
+h2{
+    display: flex;
+    gap:5px;
+    width: 100% !important;
+    margin: 7px 37px !important;
 }
