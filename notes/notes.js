@@ -34,6 +34,18 @@
 
 
 //done
+  //style refactor 
+    //menu - header and mobile start, with logo
+  //menu comp
+    //fix flackering in loggin by user id and loading context
+
+
+// vet note
+  // einheiten 
+
+
+
+//old done
   //blood test comp 
     // limit users added blood test files to save to db
     // notify message
@@ -48,15 +60,6 @@
     // fix style und save data refreshs doc wrapper
   //refactor
     //docs review overlay expansion
-   
-
-
-// vet note
-  // einheiten 
-
-
-
-//old done
   // refactor
     // chart context (fetch Testdata) - to server side code from context for api in getTestResults.js
   //security -admin supabase policies for vet and dev, show all rows 
