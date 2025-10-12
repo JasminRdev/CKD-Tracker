@@ -1,4 +1,6 @@
 // current
+  //add everywhere the header
+  //rediect out apart if we are at auth
   
 
 
