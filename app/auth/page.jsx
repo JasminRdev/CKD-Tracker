@@ -20,7 +20,7 @@ export default function Auth() {
     try {
       await signIn(email, password)
       alert('Logged in!')
-      router.push('/dashboard') 
+      // router.push('/dashboard') 
     } catch (err) {
       alert(err.message)
     }
@@ -31,7 +31,7 @@ export default function Auth() {
     try {
       await signUp(emailSignUp, passwordSignUp)
       alert('Signed up!')
-      router.push('/dashboard') 
+      // router.push('/dashboard') 
     } catch (err) {
       alert(err.message)
     }
