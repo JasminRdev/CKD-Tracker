@@ -1,6 +1,7 @@
 "use client"
 
 import Notification_warn from "../components/Notification_warn"
+import LogUserCTA from "./LogUserCTA"
 import { useLoadingContext } from '../context/LoadingContext';
 
 import * as React from 'react';
@@ -19,23 +20,6 @@ import { signIn, signInWithGoogle, signUp, signOut } from '../app/lib/auth'
 //style
 import './style.css';
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  
-    const handleGoogleLogin = async () => {
-      try {
-        await signInWithGoogle()
-      } catch (err) {
-        console.error(err)
-      }
-    }
-  
 
 export default function Menu() {
   
@@ -57,8 +41,6 @@ export default function Menu() {
     </div>
     <div className='menu-wrapper' >
         <span className={`menu-overlay ${!menuOpen ? 'hide' : ''}`}>
-          <div>update coming soon</div>
-              
           <div className="menu-links">
             <Link 
               className={pathname.includes("/chart") ? "active" : ""}  
@@ -68,6 +50,7 @@ export default function Menu() {
               className={` ${pathname.includes("/bloodTest") ? "active" : ""}`}  
               href="/bloodTest">Upload Results</Link>
           </div>
+          <LogUserCTA />
 
         </span>
          {
@@ -95,22 +78,7 @@ export default function Menu() {
             className={`menu-border-left ${pathname.includes("/bloodTest") ? "active" : ""}`}  
             href="/bloodTest">Upload Results</Link>
         </div>
-        {  
-            foundUser ? (
-                  <Button 
-                    className="menu-log-cta out"
-                    sx={{ backgroundColor: 'black', p: 2 }} variant="contained"
-                    onClick={handleSignOut}
-                  >Log Out</Button>
-            ) 
-            : ( <Button 
-                        className="menu-log-cta"
-                        variant="contained"
-                        onClick={handleGoogleLogin}
-                    >Log In
-                  </Button>
-            )
-        }
+        <LogUserCTA />
     </div>
     </>
   );
