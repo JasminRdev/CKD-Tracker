@@ -1,4 +1,5 @@
 // current
+  
 
 
 // next
@@ -35,9 +36,8 @@
 
 //done
   //style refactor 
-    //menu - header and mobile start, with logo
-  //menu comp
-    //fix flackering in loggin by user id and loading context
+    //menu - header for mobile 
+
 
 
 // vet note
@@ -46,6 +46,10 @@
 
 
 //old done
+  //style refactor 
+    //menu - header and mobile start, with logo
+  //menu comp
+    //fix flackering in loggin by user id and loading context
   //blood test comp 
     // limit users added blood test files to save to db
     // notify message
