@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { signIn, signInWithGoogle, signUp, signOut } from '../lib/auth'
 import { useRouter } from 'next/navigation'
 
+import Menu from '../../components/Menu'
+
 export default function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +22,9 @@ export default function Auth() {
     try {
       await signIn(email, password)
       alert('Logged in!')
-      // router.push('/dashboard') 
+      if(!document.location.href.includes("Test")){
+          router.push('/chart') 
+      }
     } catch (err) {
       alert(err.message)
     }
@@ -31,7 +35,9 @@ export default function Auth() {
     try {
       await signUp(emailSignUp, passwordSignUp)
       alert('Signed up!')
-      // router.push('/dashboard') 
+      if(!document.location.href.includes("Test")){
+          router.push('/chart') 
+      }
     } catch (err) {
       alert(err.message)
     }
@@ -40,6 +46,9 @@ export default function Auth() {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle()
+      if(!document.location.href.includes("Test")){
+          router.push('/chart') 
+      }
     } catch (err) {
       console.error(err)
     }
@@ -55,6 +64,7 @@ export default function Auth() {
 
   return (
     <div>
+      <Menu />
       <h1>Login</h1>
       <form onSubmit={handleEmailLogin}>
         <input

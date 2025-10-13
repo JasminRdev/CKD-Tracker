@@ -10,19 +10,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import Button from '@mui/material/Button';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { useState } from 'react'
 import { signIn, signInWithGoogle, signUp, signOut } from '../app/lib/auth'
 
+
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import { useRouter } from 'next/navigation'
 //style
 import './style.css';
 
 
 export default function Menu() {
   
+  const router = useRouter()
   const pathname = usePathname();
   const {foundUser, loading} = useLoadingContext();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,15 +43,15 @@ export default function Menu() {
     
     <div className='menu-wrapper-space' >
     </div>
-    <div className='menu-wrapper' >
-        <span className={`menu-overlay ${!menuOpen ? 'hide' : ''}`}>
+    <div className='menu-wrapper'>
+        <span className={`mobile menu-overlay ${!menuOpen ? 'hide' : ''}`}>
           <div className="menu-links">
             <Link 
               className={pathname.includes("/chart") ? "active" : ""}  
               href="/chart">Charts
             </Link>
             <Link
-              className={` ${pathname.includes("/bloodTest") ? "active" : ""}`}  
+              className={`${pathname.includes("/bloodTest") ? "active" : ""}`}  
               href="/bloodTest">Upload Results</Link>
           </div>
           <LogUserCTA />
