@@ -3,6 +3,8 @@
     --darkGreen: #16796f;
     --lightGreen: #7cb7af;
     --header: #9ca89e;
+    --blue:#3a6ea5;
+    --pink: rgba(190, 33, 33, 0.534);
 }
 
 
@@ -16,7 +18,15 @@
 }
 
 
+html{
+     scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge (legacy) */
+}
 
+
+.html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
 
 
 .comp-wrapper{
@@ -28,7 +38,7 @@
 
 h1{
     font-size: 20px;
-    color:blue;
+    color:var(--blue)
 }
 
 .docs.comp-wrapper h1{
@@ -50,7 +60,7 @@ h1{
 
 
 .identifier{
-    color:rgba(190, 33, 33, 0.534);
+    color:var(--pink);
     grid-column: 1 / -1;
 }
 
@@ -404,12 +414,59 @@ h2{
     align-items: center;
 }
 
+.menu-header-abs {
+    position: absolute;
+    top: 60px;
+    right: -60px;
+    background: #9ca89e;
+    padding: 20px 60px 20px 30px;
+    border-radius: 13px;
+    opacity: 0;
+    
+    cursor: pointer;                 
+    transition: 0.3s ease-in-out;
+    
+    visibility: hidden;
+}
+
+.menu-header-logging-drp{
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 12px 21px 13px 17px;
+    background: black;
+    border-radius: 30px;
+    cursor: pointer; 
+    color:white;
+    text-transform: uppercase;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif; 
+    align-items: center;
+}
+
+.menu-log-wrapper:hover .menu-header-abs{
+    opacity: 1;
+    visibility: visible;
+    transition: 0.3s ease-in-out;
+}
+
 .menu-log-cta{
     border-radius: 21px !important;
-    padding: 10px 30px !important;
+    background: var(--blue) !important;
+    color: var(--white) !important;
 }
+
+.menu-log-wrapper{
+    position: relative;
+}
+
+.menu-log-cta.in{
+    padding: 10px 30px;
+}
+
 .menu-log-cta.out{
-    background: #16796f;
+    background: var(--darkGreen) !important;
+    gap: 6px;
+    padding: 10px 30px 10px 25px !important;
 }
 
 .menu-links a:hover {
@@ -475,6 +532,7 @@ h2{
 
 }
 
+
 /* tablet/mobile */
 @media (max-width: 790px) {
    
@@ -492,7 +550,24 @@ h2{
     .menu-overlay .menu-log-cta{
         display: block !important;    
         width: fit-content;
-        margin: auto auto 70px auto;
+        margin: auto auto 122px auto;
+        
+        align-items: center;
+        display: flex !important;
+    }
+    
+    .menu-log-cta.in{
+        margin: 290px auto 81px auto;
+    }
+
+    .mobile .menu-header-abs {
+        opacity: 1;
+        visibility: visible;
+        left: 0;
+        white-space: wrap !important;
+        background: none;
+        bottom: 0px;
+        top: unset;
     }
 
 }

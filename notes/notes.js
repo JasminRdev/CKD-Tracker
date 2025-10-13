@@ -1,7 +1,6 @@
-// current
-  //add everywhere the header
-  //rediect out apart if we are at auth
-  
+// current  
+  //style refactor 
+    //auth comp
 
 
 // next
@@ -38,7 +37,7 @@
 
 //done
   //style refactor 
-    //menu - header for mobile 
+    //menu comp with login options
 
 
 
