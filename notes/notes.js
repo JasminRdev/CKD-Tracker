@@ -1,6 +1,5 @@
 // current  
-  //style refactor 
-    //auth comp
+
 
 
 // next
@@ -36,6 +35,8 @@
 
 
 //done
+  //style refactor 
+    //auth comp
   //style refactor 
     //menu comp with login options
 
