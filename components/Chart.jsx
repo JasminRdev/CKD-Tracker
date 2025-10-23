@@ -107,6 +107,7 @@ const Chart = () => {
   }));
 
   const data = { labels, datasets };
+  const isMobile = window.innerWidth < 600;
 
   return (
     <div> 
@@ -235,6 +236,9 @@ const Chart = () => {
           <div className={`chart-body ${!filterSpanOpen && "full-width"} `}>
             <Line data={data}  options={{ maintainAspectRatio: false, 
             plugins: {
+              legend: {
+                  display: !isMobile ? true : false, // hide legend on mobile
+              },
               colors: {
                 enabled: false
               },
@@ -286,6 +290,8 @@ const Chart = () => {
               const yMin = range.min - (range.max-range.min)*0.3; 
               const yMax = range.max + (range.max-range.min)*0.3; 
               //range of min max val from blood test acceptance
+
+              
               const options = {
                 maintainAspectRatio: false,
                 rangeFill: {

@@ -92,11 +92,11 @@ export default function Auth() {
           )
         : (
           <>
-            <div className='auth-flex'>
-              <Button onClick={handleGoogleLogin} className="auth-btn-full" variant="contained">
+            <div className='auth-flex mobile-grid'>
+              <Button onClick={handleGoogleLogin} className="auth-btn-full button-blue" variant="contained">
                   Sign in with Google
               </Button>
-              <Button onClick={handleGoogleLogin} className="auth-btn-full" variant="contained">
+              <Button onClick={handleGoogleLogin} className="auth-btn-full button-blue" variant="contained">
                   Log in with Google
               </Button>
             </div>
@@ -123,7 +123,7 @@ export default function Auth() {
                     password={password}
                     setPassword={setPassword}
                   />
-                  <Button variant="contained" type="submit">
+                  <Button className='button-blue' variant="contained" type="submit">
                     Login
                     </Button>
                 </form>
@@ -149,7 +149,7 @@ export default function Auth() {
                       password={passwordSignUp}
                       setPassword={setPasswordSignUp}
                     />
-                    <Button disabled={loading} variant="contained" type="submit">
+                    <Button className='button-blue' disabled={loading} variant="contained" type="submit">
                       Sign In
                     </Button>
                   </form>

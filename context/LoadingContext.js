@@ -17,11 +17,23 @@ export const LoadingProvider = ({ children }) => {
   
   
   const user = useUser();
+
   useEffect(() => {
     setLoading(true)
     user ? setFoundUser(true) : setFoundUser(false);
     setLoading(false)
+    console.log("user login ", user && user)
+    //55 -> jasmin08
+    //7 -> matilda
   },[user])
+
+  
+  useEffect(() => {
+    if(showOverlay){
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [showOverlay]);
+
 
 
   return (
