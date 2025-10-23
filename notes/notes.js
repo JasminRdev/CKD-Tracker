@@ -1,12 +1,15 @@
-// current  
+// current
+  // docs comp
+    // :current -> ducs only show everything?? Policies
 
+    // thwn with option of removing
+// note -> if path doc contains my id then add removing possible
+//   -> then ask if sure bc its deleting the data from the graph
 
 
 // next
   //refactor
     //write data into db over api 
-  // docs comp
-    // thwn with option of removing
   
 
 //todo
@@ -35,11 +38,10 @@
 
 
 //done
-  //style refactor 
-    //auth comp
-  //style refactor 
-    //menu comp with login options
-
+  //chart comp - main chart remove at mobile the val
+  //quick fix overlay with menu collapses
+  //refactor style 
+    //auth comp for mobile 
 
 
 // vet note
@@ -48,6 +50,10 @@
 
 
 //old done
+  //style refactor 
+    //auth comp
+  //style refactor 
+    //menu comp with login options
   //style refactor 
     //menu - header and mobile start, with logo
   //menu comp

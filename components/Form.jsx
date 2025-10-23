@@ -41,10 +41,10 @@ export default function Form() {
       value: 'Blood',
       label: 'Blood',
     },
-    {
-      value: 'Urine',
-      label: 'Urine',
-    },
+    // {
+    //   value: 'Urine',
+    //   label: 'Urine',
+    // },
   ];
 
 
@@ -99,7 +99,7 @@ export default function Form() {
       };
 
       if(allowSave){
-        const tableRow = await getNextId();
+        const tableRow = crypto.randomUUID();
             const { data, error } = await supabase
               .from('testResult_data')
               .insert([{ 
@@ -123,8 +123,7 @@ export default function Form() {
 
   return (
     <div className="comp-wrapper form-wrapper">
-        <h1>Data inputs</h1>
-        <h2><Filter1RoundedIcon />Blutwerte</h2>
+        <h2><Filter1RoundedIcon />Values</h2>
         <Box
             component="form"
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
@@ -148,7 +147,7 @@ export default function Form() {
                     focused={f.value == ""}
                 />
             ))}
-            <h2 className='top-line'><Filter2RoundedIcon />Restliche Daten</h2>
+            <h2 className='top-line'><Filter2RoundedIcon />Other informations</h2>
             <div className='full-width'>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker

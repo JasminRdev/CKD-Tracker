@@ -62,6 +62,8 @@
     flex-wrap: wrap;
     width: 100vw;
     gap:40px;
+    
+    justify-content: center;
 }
 
 .btn-main-switch{

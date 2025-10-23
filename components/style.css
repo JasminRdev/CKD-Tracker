@@ -7,7 +7,10 @@
     --pink: rgba(190, 33, 33, 0.534);
 }
 
-
+button.button-blue{
+    border-radius: 21px !important;
+    background: var(--blue) !important;
+}
 
 @media (max-width: 570px) {
    
@@ -322,6 +325,11 @@ h2{
     padding: 48px;
     
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+
+.menu-wrapper.withoverlay{
+    z-index: -1;
 }
 
 .menu-wrapper,
@@ -653,4 +661,29 @@ h1{
     gap:30px;
     display: grid;
     border-radius: 4px;
+}
+
+@media (max-width: 670px) {
+    .auth-container-item form {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 34px;
+        justify-content: center;
+    } 
+    .auth-container-item form div{
+        margin: 0;
+    }
+    .auth-container-item h1{
+        justify-content: center;
+        display: flex;
+    }
+
+    .mobile-grid{
+        display: grid;
+    }
+
+    .auth-manual-form{
+        border: none;
+    }
+
 }

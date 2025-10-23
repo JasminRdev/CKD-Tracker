@@ -28,7 +28,7 @@ export default function Menu() {
   
   const router = useRouter()
   const pathname = usePathname();
-  const {foundUser, loading} = useLoadingContext();
+  const {showOverlay, loading} = useLoadingContext();
   const [menuOpen, setMenuOpen] = useState(false);
   
   // <div className='menu-logged menu-border-left'>
@@ -43,7 +43,7 @@ export default function Menu() {
     
     <div className='menu-wrapper-space' >
     </div>
-    <div className='menu-wrapper'>
+    <div className={`menu-wrapper ${showOverlay ? 'withoverlay' : ''} `}>
         <span className={`mobile menu-overlay ${!menuOpen ? 'hide' : ''}`}>
           <div className="menu-links">
             <Link 
@@ -54,6 +54,7 @@ export default function Menu() {
               className={`${pathname.includes("/bloodTest") ? "active" : ""}`}  
               href="/bloodTest">Upload Results</Link>
           </div>
+          <div className='menu-header-logging-drp' onClick={() => {router.push('/auth')}}><LaunchRoundedIcon /> other options</div>
           <LogUserCTA />
 
         </span>
