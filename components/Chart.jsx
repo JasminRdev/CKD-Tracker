@@ -74,6 +74,7 @@ const Chart = () => {
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
+  const [showLegend, setShowLegend] = useState(true)
 
   const { keywordMapping, chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
@@ -92,6 +93,15 @@ const Chart = () => {
     );
   };
 
+   useEffect(() => {
+    const handleResize = () => {
+      setShowLegend(window.innerWidth > 600);
+    };
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   // const datasetColors = {
   //   b_gesamtProteinVal: 'green',
   //   a_Kreatinin: 'pink'
@@ -107,7 +117,6 @@ const Chart = () => {
   }));
 
   const data = { labels, datasets };
-  const isMobile = window.innerWidth < 600;
 
   return (
     <div> 
@@ -237,7 +246,7 @@ const Chart = () => {
             <Line data={data}  options={{ maintainAspectRatio: false, 
             plugins: {
               legend: {
-                  display: !isMobile ? true : false, // hide legend on mobile
+                  display: showLegend,
               },
               colors: {
                 enabled: false
