@@ -1,28 +1,48 @@
-
-
-// code here von chartcontext bissel als veranschaulichung
-// app/pages/api/getTestResults.js
-import { supabase } from "../../app/lib/supabaseClient";
+import { createClient } from "@supabase/supabase-js";
+import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
   const { pet } = req.query;
-
+  
   if (!pet) {
     return res.status(400).json({ error: "Pet name is required" });
   }
-  console.log(pet)
-  try {
-    // Server-side only: can access secret env variables safely
-    const { data, error } = await supabase
-      .from("testResult_data")
-      .select("*")
-      .eq("pet", pet)
+  
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.replace("Bearer ", "")
+    : null;
 
-    if (error) throw error;
+  const isValidJwt = token && token.split(".").length === 3;
 
-    res.status(200).json({ data: data });
-  } catch (error) {
-    console.error("Supabase query error:", error);
-    res.status(500).json({ error: error.message });
-  }
+  // Select correct Supabase client
+  const dbClient = isValidJwt
+    ? createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        {
+          global: {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        }
+      )
+    : publicClient; // Logged out user
+
+  // Now safely get user
+  const {
+    data: { user },
+  } = await (isValidJwt
+    ? dbClient.auth.getUser()
+    : { data: { user: null } });
+
+  const { data, error } = await dbClient
+    .from("testResult_data")
+    .select("*")
+    .eq("pet", pet)
+
+  if (error) return res.status(400).json({ error: error.message });
+
+  res.status(200).json({ data: data });
 }
+
+

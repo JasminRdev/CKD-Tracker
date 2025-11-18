@@ -62,7 +62,7 @@ export default function LogUserCTA() {
                         Log in</Button>
 
                         <div className='menu-header-abs'>
-                            <div className='menu-header-logging-drp' onClick={() => { router.push('/auth')}}><LaunchRoundedIcon /> other options</div>
+                            <div className='menu-header-logging-drp mobile' onClick={() => { router.push('/auth')}}><LaunchRoundedIcon /> other options</div>
                         </div>
                 </div>
                 

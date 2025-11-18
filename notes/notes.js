@@ -1,16 +1,14 @@
 // current
-  // docs comp
-    // :current -> ducs only show everything?? Policies
-
     // thwn with option of removing
+
+
+    
 // note -> if path doc contains my id then add removing possible
 //   -> then ask if sure bc its deleting the data from the graph
 
 
-// next
-  //refactor
-    //write data into db over api 
-  
+
+
 
 //todo
   //update forms
@@ -38,6 +36,8 @@
 
 
 //done
+  // fix fetch in getDocs.js, getPetname.js and getTestResult for logged in and not logged in
+  //bloodtest comp - admins example data batch
   //chart comp - main chart remove at mobile the val
   //quick fix overlay with menu collapses
   //refactor style 

@@ -232,6 +232,17 @@ h1{
 
 }
 
+.doc-owner{
+    display: inline;
+    color: var(--darkGreen);
+    font-size: small;
+    padding: 3px 5px;
+    background: white;
+    margin-right: 5px!important;
+    border-radius: 5px;
+    width: fit-content;
+}
+
 .toggleVisibility.upside svg{
     transform: rotate(180deg);
     transition: 0.4s ease-in;
@@ -437,20 +448,6 @@ h2{
     visibility: hidden;
 }
 
-.menu-header-logging-drp{
-    display: flex;
-    gap: 8px;
-    white-space: nowrap;
-    padding: 12px 21px 13px 17px;
-    background: black;
-    border-radius: 30px;
-    cursor: pointer; 
-    color:white;
-    text-transform: uppercase;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif; 
-    align-items: center;
-}
-
 .menu-log-wrapper:hover .menu-header-abs{
     opacity: 1;
     visibility: visible;
@@ -541,9 +538,27 @@ h2{
 }
 
 
+
+.menu-header-logging-drp{
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 12px 21px 13px 17px;
+    background: black;
+    border-radius: 30px;
+    cursor: pointer; 
+    color:white;
+    text-transform: uppercase;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif; 
+    align-items: center;
+}
+
+
 /* tablet/mobile */
 @media (max-width: 790px) {
-   
+   .menu-header-logging-drp:not(.mobile){
+        display: none;
+   }
     .menu-icon{
         z-index: 99999;
         display: block !important;

@@ -34,7 +34,6 @@ export default function Form() {
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
   const [selectedType, setSelectedType] = useState("Blood");
-  const {getNextId} = useSupabaseContext();
 
   const testType = [
     {

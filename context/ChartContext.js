@@ -1,5 +1,7 @@
 "use client"; 
 
+import { supabase } from '../app/lib/supabaseClient'
+
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const ChartContext = createContext();
@@ -13,7 +15,7 @@ export const ChartProvider = ({ children }) => {
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "10.2009", endDate: "12.2028"})
-  const [chosenPetName, setChosenPetName] = useState("Blus");
+  const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
   
   useEffect(() => {
     setDateRangeRaw([
@@ -23,8 +25,16 @@ export const ChartProvider = ({ children }) => {
   }, [])
 
   const getBloodTestData = async () => {
-    const res = await fetch(`/api/getTestResults?pet=${chosenPetName}`);
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch(`/api/getTestResults?pet=${chosenPetName}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const json = await res.json();
+    console.log("first ", json)
     return json.data;
   };
 
