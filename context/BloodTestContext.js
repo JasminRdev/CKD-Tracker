@@ -145,25 +145,26 @@ export const BloodTestProvider = ({ children }) => {
   }
 
   const getPetName = async () => {
-    let { data: testResult_data, error } = await supabase
-      .from('testResult_data')
-      .select('pet');
-  
-    if (error) {
-      console.error('Supabase error:', error);
-      return null;
-    }
-    return testResult_data;
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch("/api/getPetName", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await res.json();
+    return json;
   };
 
 
   const [allNames, setAllNames] = useState([])
   const getNames = async () => {
     let names = await getPetName();
-    setAllNames(prev => {
+setAllNames(prev => {
       const newNames = names.map(item => Object.values(item)[0]);
       return Array.from(new Set([...prev, ...newNames]));
-    });
+});
   }
 
     
@@ -177,9 +178,17 @@ export const BloodTestProvider = ({ children }) => {
   const [getDocImg, setDocImg] = useState("")
 
   const getDocsImg = async () => {
-    const res = await fetch(`/api/getDocs`);
-    const json = await res.json();
-    return setDocImg(json.data);
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch("/api/getDocs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    return setDocImg(data);
+
   };
   
   useEffect(() => {
@@ -188,7 +197,7 @@ export const BloodTestProvider = ({ children }) => {
   },[])
 
 
-
+  
   //overlay img to expand
   const [selectedImage, setSelectedImage] = useState(null)
   const handleFileChange = (e) => {
@@ -231,7 +240,11 @@ export const BloodTestProvider = ({ children }) => {
   };
 
   return (
-    <BloodTestContext.Provider value={{ checkUsersLimit, bloodTestCompReset, setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+    <BloodTestContext.Provider value={{ checkUsersLimit, bloodTestCompReset, 
+      setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
+      handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
+      setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, 
+      resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );

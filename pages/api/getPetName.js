@@ -1,3 +1,5 @@
+
+
 import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
@@ -31,32 +33,11 @@ export default async function handler(req, res) {
 
   const { data, error } = await dbClient
     .from("testResult_data")
-    .select("*")
+    .select("pet") 
     .order("pet", { ascending: true });
 
   if (error) return res.status(400).json({ error: error.message });
 
-  // Logged in
-  if (user) {
-    const sorted = data.sort((a, b) => {
-      if (b.user_id === user.id) return -1;
-      if (a.user_id === user.id) return 1;
-      return 0;
-    });
-
-    const cleaned = sorted.map((row) => ({
-      ...row,
-      user_id: row.user_id === user.id ? user.id : "admin",
-    }));
-
-    return res.status(200).json(cleaned);
+    return res.status(200).json(data);
   }
 
-  // Logged out
-  const cleaned = data.map((row) => ({
-    ...row,
-    user_id: "admin",
-  }));
-
-  return res.status(200).json(cleaned);
-}

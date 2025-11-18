@@ -1,5 +1,4 @@
 // code here von chartcontext bissel als veranschaulichung
-// app/pages/api/getTestResults.js
 import { supabase } from "../../app/lib/supabaseClient";
 
 

@@ -1,6 +1,5 @@
 "use client"
 
-import useUser from '../app/lib/useUser'
 
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
@@ -9,6 +8,7 @@ import './style.css';
 import { useBloodTestContext } from '../context/BloodTestContext';
 
 export default function Documents() {
+
     const toggleDocs = () => {
       document.querySelector(".doc-wrapper").classList.toggle("hide")
       document.querySelector(".toggleVisibility").classList.toggle("upside")
@@ -29,10 +29,13 @@ export default function Documents() {
 
     {getDocImg && getDocImg.map((url, i) => {
     const fileName = url.file_url.split('/').pop().slice(0,17) + "...";
-
+//later filter also test type blood out
   return (
     <div key={i} className="doc-container">
-      <div className="doc-name">{url.pet}</div>
+      <div className="doc-name">
+        {url.user_id == "admin" && <span className='doc-owner'>example data</span>}
+        {url.pet}
+      </div>
       <div title={url.file_url.split('/').pop()} className="doc-name">{fileName}</div>
       <div
         className="doc-item"
