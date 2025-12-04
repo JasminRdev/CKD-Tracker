@@ -1,16 +1,25 @@
 // current
-    // thwn with option of removing
+    // thwn with option of removing with the other ui options
+    // ::next add functionality
+      // delete in testresult table ::current (documents.js und delApi)
+      // and documents
+        //same way for edit
+    // more options in admin to reject
+    // change docs admin file path insert method to "admin/filename"
+      // to not expose the id of admin
 
 
-    
 // note -> if path doc contains my id then add removing possible
 //   -> then ask if sure bc its deleting the data from the graph
 
+// remove, replace, download options
 
 
 
 
 //todo
+  // vor vet -
+    // make vet acc to only see jasmins data
   //update forms
     //with einheiten
     //options to add marker, values to form comp
@@ -36,13 +45,8 @@
 
 
 //done
-  // fix fetch in getDocs.js, getPetname.js and getTestResult for logged in and not logged in
-  //bloodtest comp - admins example data batch
-  //chart comp - main chart remove at mobile the val
-  //quick fix overlay with menu collapses
-  //refactor style 
-    //auth comp for mobile 
-
+  //ui for docs comp - more options
+  // nextjs and react updats due to security
 
 // vet note
   // einheiten 
@@ -50,6 +54,12 @@
 
 
 //old done
+  // fix fetch in getDocs.js, getPetname.js and getTestResult for logged in and not logged in
+  //bloodtest comp - admins example data batch
+  //chart comp - main chart remove at mobile the val
+  //quick fix overlay with menu collapses
+  //refactor style 
+    //auth comp for mobile 
   //style refactor 
     //auth comp
   //style refactor 

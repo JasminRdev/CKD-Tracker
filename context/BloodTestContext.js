@@ -190,6 +190,17 @@ setAllNames(prev => {
     return setDocImg(data);
 
   };
+
+  const delDocs = async (fileUrl) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    await fetch(`/api/deleteDocs?fileUrl=${fileUrl}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
   
   useEffect(() => {
     getNames()
@@ -240,7 +251,8 @@ setAllNames(prev => {
   };
 
   return (
-    <BloodTestContext.Provider value={{ checkUsersLimit, bloodTestCompReset, 
+    <BloodTestContext.Provider value={{ 
+    delDocs, checkUsersLimit, bloodTestCompReset, 
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
       setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, 

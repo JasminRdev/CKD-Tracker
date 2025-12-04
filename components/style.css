@@ -5,6 +5,7 @@
     --header: #9ca89e;
     --blue:#3a6ea5;
     --pink: rgba(190, 33, 33, 0.534);
+    --red: #AF3D59;
 }
 
 button.button-blue{
@@ -116,7 +117,7 @@ h1{
 .nowExtractInfo::before{
     content:"Please extract";
     display: block;        
-    color: red;           
+    color: var(--red);           
     font-weight: bold;    
     margin-bottom: 4px;   
 }
@@ -171,6 +172,101 @@ h1{
     padding:50px 100px;
 }
 
+.doc-container{
+    position: relative;
+    padding: 10px;
+}
+.doc-container:hover{
+    background: var(--header);
+}
+
+.doc-more-hover{
+    visibility: hidden;
+    position: absolute;
+    
+}
+
+.doc-more-options:hover .doc-more-hover{
+    visibility: visible;
+    position: relative;
+    display: grid;
+    gap:8px;
+    padding:10px;
+    left: -14px;
+}
+.doc-more-options:hover .doc-more-menu{
+    visibility: hidden;
+}
+
+
+
+.doc-more-hover div{
+    display: flex;
+    align-items: center;
+    gap:5px;
+    color: var(--header);
+    position: relative;
+}
+
+
+.doc-more-red{
+    color: var(--red) !important;
+}
+
+.doc-more-hover svg {
+    height: 22px;
+    width: 22px;
+}
+
+.doc-more-tooltip{
+    visibility: hidden;
+    position: absolute;
+    font-size: 10px;
+    padding:5px 8px;
+    background-color: var(--header);
+    color: var(--darkGreen);
+    right: 0;
+}
+.doc-more-hover div:hover .doc-more-tooltip{
+    visibility: visible;
+
+}
+
+.doc-more-tiny{
+    height: 20px;
+    width: 20px;
+}
+
+.doc-more-options:hover{
+    cursor: pointer;
+    border:1px solid var(--darkGreen);
+    left: 136px;
+    right: -119px;
+    border-radius: 30px;
+    background: var(--white);
+}
+
+.doc-more-options{
+    position: absolute;
+    transition: all 0.25s ease;
+    top: 30px;
+    right: -8px;
+    background-color: white;
+    padding: 5px;
+    border-radius: 45px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    z-index: 1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.doc-more-grid{
+    display: grid !important;    
+    color:var(--header);
+    font-size: 11px;
+}
+
 .doc-item{
     width: 200px;
     height: 200px;
@@ -218,18 +314,17 @@ h1{
 .doc-wrapper{
     padding: 20px;
     display: flex;
-    gap: 30px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .doc-wrapper.hide{
-    visibility: hidden;
-    position: absolute;
+    display: none;
 }
 
 .doc-name{
     width: fit-content;
-
+    margin-bottom:5px;
 }
 
 .doc-owner{
@@ -252,6 +347,7 @@ h1{
     margin: auto 0;
     display: flex;
     transition: 0.4s ease-in;
+    cursor: pointer;
 }
 
 
