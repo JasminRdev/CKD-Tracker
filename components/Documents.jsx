@@ -56,7 +56,7 @@ export default function Documents() {
           </div>
           <div><EditIcon className='doc-more-tiny' /> Rename
             <span className='doc-more-tooltip'>Feature soon available</span></div>
-          <div className='doc-more-red' onClick={() => delDocs(url.file_url.toString())}><DeleteOutlineIcon /> Delete</div>
+          <div className='doc-more-red' onClick={() => delDocs(url.file_url.toString(), url.id)}><DeleteOutlineIcon /> Delete</div>
           <hr></hr>
           <div className='doc-more-grid'>Created at <span>{formatDate(url.created_at)}</span></div>
         </div>

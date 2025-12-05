@@ -1,10 +1,9 @@
 // current
     // thwn with option of removing with the other ui options
     // ::next add functionality
-      // delete in testresult table ::current (documents.js und delApi)
+      // delete in testresult table ::done (documents.js und delApi)
       // and documents
-        //same way for edit
-    // more options in admin to reject
+        //same way for edit ::current
     // change docs admin file path insert method to "admin/filename"
       // to not expose the id of admin
 
@@ -18,6 +17,8 @@
 
 
 //todo
+  // add notifications 
+    //bloodtest comp upload result
   // vor vet -
     // make vet acc to only see jasmins data
   //update forms
@@ -45,8 +46,9 @@
 
 
 //done
-  //ui for docs comp - more options
-  // nextjs and react updats due to security
+  //docs pathfile save with name
+  // docs comp del file with notifications
+    // more options funcs in admin to reject 
 
 // vet note
   // einheiten 
@@ -54,6 +56,8 @@
 
 
 //old done
+  //ui for docs comp - more options
+  // nextjs and react updats due to security
   // fix fetch in getDocs.js, getPetname.js and getTestResult for logged in and not logged in
   //bloodtest comp - admins example data batch
   //chart comp - main chart remove at mobile the val

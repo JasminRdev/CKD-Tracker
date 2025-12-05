@@ -1,8 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
+import { NextResponse } from "next/server";
+
 
 export default async function handler(req, res) {
   const { fileUrl } = req.query;
+  const { docId } = req.query;
   
   if (!fileUrl) {
     return res.status(400).json({ error: "fileUrl name is required" });
@@ -39,16 +42,30 @@ export default async function handler(req, res) {
   //   .from("testResult_data")
   //   .select("*")
   //   .order("pet", { ascending: true });
-  let userDoesntDeleteAdmins = fileUrl.includes(user.toString())
-  console.log("here jas ", fileUrl.includes(user.toString()), fileUrl, user)
-  // if(userDoesntDeleteAdmins){
-  //   const { error } = await dbClient
-  //     .from('testResult_data')
-  //     .delete()
-  //     .eq('file_url', fileUrl)
+  let userDoesntDeleteAdmins = fileUrl.includes(user.id.toString())
+  if(userDoesntDeleteAdmins){
+    console.log("here jas ", fileUrl.includes(user.toString()), fileUrl, user.id)
+    console.log("here jas id ", userDoesntDeleteAdmins, docId)
+    try {
+      const { error } = await dbClient
+        .from('testResult_data')
+        .delete()                            
+        .eq('id', docId)
 
-  //   if (error) return res.status(400).json({ error: error.message });
-  // }     
+         return res.status(200).json({
+          message: "Document deleted successfully",
+        });
+        
+    } catch (err) {
+      return res.status(500).json({
+        error: "Document deletion failed.",
+      });
+    }
+  } else {
+    return res.status(500).json({
+      error: "No access right to delete admins document.",
+    });
+  } 
 
  
 

@@ -64,10 +64,11 @@ export default function Form() {
 
   //upload file to supabase storage
   const uploadFile = async () => {
+    let buildedPath = `${user.id}/${chosenPetName}/${file.name}`;
     const { data, error } = await supabase
       .storage
       .from('documents')
-      .upload(`${user.id}/${file.name}`, file)
+      .upload(buildedPath, file)
 
     if (error) {
       console.error('File upload error:', error)
@@ -77,7 +78,7 @@ export default function Form() {
     const { data: publicData } = supabase
       .storage
       .from('documents')
-      .getPublicUrl(`${user.id}/${file.name}`);
+      .getPublicUrl(buildedPath);
 
     console.log(publicData.publicUrl);
     return publicData.publicUrl

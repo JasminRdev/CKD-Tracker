@@ -9,7 +9,10 @@ import { useChartContext } from './ChartContext';
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
-  const {loading, showOverlay, setLoading, setShowOverlay, setOverlayerElement} = useLoadingContext();
+  const {loading, showOverlay, 
+    setNotification_warn_message,
+        setNotification_warn_color,
+        setNotification_warn, setLoading, setShowOverlay, setOverlayerElement} = useLoadingContext();
   
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
@@ -191,15 +194,37 @@ setAllNames(prev => {
 
   };
 
-  const delDocs = async (fileUrl) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
+  const delDocs = async (fileUrl, id) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
-    await fetch(`/api/deleteDocs?fileUrl=${fileUrl}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const res = await fetch(`/api/deleteDocs?fileUrl=${fileUrl}&docId=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      // If API sends 400/500, read the API error
+      if (!res.ok) {
+        throw new Error(data.error || "Unknown error");
+      }
+      // Success
+      console.log(data.message);
+      
+      setNotification_warn(true)
+      setNotification_warn_message("Successfull deleted.")
+      setNotification_warn_color("success")
+      await getDocsImg();
+
+    } catch (err) {
+      console.error("Delete error:", err.message);
+      setNotification_warn(true)
+      setNotification_warn_message(err.message)
+      setNotification_warn_color("warning")
+    }
+    
   };
   
   useEffect(() => {
