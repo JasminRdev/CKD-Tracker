@@ -9,7 +9,10 @@ import { useChartContext } from './ChartContext';
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
-  const {loading, showOverlay, setLoading, setShowOverlay, setOverlayerElement} = useLoadingContext();
+  const {loading, showOverlay, 
+    setNotification_warn_message,
+        setNotification_warn_color,
+        setNotification_warn, setLoading, setShowOverlay, setOverlayerElement} = useLoadingContext();
   
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
@@ -114,17 +117,14 @@ export const BloodTestProvider = ({ children }) => {
 
 
   const handleExtractAndSave = async () => {
-      // uploadDocToDB(file, user.id);
-      // const session = await supabase.auth.getSession();
-      // console.log(session.data.session?.user?.app_metadata);
-      setLoading(true)
+    setLoading(true)
 
-      // 1. Extract text
-      const { data: { text } } = await Tesseract.recognize(file, 'deu')
-      setExtractedText(text)
+    // 1. Extract text
+    const { data: { text } } = await Tesseract.recognize(file, 'deu')
+    setExtractedText(text)
 
-      // 2. Parse text here to structured data (example: just raw text for now)
-      // const parsedData = { raw_text: text }
+    // 2. Parse text here to structured data (example: just raw text for now)
+    // const parsedData = { raw_text: text }
 
     const linesArray = text.split('\n').map(line => line.trim()).filter(line => line !== '')
 
@@ -161,18 +161,18 @@ export const BloodTestProvider = ({ children }) => {
   const [allNames, setAllNames] = useState([])
   const getNames = async () => {
     let names = await getPetName();
-setAllNames(prev => {
-      const newNames = names.map(item => Object.values(item)[0]);
-      return Array.from(new Set([...prev, ...newNames]));
-});
+    setAllNames(prev => {
+          const newNames = names.map(item => Object.values(item)[0]);
+          return Array.from(new Set([...prev, ...newNames]));
+    });
   }
 
-    
-  const savedPetNames = allNames.map(name => ({
-    value: name,
-    label: name
-  }))
-;
+  const savedPetNames = allNames
+    .map(name => ({
+      value: name,
+      label: name
+    }));
+
     
 
   const [getDocImg, setDocImg] = useState("")
@@ -191,15 +191,37 @@ setAllNames(prev => {
 
   };
 
-  const delDocs = async (fileUrl) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
+  const delDocs = async (fileUrl, id) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
-    await fetch(`/api/deleteDocs?fileUrl=${fileUrl}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const res = await fetch(`/api/deleteDocs?fileUrl=${fileUrl}&docId=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      // If API sends 400/500, read the API error
+      if (!res.ok) {
+        throw new Error(data.error || "Unknown error");
+      }
+      // Success
+      console.log(data.message);
+      
+      setNotification_warn(true)
+      setNotification_warn_message("Successfull deleted.")
+      setNotification_warn_color("success")
+      await getDocsImg();
+
+    } catch (err) {
+      console.error("Delete error:", err.message);
+      setNotification_warn(true)
+      setNotification_warn_message(err.message)
+      setNotification_warn_color("warning")
+    }
+    
   };
   
   useEffect(() => {
@@ -252,6 +274,7 @@ setAllNames(prev => {
 
   return (
     <BloodTestContext.Provider value={{ 
+      getNames,
     delDocs, checkUsersLimit, bloodTestCompReset, 
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 

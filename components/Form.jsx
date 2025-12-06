@@ -26,7 +26,7 @@ import PetNameInput from './fields/PetNameInput'
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, checkUsersLimit} = useBloodTestContext();
+  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, checkUsersLimit, getNames} = useBloodTestContext();
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
       setNotification_warn, 
@@ -64,10 +64,11 @@ export default function Form() {
 
   //upload file to supabase storage
   const uploadFile = async () => {
+    let buildedPath = `${user.id}/${chosenPetName}/${file.name}`;
     const { data, error } = await supabase
       .storage
       .from('documents')
-      .upload(`${user.id}/${file.name}`, file)
+      .upload(buildedPath, file)
 
     if (error) {
       console.error('File upload error:', error)
@@ -77,7 +78,7 @@ export default function Form() {
     const { data: publicData } = supabase
       .storage
       .from('documents')
-      .getPublicUrl(`${user.id}/${file.name}`);
+      .getPublicUrl(buildedPath);
 
     console.log(publicData.publicUrl);
     return publicData.publicUrl
@@ -97,6 +98,20 @@ export default function Form() {
         allowSave = true;
       };
 
+
+      if (file == null){
+        setNotification_warn(true)
+        setNotification_warn_message("Please select an image to save your data.")
+        setNotification_warn_color("warning");
+        return;
+      }
+      if(chosenPetName == null){
+        setNotification_warn(true)
+        setNotification_warn_message("Please fill out -Pet name- to save your data.")
+        setNotification_warn_color("warning")
+        return;
+      } 
+
       if(allowSave){
         const tableRow = crypto.randomUUID();
             const { data, error } = await supabase
@@ -112,11 +127,14 @@ export default function Form() {
                   file_url : await uploadFile()}]) 
             if (error) console.error(error)
             else console.log('Data saved:', data)
-
+          
+            setNotification_warn(true)
+            setNotification_warn_message("Successfull uploaded data - now visible in the Chart")
+            setNotification_warn_color("success")
+            await getNames()
             await getDocsImg()
             resetForm();
-      }
-      
+      }      
     }
 
 
@@ -174,7 +192,7 @@ export default function Form() {
                     </MenuItem>
                 ))}
               </TextField>
-               <PetNameInput />
+               <PetNameInput requiredByForm="true" />
               {
                 user  
                 ? (

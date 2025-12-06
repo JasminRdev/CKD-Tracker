@@ -1,8 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
+import { NextResponse } from "next/server";
+
 
 export default async function handler(req, res) {
   const { fileUrl } = req.query;
+  const { docId } = req.query;
   
   if (!fileUrl) {
     return res.status(400).json({ error: "fileUrl name is required" });
@@ -35,20 +38,44 @@ export default async function handler(req, res) {
     ? dbClient.auth.getUser()
     : { data: { user: null } });
 
-  // const { data, error } = await dbClient
-  //   .from("testResult_data")
-  //   .select("*")
-  //   .order("pet", { ascending: true });
-  let userDoesntDeleteAdmins = fileUrl.includes(user.toString())
-  console.log("here jas ", fileUrl.includes(user.toString()), fileUrl, user)
-  // if(userDoesntDeleteAdmins){
-  //   const { error } = await dbClient
-  //     .from('testResult_data')
-  //     .delete()
-  //     .eq('file_url', fileUrl)
 
-  //   if (error) return res.status(400).json({ error: error.message });
-  // }     
+    
+
+  let userDoesntDeleteAdmins = fileUrl.includes(user.id.toString())
+  if(userDoesntDeleteAdmins){
+    //remove in storage first - only img
+    try{
+          const {error} = await dbClient
+            .storage
+            .from('documents')
+            .remove(fileUrl.split("documents/")[1].replaceAll("%20", " "))
+          } catch (err) {
+          return res.status(500).json({
+            error: "Document deletion failed. - Please contact the developer.",
+          });
+        }
+
+    // then remove in testresult - plus data whole data
+    try {
+      const { error } = await dbClient
+        .from('testResult_data')
+        .delete()                            
+        .eq('id', docId)
+
+      return res.status(200).json({
+        message: "Document deleted successfully",
+      });
+    } catch (err) {
+      return res.status(500).json({
+        error: "Document deletion failed.",
+      });
+    }
+
+  } else {
+    return res.status(500).json({
+      error: "No access right to delete admins document.",
+    });
+  } 
 
  
 

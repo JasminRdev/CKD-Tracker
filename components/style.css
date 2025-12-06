@@ -368,6 +368,18 @@ h1{
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+.notifocation-message-abs.green{
+    background: var(--darkGreen);
+}
+
+.notifocation-message-abs.green p{
+    color:var(--white);
+}
+
+.hide{
+    visibility: hidden;
+}
+
 .notifocation-message-abs p{
     align-items: center;
     display: flex;
