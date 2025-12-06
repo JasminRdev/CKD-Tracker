@@ -38,29 +38,39 @@ export default async function handler(req, res) {
     ? dbClient.auth.getUser()
     : { data: { user: null } });
 
-  // const { data, error } = await dbClient
-  //   .from("testResult_data")
-  //   .select("*")
-  //   .order("pet", { ascending: true });
+
+    
+
   let userDoesntDeleteAdmins = fileUrl.includes(user.id.toString())
   if(userDoesntDeleteAdmins){
-    console.log("here jas ", fileUrl.includes(user.toString()), fileUrl, user.id)
-    console.log("here jas id ", userDoesntDeleteAdmins, docId)
+    //remove in storage first - only img
+    try{
+          const {error} = await dbClient
+            .storage
+            .from('documents')
+            .remove(fileUrl.split("documents/")[1].replaceAll("%20", " "))
+          } catch (err) {
+          return res.status(500).json({
+            error: "Document deletion failed. - Please contact the developer.",
+          });
+        }
+
+    // then remove in testresult - plus data whole data
     try {
       const { error } = await dbClient
         .from('testResult_data')
         .delete()                            
         .eq('id', docId)
 
-         return res.status(200).json({
-          message: "Document deleted successfully",
-        });
-        
+      return res.status(200).json({
+        message: "Document deleted successfully",
+      });
     } catch (err) {
       return res.status(500).json({
         error: "Document deletion failed.",
       });
     }
+
   } else {
     return res.status(500).json({
       error: "No access right to delete admins document.",

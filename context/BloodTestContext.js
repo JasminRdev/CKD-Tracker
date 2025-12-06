@@ -117,17 +117,14 @@ export const BloodTestProvider = ({ children }) => {
 
 
   const handleExtractAndSave = async () => {
-      // uploadDocToDB(file, user.id);
-      // const session = await supabase.auth.getSession();
-      // console.log(session.data.session?.user?.app_metadata);
-      setLoading(true)
+    setLoading(true)
 
-      // 1. Extract text
-      const { data: { text } } = await Tesseract.recognize(file, 'deu')
-      setExtractedText(text)
+    // 1. Extract text
+    const { data: { text } } = await Tesseract.recognize(file, 'deu')
+    setExtractedText(text)
 
-      // 2. Parse text here to structured data (example: just raw text for now)
-      // const parsedData = { raw_text: text }
+    // 2. Parse text here to structured data (example: just raw text for now)
+    // const parsedData = { raw_text: text }
 
     const linesArray = text.split('\n').map(line => line.trim()).filter(line => line !== '')
 
@@ -164,18 +161,18 @@ export const BloodTestProvider = ({ children }) => {
   const [allNames, setAllNames] = useState([])
   const getNames = async () => {
     let names = await getPetName();
-setAllNames(prev => {
-      const newNames = names.map(item => Object.values(item)[0]);
-      return Array.from(new Set([...prev, ...newNames]));
-});
+    setAllNames(prev => {
+          const newNames = names.map(item => Object.values(item)[0]);
+          return Array.from(new Set([...prev, ...newNames]));
+    });
   }
 
-    
-  const savedPetNames = allNames.map(name => ({
-    value: name,
-    label: name
-  }))
-;
+  const savedPetNames = allNames
+    .map(name => ({
+      value: name,
+      label: name
+    }));
+
     
 
   const [getDocImg, setDocImg] = useState("")
@@ -277,6 +274,7 @@ setAllNames(prev => {
 
   return (
     <BloodTestContext.Provider value={{ 
+      getNames,
     delDocs, checkUsersLimit, bloodTestCompReset, 
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 

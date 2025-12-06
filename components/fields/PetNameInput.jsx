@@ -9,7 +9,7 @@ import { useBloodTestContext } from "../../context/BloodTestContext";
 import { useChartContext } from '@/context/ChartContext';
 
 
-export default function PetNameInput() {
+export default function PetNameInput({requiredByForm}) {
     const { savedPetNames } = useBloodTestContext();
     const { chosenPetName, setChosenPetName } = useChartContext();
 
@@ -24,7 +24,10 @@ export default function PetNameInput() {
                 onChange={(e, newValue) => setChosenPetName(newValue)}
                 onInputChange={(e, newInput) => setChosenPetName(newInput)}
                 renderInput={(params) => (
-                <TextField {...params} label="Pet name" className="input-wide" />
+                <TextField 
+                    {...params} label="Pet name" className="input-wide" 
+                    required={requiredByForm ? true : false}
+                />
                 )}
             />
         </div>

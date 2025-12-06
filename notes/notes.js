@@ -3,7 +3,8 @@
     // ::next add functionality
       // delete in testresult table ::done (documents.js und delApi)
       // and documents
-        //same way for edit ::current
+      // del file in docs storage
+        //same way for edit 
     // change docs admin file path insert method to "admin/filename"
       // to not expose the id of admin
 
@@ -46,9 +47,9 @@
 
 
 //done
-  //docs pathfile save with name
-  // docs comp del file with notifications
-    // more options funcs in admin to reject 
+  //bloodtest comp
+    // added ux notifications by unfilled form  
+  //complete docdel on storage deletion
 
 // vet note
   // einheiten 
@@ -56,6 +57,9 @@
 
 
 //old done
+  //docs pathfile save with name
+  // docs comp del file with notifications
+    // more options funcs in admin to reject 
   //ui for docs comp - more options
   // nextjs and react updats due to security
   // fix fetch in getDocs.js, getPetname.js and getTestResult for logged in and not logged in
