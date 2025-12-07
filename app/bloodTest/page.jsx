@@ -40,10 +40,13 @@ export default function bloodTest() {
                   </div>
                 </div>
               }
-              <BloodTest />
-              
-              <Documents />
-              <Form />
+              <div className='bloodtest-wrapper'>
+                <Documents />
+                <div className='bloodtest-upload-comps'>
+                  <BloodTest />
+                  <Form />
+                </div>
+              </div>
             </>
           
         </div>

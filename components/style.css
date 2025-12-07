@@ -45,12 +45,64 @@ h1{
     color:var(--blue)
 }
 
+
+.bloodtest-wrapper{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap:10px;
+}
+
+
+@media (max-width: 844px) {
+    .bloodtest-wrapper{
+        grid-template-columns: 1fr;
+    }
+    .doc-wrapper {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .docs.comp-wrapper,
+    .bloodtest-upload-comps {
+        height: auto !important;
+    }
+}
+
+.bloodtest-upload-comps{
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    height: 100vh;
+    border:3px solid var(--lightGreen);
+    
+    margin-top: 20px;
+    padding: 0 10pc;
+}
+
+
+@media (max-width: 1644px) {
+    .bloodtest-upload-comps{
+        padding: 0;
+    }
+}
+
+.notification-close{
+    cursor: pointer;
+}
+
 .docs.comp-wrapper h1{
     align-items: center;
     display: flex;
     gap: 10px;
+    width: fit-content;
+    
+    white-space: nowrap;
 }
 
+.docs.comp-wrapper{
+    height: 100vh;
+    overflow: hidden auto;
+    width: 100%;
+}
 
 
 .form-wrapper{
@@ -91,7 +143,7 @@ h1{
     display: flex;
     flex-wrap: wrap;
     gap:15px;
-    margin:15px 0;
+    margin: 15px 33px;
 }
 
 .data-extract-container button{
@@ -183,6 +235,7 @@ h1{
 .doc-more-hover{
     visibility: hidden;
     position: absolute;
+    display: none;
     
 }
 
@@ -191,7 +244,7 @@ h1{
     position: relative;
     display: grid;
     gap:8px;
-    padding:10px;
+    padding:32px 0 24px 0;
     left: -14px;
 }
 .doc-more-options:hover .doc-more-menu{
@@ -206,6 +259,13 @@ h1{
     gap:5px;
     color: var(--header);
     position: relative;
+     
+    transition: 0.3s ease-in-out;
+}
+
+
+.doc-more-hover div:hover{
+    font-weight: bolder;
 }
 
 
@@ -240,8 +300,8 @@ h1{
 .doc-more-options:hover{
     cursor: pointer;
     border:1px solid var(--darkGreen);
-    left: 136px;
-    right: -119px;
+    left: 48px;
+    right: -23px;
     border-radius: 30px;
     background: var(--white);
 }
@@ -313,20 +373,50 @@ h1{
 
 .doc-wrapper{
     padding: 20px;
-    display: flex;
     gap: 20px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
+
+@media (max-width: 1318px) {
+    .doc-wrapper{
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
 .doc-wrapper.hide{
-    display: none;
+    display: none !important;
 }
 
 .doc-name{
     width: fit-content;
     margin-bottom:5px;
+    position: relative;
 }
 
+.doc-hover-tip{
+    position: absolute;
+    top:0; 
+    left: 0;
+    visibility: hidden;
+
+}
+
+.doc-name:hover .doc-hover-tip{
+    visibility: visible;
+    top: 20px;
+    left: 0;
+    z-index: 99;
+    padding: 10px;
+    background: var(--blue);
+    color: white;
+    border-radius: 3px;
+    box-shadow: 1px 3px 6px 3px gray;
+
+}
 .doc-owner{
     display: inline;
     color: var(--darkGreen);

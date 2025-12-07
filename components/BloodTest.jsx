@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 
 import useUser from '../app/lib/useUser'
 
+import Filter1RoundedIcon from '@mui/icons-material/Filter1Rounded';
 
 import './style.css';
 
@@ -31,7 +32,7 @@ export default function UploadExtractSave() {
 
   return (
     <div className="comp-wrapper">
-      <h1>Bloodtest comp</h1>
+      <h2><Filter1RoundedIcon />Upload file</h2>
       <div className='data-extract-container'>
         <input type="file" accept="image/*" onChange={handleFileChange} />     
           <Button onClick={handleForm} disabled={loading} variant="contained">

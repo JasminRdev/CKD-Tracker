@@ -11,8 +11,8 @@ import Button from '@mui/material/Button';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Filter1RoundedIcon from '@mui/icons-material/Filter1Rounded';
 import Filter2RoundedIcon from '@mui/icons-material/Filter2Rounded';
+import Filter3RoundedIcon from '@mui/icons-material/Filter3Rounded';
 
 import MenuItem from '@mui/material/MenuItem';
 
@@ -140,7 +140,7 @@ export default function Form() {
 
   return (
     <div className="comp-wrapper form-wrapper">
-        <h2><Filter1RoundedIcon />Values</h2>
+        <h2><Filter2RoundedIcon />Add/Edit Values</h2>
         <Box
             component="form"
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
@@ -164,7 +164,7 @@ export default function Form() {
                     focused={f.value == ""}
                 />
             ))}
-            <h2 className='top-line'><Filter2RoundedIcon />Other informations</h2>
+            <h2 className='top-line'><Filter3RoundedIcon />Other informations</h2>
             <div className='full-width'>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
