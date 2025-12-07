@@ -29,7 +29,8 @@ export default function Notification_warn() {
         <>
            <div className={`notifocation-message-abs ${!notification_warn ? 'hide' : ``} ${notification_warn_color == 'success' ? 'green' : ''}`}>
                 <p><PriorityHighRoundedIcon fontSize="large" color={notification_warn_color} className={`${notification_warn_color == 'success' ? 'hide' : ''}`} />{notification_warn_message}</p>
-                <CloseRoundedIcon fontSize="large" onClick={() => setNotification_warn(false)} />
+                <CloseRoundedIcon className='notification-close'
+                fontSize="large" onClick={() => setNotification_warn(false)} />
             </div>
         </>
       ) 

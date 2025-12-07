@@ -5,15 +5,9 @@
       // and documents
       // del file in docs storage
         //same way for edit 
-    // change docs admin file path insert method to "admin/filename"
-      // to not expose the id of admin
 
-
-// note -> if path doc contains my id then add removing possible
-//   -> then ask if sure bc its deleting the data from the graph
-
-// remove, replace, download options
-
+        // ::current richte blood comp so wie screenshot aus und mit scroll behaviour je seite
+          // gucke wie sein soll wenn man einklappt - vlt platz sparen?
 
 
 
@@ -47,9 +41,7 @@
 
 
 //done
-  //bloodtest comp
-    // added ux notifications by unfilled form  
-  //complete docdel on storage deletion
+  //bloodtest comp - rearrange ui and responsive design
 
 // vet note
   // einheiten 
@@ -57,6 +49,9 @@
 
 
 //old done
+  //bloodtest comp
+    // added ux notifications by unfilled form  
+  //complete docdel on storage deletion
   //docs pathfile save with name
   // docs comp del file with notifications
     // more options funcs in admin to reject 
