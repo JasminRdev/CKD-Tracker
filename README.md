@@ -1,9 +1,9 @@
 
-In progress - current state in bloodTestData_visualize
-<img width="798" height="763" alt="image" src="https://github.com/user-attachments/assets/02bd9c48-47b1-47c9-b004-ebfd14d83a0b" />
-<img width="1127" height="758" alt="image" src="https://github.com/user-attachments/assets/da0a244f-3523-43cb-8956-f1dba055b182" />
+In progress - current state in dev branch
+<img width="1393" height="772" alt="image" src="https://github.com/user-attachments/assets/956d920f-72c1-4006-9b70-f07292dc0bca" />
+<img width="1394" height="770" alt="image" src="https://github.com/user-attachments/assets/3f74d76c-5cba-4119-bd68-984cf7cea17d" />
 
-more informations about the current state and features in the -> branch "refactor_chart_and_bloodtest_input_comp" -> folder "notes" 
+more informations about the current state and features in the -> dev branch -> folder "notes" 
 
 
 
