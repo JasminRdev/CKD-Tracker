@@ -23,6 +23,8 @@ body , html{
   width: 100vw;
   background-color: gray;
   opacity: .6;
+  
+  z-index: 99;
 }
 
 .loadingIcon{

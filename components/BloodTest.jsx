@@ -18,7 +18,7 @@ import ScrollContainer from './ux/ScrollContainer'
 export default function UploadExtractSave() {
   
   const {loading, showOverlay, setShowOverlay, setOverlayerElement} = useLoadingContext();
-  const {handleClickPreviewImg_forExtraction, handleExtractAndSave, extractedText ,file, selectedImage, handleFileChange} = useBloodTestContext();
+  const {handleClickPreviewImg_forExtraction, handleExtractAndSave,  fileKey, extractedText ,file, selectedImage, handleFileChange} = useBloodTestContext();
   const user = useUser();
 
 
@@ -29,15 +29,23 @@ export default function UploadExtractSave() {
     handleExtractAndSave(file)
   }
 
-
   return (
     <div className="comp-wrapper">
       <h2><Filter1RoundedIcon />Upload file</h2>
       <div className='data-extract-container'>
-        <input type="file" accept="image/*" onChange={handleFileChange} />     
-          <Button onClick={handleForm} disabled={loading} variant="contained">
-          {loading ? 'Processing...' : 'Extract & Insert'}
-          </Button>
+        <Button
+          className='extract-button'
+          variant="contained"
+          component="label"
+        >
+          Choose File
+          <input key={fileKey} type="file" accept="image/*" onChange={handleFileChange} hidden
+          />
+        </Button>
+        {file ?  <><p className='extract-file-name'>Selected: {file.name}</p></> : ''}
+        <Button onClick={handleForm} disabled={file ? loading : true} variant="contained">
+          {loading ? 'Processing...' : 'Extract & Fill Inputs'}
+        </Button>
         <pre className="extractedElement">
           {selectedImage && (
             <>

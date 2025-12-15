@@ -1,4 +1,8 @@
 "use client"
+import { createContext, useContext, useEffect, useState } from 'react';
+
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -27,12 +31,11 @@ export default function Documents() {
       document.querySelector(".toggleVisibility").classList.toggle("upside")
     }
     
-    const {handleClickPreviewImg_fromDocs, getDocImg, delDocs} = useBloodTestContext();
-   
+    const {handleClickPreviewImg_fromDocs, getDocImg, delDocs, editDocs} = useBloodTestContext();
     return (
     <div className="docs comp-wrapper">
-      <h1>My documents ({getDocImg && getDocImg.length}) <span className="toggleVisibility" onClick={toggleDocs}><KeyboardArrowUpIcon /></span>
-      </h1>
+      <h2 className='wrap'>Uploaded files ({getDocImg && getDocImg.length}) <span className="toggleVisibility" onClick={toggleDocs}><KeyboardArrowUpIcon /></span>
+      </h2>
        <div className='doc-wrapper'>
           {!getDocImg?.length && <p>Loading...</p>}
 

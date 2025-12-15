@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
-import { NextResponse } from "next/server";
 
 
 export default async function handler(req, res) {
@@ -45,15 +44,15 @@ export default async function handler(req, res) {
   if(userDoesntDeleteAdmins){
     //remove in storage first - only img
     try{
-          const {error} = await dbClient
-            .storage
-            .from('documents')
-            .remove(fileUrl.split("documents/")[1].replaceAll("%20", " "))
-          } catch (err) {
-          return res.status(500).json({
-            error: "Document deletion failed. - Please contact the developer.",
-          });
-        }
+        const {error} = await dbClient
+          .storage
+          .from('documents')
+          .remove(fileUrl.split("documents/")[1].replaceAll("%20", " "))
+        } catch (err) {
+        return res.status(500).json({
+          error: "Document deletion failed. - Please contact the developer.",
+        });
+      }
 
     // then remove in testresult - plus data whole data
     try {

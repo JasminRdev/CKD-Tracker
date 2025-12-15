@@ -26,10 +26,10 @@ import PetNameInput from './fields/PetNameInput'
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useSupabaseContext } from '../context/SupabaseContext';
 export default function Form() {
-  const { form, setForm, file, chosenPetName , getDocsImg, resetForm, checkUsersLimit, getNames} = useBloodTestContext();
+  const { form, setForm, file, chosenPetName , resetFileComp, getDocsImg, resetForm, checkUsersLimit, getNames} = useBloodTestContext();
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
-      setNotification_warn, 
+      setNotification_warn, setLoading
        } = useLoadingContext();
   const user = useUser();
   const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
@@ -86,6 +86,8 @@ export default function Form() {
   }
 
    async function saveData() {
+    
+      setLoading(true)
     // change this logic 
       let allowSave;
       let countSavedOnes = await checkUsersLimit(user.id);
@@ -103,12 +105,16 @@ export default function Form() {
         setNotification_warn(true)
         setNotification_warn_message("Please select an image to save your data.")
         setNotification_warn_color("warning");
+        
+        setLoading(false)   
         return;
       }
       if(chosenPetName == null){
         setNotification_warn(true)
         setNotification_warn_message("Please fill out -Pet name- to save your data.")
         setNotification_warn_color("warning")
+        
+        setLoading(false)   
         return;
       } 
 
@@ -129,12 +135,23 @@ export default function Form() {
             else console.log('Data saved:', data)
           
             setNotification_warn(true)
-            setNotification_warn_message("Successfull uploaded data - now visible in the Chart")
+            setNotification_warn_message("Successfull uploaded data - now included in the Chart")
             setNotification_warn_color("success")
             await getNames()
             await getDocsImg()
             resetForm();
-      }      
+            resetFileComp();
+            setLoading(false)  
+             
+      }   
+      
+    }
+
+    function handleNotification(){
+      setNotification_warn(true)
+      
+      setNotification_warn_message("Please log in.")
+      setNotification_warn_color("warning")
     }
 
 
@@ -202,7 +219,7 @@ export default function Form() {
                   (
                  <Button 
                   className="button-save-db"
-                  onClick={() => setNotification_warn(true)}
+                  onClick={() => handleNotification()}
                   variant="contained"
                   sx={{ backgroundColor: '#bdbdbd', color: '#fff' }} 
                 >
