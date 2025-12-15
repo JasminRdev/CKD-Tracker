@@ -144,10 +144,18 @@ h1{
     flex-wrap: wrap;
     gap:15px;
     margin: 15px 33px;
+    
+    flex-direction: column;
 }
 
-.data-extract-container button{
+.data-extract-container button,
+.extract-button{
     height: fit-content;
+    width: fit-content;
+}
+
+.extract-file-name{
+    margin-top:20px;
 }
 
 .extractedElement img{
@@ -752,6 +760,18 @@ h2{
 }
 
 
+.doc-edit-form{
+    display: grid;
+    position: absolute !important;
+    padding:10px;
+    border:1px solid gray;
+    background-color: black;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.space-between svg {
+    cursor: pointer;
+}
 /* tablet/mobile */
 @media (max-width: 790px) {
    .menu-header-logging-drp:not(.mobile){
@@ -874,6 +894,11 @@ h1{
     gap:30px;
     display: grid;
     border-radius: 4px;
+}
+
+.wrap{
+    white-space: wrap;
+    align-items: center;
 }
 
 @media (max-width: 670px) {

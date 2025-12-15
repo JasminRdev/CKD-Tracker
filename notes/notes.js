@@ -1,26 +1,38 @@
 // current
-    // thwn with option of removing with the other ui options
-    // ::next add functionality
-      // delete in testresult table ::done (documents.js und delApi)
-      // and documents
-      // del file in docs storage
-        //same way for edit 
+  //values in bloodtest to db and fix up for blood and urine
 
-        // ::current richte blood comp so wie screenshot aus und mit scroll behaviour je seite
-          // gucke wie sein soll wenn man einklappt - vlt platz sparen?
+
+// restructure
+  //urin and blood results can be mixed
+  // urin can stand alone
+  // blood can stand alone
+  // main charts / separate charts need blood and urin switch if i want to specify
+  // does not count since we need it only to compare (urine hometests)
+
+
+
+
+
 
 
 
 //todo
-  // add notifications 
-    //bloodtest comp upload result
-  // vor vet -
+  //dringend: 
+    //charts - compare function 
+      //for home test to lab
+      //for two different pets (blus and lee any correlation for seasons)
+    // dashboaard as hospital
+  // charts 
+    // add searvh function for val in filter color and sepa charts
+    // edit function for min/max val
+      //db need user based val saved, info of test type and the min max and currency
+
+  // for vet -
     // make vet acc to only see jasmins data
   //update forms
     //with einheiten
     //options to add marker, values to form comp
   //blooftest comp
-    //refresh once data saved from bloodtest input
   // next we visually show for admin own and other uers data - batch from user?
     // look whio i am as logged person! 
   //docs dashboard -> docs comp that gets also integrated with the other comps 
@@ -31,17 +43,20 @@
   // fill their min max and currency
   // pdf print from graph
   //add editable extracted data in the visualized data
-  //add/delete datas
-  //dashboard for uploaded files
-  //dashboard for additional notes that are linked to the diagrams from visualized data
   //export function for vet etc
   //pets data overview
   //medical informations to tracked values - to high / to low consequences
-  // global Loading comp 
 
 
 //done
-  //bloodtest comp - rearrange ui and responsive design
+  //notification comp 
+    //add message for not logged user tries to delete document in doc comp
+    // fullfilled bloodtest comps delete admin
+    // fullfilled -,,- save data
+    //bloodtest comp upload result - with loading spinner
+  //doc edit file name api function
+  //blooftest comp
+    //refresh once data saved from bloodtest input
 
 // vet note
   // einheiten 
@@ -49,6 +64,7 @@
 
 
 //old done
+  //bloodtest comp - rearrange ui and responsive design
   //bloodtest comp
     // added ux notifications by unfilled form  
   //complete docdel on storage deletion

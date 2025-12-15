@@ -6,9 +6,13 @@ import Tesseract from 'tesseract.js'
 import { supabase } from '../app/lib/supabaseClient'
 import { useLoadingContext } from './LoadingContext';
 import { useChartContext } from './ChartContext';
+
+import useUser from '../app/lib/useUser'
 const BloodTestContext = createContext();
 
 export const BloodTestProvider = ({ children }) => {
+  
+  const user = useUser();
   const {loading, showOverlay, 
     setNotification_warn_message,
         setNotification_warn_color,
@@ -192,6 +196,15 @@ export const BloodTestProvider = ({ children }) => {
   };
 
   const delDocs = async (fileUrl, id) => {
+    setLoading(true)
+    if(user == null){
+      setNotification_warn(true)
+      setNotification_warn_message("Please log in.")
+      setNotification_warn_color("warning")
+      
+      setLoading(false)
+      return
+    }
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
@@ -222,6 +235,42 @@ export const BloodTestProvider = ({ children }) => {
       setNotification_warn_color("warning")
     }
     
+    setLoading(false)
+  };
+
+  const editDocs = async (fileUrl, id, newFileName) => {
+    setLoading(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const res = await fetch(`/api/updateFileName?fileUrl=${fileUrl}&docId=${id}&newFileName=${newFileName}&petName=${petName}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      // If API sends 400/500, read the API error
+      if (!res.ok) {
+        throw new Error(data.error || "Unknown error");
+      }
+      // Success
+      console.log(data.message);
+      
+      setNotification_warn(true)
+      setNotification_warn_message("Successfully changed.")
+      setNotification_warn_color("success")
+      await getDocsImg();
+
+    } catch (err) {
+      console.error("Delete error:", err.message);
+      setNotification_warn(true)
+      setNotification_warn_message(err.message)
+      setNotification_warn_color("warning")
+    }
+    
+    setLoading(false)
   };
   
   useEffect(() => {
@@ -231,6 +280,7 @@ export const BloodTestProvider = ({ children }) => {
 
 
   
+  const [fileKey, setFileKey] = useState(Date.now());
   //overlay img to expand
   const [selectedImage, setSelectedImage] = useState(null)
   const handleFileChange = (e) => {
@@ -241,6 +291,15 @@ export const BloodTestProvider = ({ children }) => {
     if (file) {
       setSelectedImage(URL.createObjectURL(file)); // creates preview link
     }
+
+  }
+
+  const resetFileComp = () => {
+    resetForm(); //if not choosen multi files ::TODO
+
+    setFileKey(Date.now())
+    setSelectedImage(null)
+    setFile(null)
   }
   
   
@@ -275,11 +334,11 @@ export const BloodTestProvider = ({ children }) => {
   return (
     <BloodTestContext.Provider value={{ 
       getNames,
-    delDocs, checkUsersLimit, bloodTestCompReset, 
+    delDocs, editDocs, checkUsersLimit, bloodTestCompReset, 
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
       setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, 
-      resetForm, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
+      resetForm, resetFileComp, fileKey, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
   );
