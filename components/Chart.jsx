@@ -76,13 +76,13 @@ const Chart = () => {
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
   const [showLegend, setShowLegend] = useState(true)
 
-  const { keywordMapping, chosenPetName } = useBloodTestContext();
+  const { form, chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
 
   // const allMetrics = ['a_kaliumVal', 'a_Kreatinin'];
-  const allMetrics = keywordMapping.map(item => item.key); 
+  const allMetrics = form.map(item => item.name); 
   const [visibleMetrics, setVisibleMetrics] = useState(allMetrics);
   
   const toggleMetric = (metric) => {
@@ -273,8 +273,8 @@ const Chart = () => {
             })
             .map((metric) => {
               const normRanges = Object.fromEntries(
-                keywordMapping.map(item => [
-                  item.key, //keyword as lable
+                form.map(item => [
+                  item.name, //keyword as lable
                   { 
                     min: item.min ?? item.value + 50, 
                     max: item.max ?? item.value - 50 

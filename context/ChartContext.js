@@ -34,7 +34,6 @@ export const ChartProvider = ({ children }) => {
       },
     });
     const json = await res.json();
-    console.log("first ", json)
     return json.data;
   };
 

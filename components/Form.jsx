@@ -13,7 +13,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Filter2RoundedIcon from '@mui/icons-material/Filter2Rounded';
 import Filter3RoundedIcon from '@mui/icons-material/Filter3Rounded';
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 
+import AddIcon from '@mui/icons-material/Add';
 import MenuItem from '@mui/material/MenuItem';
 
 import dayjs from 'dayjs';
@@ -24,17 +27,18 @@ import './style.css';
 import PetNameInput from './fields/PetNameInput'
 
 import { useBloodTestContext } from "../context/BloodTestContext";
-import { useSupabaseContext } from '../context/SupabaseContext';
+
 export default function Form() {
-  const { form, setForm, file, chosenPetName , resetFileComp, getDocsImg, resetForm, checkUsersLimit, getNames} = useBloodTestContext();
+  const { form, setForm, file, chosenPetName , resetFileComp
+    ,resetNewList, getDocsImg, resetForm, checkUsersLimit, getNames} = useBloodTestContext();
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
       setNotification_warn, setLoading
        } = useLoadingContext();
   const user = useUser();
-  const [valueDate, setValueDate] = useState(dayjs("2025-08-11"))
+  const [valueDate, setValueDate] = useState(dayjs("2026-03-01"))
   const [selectedType, setSelectedType] = useState("Blood");
-
+  const [openAddValue, setOpenAddValue] = useState(false);
   const testType = [
     {
       value: 'Blood',
@@ -46,8 +50,16 @@ export default function Form() {
     // },
   ];
 
+  let iniNewInput = {
+    name: "",
+    value:"",
+    keyword: "",
+    probe: "",
+    material: "",
+    datum:""
+  }
 
-
+  const [newInput, setNewInput] = useState(iniNewInput);
 
   const handleChange = (name, newValue) => {
     const numericValue = newValue === "" ? "" : parseFloat(newValue);
@@ -84,22 +96,21 @@ export default function Form() {
     return publicData.publicUrl
     
   }
-
    async function saveData() {
-    
       setLoading(true)
     // change this logic 
       let allowSave;
-      let countSavedOnes = await checkUsersLimit(user.id);
+      let countSavedOnes = await checkUsersLimit();
       if(countSavedOnes > 4) {
+        console.log("------------over 4 - shpuld no saving happen ", countSavedOnes)
         allowSave = false;
+        setLoading(false) 
         setNotification_warn(true)
         setNotification_warn_message("You have reached the limit of 4 uploads.")
         setNotification_warn_color("warning")
       } else {
         allowSave = true;
       };
-
 
       if (file == null){
         setNotification_warn(true)
@@ -119,6 +130,7 @@ export default function Form() {
       } 
 
       if(allowSave){
+        console.log("------------ should no saving happen???? ", countSavedOnes)
         const tableRow = crypto.randomUUID();
             const { data, error } = await supabase
               .from('testResult_data')
@@ -131,17 +143,29 @@ export default function Form() {
                   test_type :selectedType, 
                   pet: chosenPetName, 
                   file_url : await uploadFile()}]) 
-            if (error) console.error(error)
-            else console.log('Data saved:', data)
-          
-            setNotification_warn(true)
-            setNotification_warn_message("Successfull uploaded data - now included in the Chart")
-            setNotification_warn_color("success")
-            await getNames()
-            await getDocsImg()
-            resetForm();
-            resetFileComp();
+            if (error) {
+              console.error(error)
+              
+              setNotification_warn(true)
+              setNotification_warn_message("Error - File name already exists with that pet")
+              setNotification_warn_color("warning")
+            } else {
+              console.log('Data saved:', data)
+
+              //send new form to possible vals
+              await resetNewList();
+              
+              setNotification_warn(true)
+              setNotification_warn_message("Successfull uploaded data - now included in the Chart")
+              setNotification_warn_color("success")
+              await getNames()
+              await getDocsImg()
+              resetForm();
+              resetFileComp();
+            
+            }
             setLoading(false)  
+
              
       }   
       
@@ -154,6 +178,26 @@ export default function Form() {
       setNotification_warn_color("warning")
     }
 
+    function addNewInputToForm() {
+      setOpenAddValue(false)
+      setForm(prev => [
+        ...prev,
+        { ...newInput }
+      ]);
+      setNewInput(iniNewInput)
+      // setForm(prev => [
+      //   ...prev,
+      //   {
+      //     name: "testNew",
+      //     value: "999999",
+      //     keyword: ["KreaTest"],
+      //     probe: "Labor",
+      //     material: "Urin",
+      //     datum: "2022-05-14"
+      //   }
+      // ])
+      console.log("updated ini ", form, openAddValue)
+    }
 
   return (
     <div className="comp-wrapper form-wrapper">
@@ -181,6 +225,111 @@ export default function Form() {
                     focused={f.value == ""}
                 />
             ))}
+              <div className="form__add-wrapper">
+                <Button 
+                  className="button-save-db form__add-input"
+                  onClick={() => setOpenAddValue(true)}
+                  variant="contained"
+                  sx={{ color: '#fff' }} 
+                >
+                  Add Value <AddIcon />
+                </Button>
+
+               {openAddValue && (
+                  <div className='form__add-input-overlay'>
+                    <h3>New input informations</h3>
+                    <TextField
+                      label="Name"
+                      value={newInput.name}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          name: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <TextField
+                      label="Value"
+                      value={newInput.value}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          value: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                    />
+                    <TextField
+                      label="Keyword, that can be recognized from the image"
+                      value={newInput.keyword}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          keyword: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <TextField
+                      label="Probe, like lab or homekit"
+                      value={newInput.probe}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          probe: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <TextField
+                      label="Material (Blood/Urine)"
+                      value={newInput.material}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          material: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <TextField
+                      label="Today's date"
+                      value={newInput.datum}
+                      onChange={(e) =>
+                        setNewInput({
+                          ...newInput,
+                          datum: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <div className='form__add-btn-wrapper'>
+                    <Button 
+                        className="form__add-btn save"
+                        onClick={() => addNewInputToForm()}
+                        variant="contained"
+                        sx={{ color: '#fff' }} 
+                      >
+                        Save <DoneIcon />
+                      </Button>
+                      <Button 
+                        className="form__add-btn"
+                        onClick={() => setOpenAddValue(false)}
+                        variant="contained"
+                        sx={{ color: '#fff' }} 
+                      >
+                        Close <CloseIcon />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             <h2 className='top-line'><Filter3RoundedIcon />Other informations</h2>
             <div className='full-width'>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -213,7 +362,12 @@ export default function Form() {
               {
                 user  
                 ? (
-                  <Button className="button-save-db" onClick={saveData} disabled={loading} variant="contained">Save data</Button>
+                  <Button 
+                    className="button-save-db" 
+                    onClick={saveData} 
+                    disabled={loading} 
+                    variant="contained">
+                  Save data</Button>
                   )
                 :
                   (

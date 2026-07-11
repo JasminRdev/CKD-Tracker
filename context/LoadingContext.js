@@ -22,7 +22,6 @@ export const LoadingProvider = ({ children }) => {
     setLoading(true)
     user ? setFoundUser(true) : setFoundUser(false);
     setLoading(false)
-    console.log("user login ", user && user)
     //55 -> jasmin08
     //7 -> matilda
   },[user])

@@ -20,51 +20,152 @@ export const BloodTestProvider = ({ children }) => {
   
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
-
   const { chosenPetName } = useChartContext();
-
-    const getInitialForm = () => ([
-      { name : "a_Kreatinin", value:""},
-      { name: "a_kaliumVal", value: "" },
-      { name: "a_kalziumVal", value: "" },
-      { name: "a_natriumVal", value: "" },
-      { name: "a_chloridVal", value: "" },
-      { name: "a_albuminVal", value: "" },
-      { name: "a_eisenVal", value: "" },
-      { name: "a_magnesiumVal", value: "" },
-      { name: "a_naKQuotientVal", value: "" },
-      { name: "a_AGQuotientVal", value: "" },
-      { name: "a_T4Val", value: "" },
-      { name: "a_hämatokritVal", value: "" },
-      { name: "a_retikulozytenVal", value: "" },
-      { name: "a_retHeVal", value: "" },
-      { name: "b_alphaAmylaseVal", value: "" },
-      { name: "b_dggrLipaseVal", value: "" },
-      { name: "b_glukoseVal", value: "" },
-      { name: "b_fuctosaminVal", value: "" },
-      { name: "b_triglyzerideVal", value: "" },
-      { name: "b_cholesterinVal", value: "" },
-      { name: "b_bilirubinVal", value: "" },
-      { name: "b_APVal", value: "" },
-      { name: "b_GLDHVal", value: "" },
-      { name: "b_GGTVal", value: "" },
-      { name: "b_ALTVal", value: "" },
-      { name: "b_ASTVal", value: "" },
-      { name: "b_CKVal", value: "" },
-      { name: "b_gesamtProteinVal", value: "" },
-      { name: "b_globulineVal", value: "" },
-      { name: "c_neutrophileVal", value: "" },
-      { name: "c_MCV", value: "" },
-      { name: "c_MCH", value: "" },
-      { name: "c_MCHC", value: "" },
-      { name: "c_hypochromasie", value: "" },
-      { name: "a_hämoglobinVal", value: "" },
-      { name: "c_erythrozytenVal", value: "" },
-      { name: "c_leukozytenVal", value: "" },
+    //this arr for db ini 
+    let getInitialForm = () => ([
+      { name : "a_Kreatinin", value:"", keyword: ["Kreatinin"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_kaliumVal", value: "" , keyword: ["Kalium"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_kalziumVal", value: "" ,  keyword: ["Kalzium"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_natriumVal", value: "" , keyword: ["Natrium"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_chloridVal", value: "" ,  keyword: ["Chlorid"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_albuminVal", value: "" , keyword: ["Albumin"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_eisenVal", value: "" ,  keyword: ["Eisen"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_magnesiumVal", value: "" ,  keyword: ["Magnesium"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_naKQuotientVal", value: "" ,  keyword: ["Na-/K-Quotient"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_AGQuotientVal", value: "" ,  keyword: ["Na-/K-Quotient"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_T4Val", value: "" ,keyword: ["T4"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_hämatokritVal", value: "" , keyword: ["hämatokrit"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_retikulozytenVal", value: "" ,keyword: ["Retikulozyten"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_retHeVal", value: "" , keyword: ["Ret-He"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_alphaAmylaseVal", value: "" , keyword: ["Amylase"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_dggrLipaseVal", value: "" , keyword: ["DGGR-Lipase"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_glukoseVal", value: "" ,keyword: ["Glucose"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_fuctosaminVal", value: "" ,  keyword: ["Fructosamin"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_triglyzerideVal", value: "" ,  keyword: ["Triglyceride", "Trigiyceride"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_cholesterinVal", value: "" ,keyword: ["Cholesterin"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_bilirubinVal", value: "" ,keyword: ["Bülrubin", "Bilirubin"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_APVal", value: "" , keyword: ["AP"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_GLDHVal", value: "" , keyword: ["GLDH"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_GGTVal", value: "" , keyword: ["G-GT"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_ALTVal", value: "" , keyword: ["ALT"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_ASTVal", value: "" , keyword: ["AST"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_CKVal", value: "" ,keyword: ["CK"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "b_gesamtProteinVal", value: "" , keyword: ["Protein"], probe: "Serum", material: "Blut", datum: "2025-12-31",min: 57, max: 94},
+      { name: "b_globulineVal", value: "" , keyword: ["Globuline"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "c_neutrophileVal", value: "" , keyword: ["Neutrophile"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "c_MCV", value: "" ,  keyword: ["MCV"],probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { keyword: ["MCH"], name: "c_MCH", exclude: "MCHC", value: "" , probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "c_MCHC", value: "" ,keyword: ["MCHC"],  probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "c_hypochromasie", value: "" , keyword: ["Hypochromasie"], probe: "Serum", material: "Blut", datum: "2025-12-31"},
+      { name: "a_hämoglobinVal", value: "" ,  keyword: ["hämaglobin","hämoglobin"],  probe: "Serum", material: "Blut", min: 108, max:169, datum: "2025-12-31"},
+      { name: "c_erythrozytenVal", value: "" ,  keyword: ["Erythrozyten"], probe: "Serum", material: "Blut",min:7.2, max:11, datum: "2025-12-31"},
+      { name: "c_leukozytenVal", value: "" ,keyword: ["Leukozyten", "Leukoz"], probe: "Serum", material: "Blut", min:3.9, max:12.5, datum: "2025-12-31"},
+      { name: "c_anisozytose" , keyword: ["Anisozytose"], value: "",probe: "Serum", material: "Blut"},
+      { 
+        name: "Index (urin)", value: "", keyword: ["Index"], probe: "Labor", material: "Urin",
+        datum: "2022-05-14",
+        min: 0,
+        max: 0.2},
+      { 
+        name: "Calcium", value: "", keyword: ["Calcium"], probe: "Serum", material: "Blut",
+        datum: "2022-05-14",
+        min: 2.3,
+        max: 3},
+      { 
+        name: "Ca ionisiert", value: "", keyword: ["Ca ion"], probe: "Serum", material: "Blut",
+        datum: "2022-05-14",
+        min: 1.07,
+        max: 1.47},
+      { 
+        name: "Eiweiß (urin)", value: "", keyword: ["Eiweiß"], probe: "Labor", material: "Urin",
+        datum: "2022-05-14"},
+      { 
+        name: "Krea. (urin)", value: "", keyword: ["Krea"], probe: "Labor", material: "Urin",
+        datum: "2022-05-14"},
     ]);
     const [form, setForm] = useState(getInitialForm);
     const resetForm = () => {
       setForm(getInitialForm)
+    }
+
+    async function handleNewIniForm(cleanedForm) {
+
+      const getPossibleValuesAdmin = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=true`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const json = await res.json();
+        return json.data;
+      };
+
+      const checkMatchWithAdminForm = async () => {
+        const rawData = await getPossibleValuesAdmin();
+          const possibleValAdmin = rawData.map(item =>
+            item.inputValues.map(str => {
+              const parsed = JSON.parse(str);
+
+              return Object.fromEntries(
+                Object.entries(parsed)
+                  .map(([key, value]) => [
+                    key,
+                    typeof value === "string" && value !== "" && !isNaN(value)
+                    ? parseFloat(value)
+                    : value
+                  ])
+              );
+            })
+          );
+          const flatPossibleValAdmin = possibleValAdmin.flat();
+          const dbAdminFormNotEqual = cleanedForm.some(a => {
+            return !flatPossibleValAdmin.some(b => b.name === a.name);
+          });
+          // console.log("is NOT ------------ equal to aadmin form ", dbAdminFormNotEqual)
+          return dbAdminFormNotEqual;
+      }
+
+      const getPossibleValueOwn = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=false`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const json = await res.json();
+        return json.data;
+      };
+      let getCustomForm = await getPossibleValueOwn();
+
+      if(getCustomForm.length == 0){
+        let foundDifferToAdmin = await checkMatchWithAdminForm()
+        if(foundDifferToAdmin){
+          //save new form to own possi
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
+
+          await fetch(`/api/postOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
+      }      
+
+    }
+
+    function resetNewList (){
+      let getAgainIniForm = form.map(field => ({
+        ...field,
+        value: ""
+      }));
+      handleNewIniForm(getAgainIniForm);
     }
 
     //Chart Comp
@@ -78,45 +179,51 @@ export const BloodTestProvider = ({ children }) => {
 
     //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
     //05.03.24
+    //this array for app - read img 
     const keywordMapping = [
-      { keyword: ["Leukozyten", "Leukoz"], key: "c_leukozytenVal",min:3.9, max:12.5, value:"", currency:"G/l"},
-      { keyword: ["Erythrozyten"], key: "c_erythrozytenVal",min:7.2, max:11, value:"", currency:"T/l"},
-      { keyword: ["Protein"], key: "b_gesamtProteinVal", min: 57, max: 94,value: "", currency:"" },
-      { keyword: ["Kreatinin"], key: "a_Kreatinin", min: 0, max:168, value: ""  },
-      { keyword: ["Kalium"], key: "a_kaliumVal", value: "" },
-      { keyword: ["Kalzium"], key: "a_kalziumVal", value: "" },
-      { keyword: ["Natrium"], key: "a_natriumVal", value: "" },
-      { keyword: ["Chlorid"], key: "a_chloridVal", value: "" },
-      { keyword: ["Albumin"], key: "a_albuminVal", value: "" },
-      { keyword: ["Eisen"], key: "a_eisenVal", value: "" },
-      { keyword: ["Magnesium"], key: "a_magnesiumVal", value: "" },
-      { keyword: ["Na-/K-Quotient"], key: "a_naKQuotientVal", value: "" },
-      { keyword: ["A/G-Quotient"], key: "a_AGQuotientVal", value: "" },
-      { keyword: ["T4"], key: "a_T4Val", value: "" },
-      { keyword: ["hämatokrit"], key: "a_hämatokritVal", value: "" },
-      { keyword: ["hämaglobin","hämoglobin"], key:"a_hämoglobinVal", value: "", min: 108, max:169, currency:"g/l" },
-      { keyword: ["Retikulozyten"], key: "a_retikulozytenVal", value: "" },
-      { keyword: ["Ret-He"], key: "a_retHeVal", value: "" },
-      { keyword: ["Amylase"], key: "b_alphaAmylaseVal", value: "" },
-      { keyword: ["DGGR-Lipase"], key: "b_dggrLipaseVal", value: "" },
-      { keyword: ["Glucose"], key: "b_glukoseVal", value: "" },
-      { keyword: ["Fructosamin"], key: "b_fuctosaminVal", value: "" },
-      { keyword: ["Triglyceride", "Trigiyceride"], key: "b_triglyzerideVal", value: "" },
-      { keyword: ["Cholesterin"], key: "b_cholesterinVal", value: "" },
-      { keyword: ["Bülrubin", "Bilirubin"], key: "b_bilirubinVal", value: "" },
-      { keyword: ["AP"], key: "b_APVal", value: "" },
-      { keyword: ["GLDH"], key: "b_GLDHVal", value: "" },
-      { keyword: ["G-GT"], key: "b_GGTVal", value: "" },
-      { keyword: ["ALT"], key: "b_ALTVal", value: "" },
-      { keyword: ["AST"], key: "b_ASTVal", value: "" },
-      { keyword: ["CK"], key: "b_CKVal", value: "" },
-      { keyword: ["Globuline"], key: "b_globulineVal", value: "" },
-      { keyword: ["Neutrophile"], key: "c_neutrophileVal", value: "" },
-      { keyword: ["MCV"], key: "c_MCV", value: "" },
-      { keyword: ["MCH"], key: "c_MCH", exclude: "MCHC", value: "" },
-      { keyword: ["MCHC"], key: "c_MCHC", value: "" },
-      { keyword: ["Hypochromasie"], key: "c_hypochromasie", value: "" },
-      { keyword: ["Anisozytose"], key: "c_anisozytose" , value: "" }
+      { keyword: ["Leukozyten", "Leukoz"], name: "c_leukozytenVal",min:3.9, max:12.5, value:""},
+      { keyword: ["Erythrozyten"], name: "c_erythrozytenVal",min:7.2, max:11, value:""},
+      { keyword: ["Protein"], name: "b_gesamtProteinVal", min: 57, max: 94,value: ""},
+      { keyword: ["Kreatinin"], name: "a_Kreatinin", min: 0, max:168, value: ""  },
+      { keyword: ["Kalium"], name: "a_kaliumVal", value: "" },
+      { keyword: ["Kalzium"], name: "a_kalziumVal", value: "" },
+      { keyword: ["Natrium"], name: "a_natriumVal", value: "" },
+      { keyword: ["Chlorid"], name: "a_chloridVal", value: "" },
+      { keyword: ["Albumin"], name: "a_albuminVal", value: "" },
+      { keyword: ["Eisen"], name: "a_eisenVal", value: "" },
+      { keyword: ["Magnesium"], name: "a_magnesiumVal", value: "" },
+      { keyword: ["Na-/K-Quotient"], name: "a_naKQuotientVal", value: "" },
+      { keyword: ["A/G-Quotient"], name: "a_AGQuotientVal", value: "" },
+      { keyword: ["T4"], name: "a_T4Val", value: "" },
+      { keyword: ["hämatokrit"], name: "a_hämatokritVal", value: "" },
+      { keyword: ["hämaglobin","hämoglobin"], name:"a_hämoglobinVal", value: "", min: 108, max:169 },
+      { keyword: ["Retikulozyten"], name: "a_retikulozytenVal", value: "" },
+      { keyword: ["Ret-He"], name: "a_retHeVal", value: "" },
+      { keyword: ["Amylase"], name: "b_alphaAmylaseVal", value: "" },
+      { keyword: ["DGGR-Lipase"], name: "b_dggrLipaseVal", value: "" },
+      { keyword: ["Glucose"], name: "b_glukoseVal", value: "" },
+      { keyword: ["Fructosamin"], name: "b_fuctosaminVal", value: "" },
+      { keyword: ["Triglyceride", "Trigiyceride"], name: "b_triglyzerideVal", value: "" },
+      { keyword: ["Cholesterin"], name: "b_cholesterinVal", value: "" },
+      { keyword: ["Bülrubin", "Bilirubin"], name: "b_bilirubinVal", value: "" },
+      { keyword: ["AP"], name: "b_APVal", value: "" },
+      { keyword: ["GLDH"], name: "b_GLDHVal", value: "" },
+      { keyword: ["G-GT"], name: "b_GGTVal", value: "" },
+      { keyword: ["ALT"], name: "b_ALTVal", value: "" },
+      { keyword: ["AST"], name: "b_ASTVal", value: "" },
+      { keyword: ["CK"], name: "b_CKVal", value: "" },
+      { keyword: ["Globuline"], name: "b_globulineVal", value: "" },
+      { keyword: ["Neutrophile"], name: "c_neutrophileVal", value: "" },
+      { keyword: ["MCV"], name: "c_MCV", value: "" },
+      { keyword: ["MCH"], name: "c_MCH", exclude: "MCHC", value: "" },
+      { keyword: ["MCHC"], name: "c_MCHC", value: "" },
+      { keyword: ["Hypochromasie"], name: "c_hypochromasie", value: "" },
+      { keyword: ["Anisozytose"], name: "c_anisozytose" , value: "" },
+      { keyword: ["Index"], name: "Index (urin)", value: "",
+        min: 0,
+        max: 0.7},
+      { keyword: ["Eiweiß"], name: "Eiweiß (urin)", value: ""},
+      { keyword: ["Krea"], name: "Krea. (urin)", value: ""}
     ];
 
 
@@ -136,10 +243,10 @@ export const BloodTestProvider = ({ children }) => {
       const numMatch = line.match(/\d+\.\d+|\d+/)?.[0];
       if (!numMatch) return;
 
-      keywordMapping.forEach(({ keyword, key, exclude }) => {
+      form.forEach(({ keyword, name, exclude }) => {
         if (exclude && line.includes(exclude)) return;
         if (keyword.some(k => line.includes(k))) {
-          const field = form.find(f => f.name === key);
+          const field = form.find(f => f.name === name);
           if (field) field.value = Number(numMatch);
         }
       });
@@ -324,20 +431,28 @@ export const BloodTestProvider = ({ children }) => {
 
   const [bloodTestCompReset, setBloodTestCompReset] = useState(0)
 
-  
-  const checkUsersLimit = async (user_id) => {
-    const res = await fetch(`/api/getUserSaveCount?user_id=${user_id}`);
+                                        
+  const checkUsersLimit = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch(`/api/getUserSaveCount`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const count = await res.json();
+
     return count.data.length
-  };
+  };                                                                                                                                                                                                                                                                                                                 
 
   return (
     <BloodTestContext.Provider value={{ 
-      getNames,
+      getNames, resetNewList,
     delDocs, editDocs, checkUsersLimit, bloodTestCompReset, 
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
-      setSelectedImage, chosenPetName, savedPetNames, allNames, keywordMapping, 
+      setSelectedImage, chosenPetName, savedPetNames, allNames,
       resetForm, resetFileComp, fileKey, file, setFile, handleExtractAndSave, extractedText, form, setForm }}>
       {children}
     </BloodTestContext.Provider>
