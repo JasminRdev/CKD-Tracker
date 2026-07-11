@@ -1,5 +1,42 @@
 // current
-  //values in bloodtest to db and fix up for blood and urine
+    
+  //db extend
+    // possible values in bloodtest to db and fix up for blood and urine
+      // Hämatologie → EDTA / Blut
+      // Klinische Chemie / (Blut) Serumchemie → Serum
+      // Harnuntersuchung / Urinstatus → Harn
+      
+  //     ui 
+  // ☑ Blut (alle)
+  // ☑ Serum
+  // ☑ EDTA-Blut
+  // ☑ Urin
+
+  const dbName = [
+    {
+      keyword: ["Leukozyten", "Leukoz"],
+      name: "c_leukozytenVal", //unique
+      wert: "",
+      einheit: "mg/dl", // erstmal vernachlässigen
+      probe: "Serum",
+      material: "Blut",
+      datum: "2022-05-14",
+      min: 3.9,
+      max: 12.5
+    },
+  ]
+//danach wenn nötig nach probe oder und material filtern
+// wenn user mehr inputs val hinzufügt wird dieses als ini schema benutzt ohne val wert
+// dann brauch jeder user ini form in db?
+// ja weil will hardcoded aus code raus haben
+// wir nehmen die hardcoded von admin wenn keins verfügbar?
+// unser id als ini interlegen?
+// fetch also users ini form, wenn nichts - dann admins ini form
+// und wir speichern uns die ergatterte form separat um sie zu überschreiben 
+// und dananch zu edit und save in other table
+// muss aber einen check machen ob neue values inputs dazu gekommen sind
+// damit diese dann als neue ini form in possible_val table überschrieben wird
+
 
 
 // restructure
@@ -9,11 +46,28 @@
   // main charts / separate charts need blood and urin switch if i want to specify
   // does not count since we need it only to compare (urine hometests)
 
-
-
-
-
-
+  //done 
+  //add input field manually to get arr in bloodtestcontext extended
+    // fix for multiple adds
+    // -> BloodtestContext.js
+      // -> getInitialForm -> sets form -> that sends new values to db is there
+      // which has func resetNewList -> sets form from Form.js to add new inputs to db
+    //auth
+      //no auto login into the gmail connected mail from browser, instead choosing option
+    // keywordmapping in blood context - key to name renamed
+      //to align the ini form with name 
+    // added policy for possible_val to read admin ini form
+    //bloodtestcontext
+      // fixed checkLimitSave for backend
+    //db extend
+      // possible__values compare admins arr to own
+        // step: in blood context mit resetNewList
+        // step: admin form ini saved in db
+        // step: compare admins form to current one
+        // next: add new form to own data if it differs
+          // - own possi
+          // - admin possi same?
+          // - add new/do nothing
 
 
 //todo
