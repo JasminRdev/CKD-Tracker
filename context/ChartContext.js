@@ -79,7 +79,8 @@ export const ChartProvider = ({ children }) => {
         console.log("testResults", testResults_func);
         setTestResults(testResults_func);
       };
-      fetchAndTransform();    
+      fetchAndTransform();  
+      console.log("hit chart ", getForm)  
   }, [dateFilter, chosenPetName, getForm]);
 
  
