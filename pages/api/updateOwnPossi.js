@@ -38,16 +38,14 @@ export default async function handler(req, res) {
     ? dbClient.auth.getUser()
     : { data: { user: null } });
 
-  const tableRow = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('possible_values')
-    .insert([{ 
-        user_id: user.id, 
-        id:tableRow,
+    .update([{ 
         inputValues: parsedForm,
         created_at : new Date(), 
-        pet: pet
-    }]) 
+    }])
+    .eq("user_id", user.id)
+    .eq("pet", pet) 
 
     if (error) {
       return res.status(400).json({ error: error.message })

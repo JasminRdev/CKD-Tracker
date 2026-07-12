@@ -111,6 +111,7 @@ h1{
     gap:30px 10px;
     padding-bottom: 300px;
     justify-content: center;
+    padding-top: 30px;
 }
 
 
@@ -512,12 +513,6 @@ h1{
 }
 
 
-
-.top-line{
-    padding:30px 10px;
-    border-top:1px solid rgb(73, 73, 73);
-    margin: 61px 37px 0 37px !important;
-}
 
 h2{
     display: flex;
@@ -945,8 +940,9 @@ h1{
 
 .form__add-input-overlay{
     position:fixed;
-    
-    z-index: 2;
+    z-index: 99;
+    overflow: auto;
+    height: 93vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

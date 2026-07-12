@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
+import { useFormStore } from "../app/stores/useFormStore";
+
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css'; 
@@ -70,19 +72,21 @@ ChartJS.register(
 );
 
 const Chart = () => {
+  
+  const { getForm } = useFormStore()
   const [searchValue, setSearchValue] = useState("")
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
   const [showLegend, setShowLegend] = useState(true)
 
-  const { form, chosenPetName } = useBloodTestContext();
+  const { chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
 
   // const allMetrics = ['a_kaliumVal', 'a_Kreatinin'];
-  const allMetrics = form.map(item => item.name); 
+  const allMetrics = getForm.map(item => item.name); 
   const [visibleMetrics, setVisibleMetrics] = useState(allMetrics);
   
   const toggleMetric = (metric) => {
@@ -93,14 +97,19 @@ const Chart = () => {
     );
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       setShowLegend(window.innerWidth > 600);
     };
     handleResize(); 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    
   }, []);
+
+  useEffect(() => {
+      setVisibleMetrics(allMetrics);
+  }, [chosenPetName, getForm]);
   
   // const datasetColors = {
   //   b_gesamtProteinVal: 'green',
@@ -273,11 +282,11 @@ const Chart = () => {
             })
             .map((metric) => {
               const normRanges = Object.fromEntries(
-                form.map(item => [
+                getForm.map(item => [
                   item.name, //keyword as lable
                   { 
-                    min: item.min ?? item.value + 50, 
-                    max: item.max ?? item.value - 50 
+                    min: item.min ?? ((Number(item.value) || 0) - 50),
+                    max: item.max ?? ((Number(item.value) || 0) + 50),
                   }
                 ])
               );
@@ -299,7 +308,6 @@ const Chart = () => {
               const yMin = range.min - (range.max-range.min)*0.3; 
               const yMax = range.max + (range.max-range.min)*0.3; 
               //range of min max val from blood test acceptance
-
               
               const options = {
                 maintainAspectRatio: false,
@@ -310,7 +318,7 @@ const Chart = () => {
                 },
                 plugins: {
                   datalabels: {
-                  color: "white",   
+                  color: "black",   
                   anchor: "end",
                   align: "top",
                   font: {
