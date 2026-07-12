@@ -109,6 +109,7 @@ const Chart = () => {
 
   useEffect(() => {
       setVisibleMetrics(allMetrics);
+      
   }, [chosenPetName, getForm]);
   
   // const datasetColors = {
@@ -281,15 +282,20 @@ const Chart = () => {
               return 0; // keep original order if both same
             })
             .map((metric) => {
+              const testResultVal =
+                Number(
+                  testResults.find((r) => r[metric] !== undefined && r[metric] !== null)?.[metric]
+                ) || 0;
+
               const normRanges = Object.fromEntries(
-                getForm.map(item => [
-                  item.name, //keyword as lable
-                  { 
-                    min: item.min ?? ((Number(item.value) || 0) - 50),
-                    max: item.max ?? ((Number(item.value) || 0) + 50),
-                  }
+                getForm.map((item) => [
+                  item.name,
+                  {
+                    min: item.min ?? (testResultVal - 50),
+                    max: item.max ?? (testResultVal + 50),
+                  },
                 ])
-              );
+              )
 
               const data = {
                 labels,

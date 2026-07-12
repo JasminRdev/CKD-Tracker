@@ -40,14 +40,7 @@
   // does not count since we need it only to compare (urine hometests)
 
 //done 
-  // fetch possible_values from db -> for the names and infos like minmax
-    // in chart.js -> instead of using hardcoded bloodtestcontext iniData
-    // and in bloodtest.js (uploadsite) -> for inputs/values 
-      // api -> getInputValues.js
-  // new input fix -> only once working so far
-    //added api for updating existing inputValues (possible_values)
-  // fix by adding new input and switch to chart, graph doesnt show or update new data
-    // added form/setForm as zustand store
+  // fix in sepa chart the visibility for out of range datas
 
 
 
@@ -90,6 +83,14 @@
 
 
 //old done
+  // fetch possible_values from db -> for the names and infos like minmax
+    // in chart.js -> instead of using hardcoded bloodtestcontext iniData
+    // and in bloodtest.js (uploadsite) -> for inputs/values 
+      // api -> getInputValues.js
+  // new input fix -> only once working so far
+    //added api for updating existing inputValues (possible_values)
+  // fix by adding new input and switch to chart, graph doesnt show or update new data
+    // added form/setForm as zustand store
   //add input field manually to get arr in bloodtestcontext extended
     // fix for multiple adds
     // -> BloodtestContext.js
