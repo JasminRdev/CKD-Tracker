@@ -1,9 +1,10 @@
 "use client"; 
 
 import { supabase } from '../app/lib/supabaseClient'
-
+import { useFormStore } from "../app/stores/useFormStore";
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { useBloodTestContext } from './BloodTestContext';
 const ChartContext = createContext();
 
 export const ChartProvider = ({ children }) => {
@@ -12,14 +13,17 @@ export const ChartProvider = ({ children }) => {
   //   { date: '01', Kreatinin: 139, Protein: 62.5, ...
   //   { date: '07', Kreatinin: 133, Protein: 62 },
   // ]);
+  
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
-  const [dateFilter, setDateFilter] = useState({startDate: "10.2009", endDate: "12.2028"})
+  const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
   const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
+  
+  const { getForm } = useFormStore()
   
   useEffect(() => {
     setDateRangeRaw([
-    new Date(2009, 12, 1), 
+    new Date(2000, 1, 1), 
     new Date(2029, 11, 20)
   ])
   }, [])
@@ -76,7 +80,7 @@ export const ChartProvider = ({ children }) => {
         setTestResults(testResults_func);
       };
       fetchAndTransform();    
-  }, [dateFilter, chosenPetName]);
+  }, [dateFilter, chosenPetName, getForm]);
 
  
   const formatMonthYear = (date) => {

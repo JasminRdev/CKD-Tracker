@@ -1,4 +1,10 @@
 // current
+  // edit form input for adjusting min max/ units etc
+
+// next (form.js)
+  // user based fetch possible values, if no own ones from pet, then get admins ini form - that the iniform and form sets in form
+  // remove input options 
+
     
   //db extend
     // possible values in bloodtest to db and fix up for blood and urine
@@ -25,19 +31,6 @@
       max: 12.5
     },
   ]
-//danach wenn nötig nach probe oder und material filtern
-// wenn user mehr inputs val hinzufügt wird dieses als ini schema benutzt ohne val wert
-// dann brauch jeder user ini form in db?
-// ja weil will hardcoded aus code raus haben
-// wir nehmen die hardcoded von admin wenn keins verfügbar?
-// unser id als ini interlegen?
-// fetch also users ini form, wenn nichts - dann admins ini form
-// und wir speichern uns die ergatterte form separat um sie zu überschreiben 
-// und dananch zu edit und save in other table
-// muss aber einen check machen ob neue values inputs dazu gekommen sind
-// damit diese dann als neue ini form in possible_val table überschrieben wird
-
-
 
 // restructure
   //urin and blood results can be mixed
@@ -46,28 +39,16 @@
   // main charts / separate charts need blood and urin switch if i want to specify
   // does not count since we need it only to compare (urine hometests)
 
-  //done 
-  //add input field manually to get arr in bloodtestcontext extended
-    // fix for multiple adds
-    // -> BloodtestContext.js
-      // -> getInitialForm -> sets form -> that sends new values to db is there
-      // which has func resetNewList -> sets form from Form.js to add new inputs to db
-    //auth
-      //no auto login into the gmail connected mail from browser, instead choosing option
-    // keywordmapping in blood context - key to name renamed
-      //to align the ini form with name 
-    // added policy for possible_val to read admin ini form
-    //bloodtestcontext
-      // fixed checkLimitSave for backend
-    //db extend
-      // possible__values compare admins arr to own
-        // step: in blood context mit resetNewList
-        // step: admin form ini saved in db
-        // step: compare admins form to current one
-        // next: add new form to own data if it differs
-          // - own possi
-          // - admin possi same?
-          // - add new/do nothing
+//done 
+  // fetch possible_values from db -> for the names and infos like minmax
+    // in chart.js -> instead of using hardcoded bloodtestcontext iniData
+    // and in bloodtest.js (uploadsite) -> for inputs/values 
+      // api -> getInputValues.js
+  // new input fix -> only once working so far
+    //added api for updating existing inputValues (possible_values)
+  // fix by adding new input and switch to chart, graph doesnt show or update new data
+    // added form/setForm as zustand store
+
 
 
 //todo
@@ -102,15 +83,6 @@
   //medical informations to tracked values - to high / to low consequences
 
 
-//done
-  //notification comp 
-    //add message for not logged user tries to delete document in doc comp
-    // fullfilled bloodtest comps delete admin
-    // fullfilled -,,- save data
-    //bloodtest comp upload result - with loading spinner
-  //doc edit file name api function
-  //blooftest comp
-    //refresh once data saved from bloodtest input
 
 // vet note
   // einheiten 
@@ -118,6 +90,27 @@
 
 
 //old done
+  //add input field manually to get arr in bloodtestcontext extended
+    // fix for multiple adds
+    // -> BloodtestContext.js
+      // -> getInitialForm -> sets form -> that sends new values to db is there
+      // which has func resetNewList -> sets form from Form.js to add new inputs to db
+    //auth
+      //no auto login into the gmail connected mail from browser, instead choosing option
+    // keywordmapping in blood context - key to name renamed
+      //to align the ini form with name 
+    // added policy for possible_val to read admin ini form
+    //bloodtestcontext
+      // fixed checkLimitSave for backend
+    //db extend
+      // possible__values compare admins arr to own
+        // step: in blood context mit resetNewList
+        // step: admin form ini saved in db
+        // step: compare admins form to current one
+        // next: add new form to own data if it differs
+          // - own possi
+          // - admin possi same?
+          // - add new/do nothing
   //bloodtest comp - rearrange ui and responsive design
   //bloodtest comp
     // added ux notifications by unfilled form  
