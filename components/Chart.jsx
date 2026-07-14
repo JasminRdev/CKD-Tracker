@@ -8,6 +8,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import TextField from '@mui/material/TextField';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import { useInView } from "react-intersection-observer";
 
 import { useFormStore } from "../app/stores/useFormStore";
 
@@ -32,9 +33,19 @@ import {
 import { Line } from 'react-chartjs-2';
 
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import SearchIcon from '@mui/icons-material/Search';
+import Autocomplete from "@mui/material/Autocomplete";
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import Button from '@mui/material/Button';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+
+import InputAdornment from "@mui/material/InputAdornment";
 
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useChartContext } from "../context/ChartContext";
+
+import { useSepaFilterStore } from "../app/stores/useSepaFilterStore";
+
 
 import PetNameInput from './fields/PetNameInput'
 
@@ -72,13 +83,16 @@ ChartJS.register(
 );
 
 const Chart = () => {
-  
+
   const { getForm } = useFormStore()
   const [searchValue, setSearchValue] = useState("")
+  const [searchSepaChart, setSearchSepaChart] = useState("");
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
   const [showLegend, setShowLegend] = useState(true)
+  
+  const { search, setSearch, filters, removeFilter, clearFilters, addFilter } = useSepaFilterStore()
 
   const { chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
@@ -88,7 +102,12 @@ const Chart = () => {
   // const allMetrics = ['a_kaliumVal', 'a_Kreatinin'];
   const allMetrics = getForm.map(item => item.name); 
   const [visibleMetrics, setVisibleMetrics] = useState(allMetrics);
-  
+
+  const { ref, inView } = useInView({
+    rootMargin: "80px 0px 0px 0px",
+    threshold: 0,
+  });
+
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) =>
       prev.includes(metric)
@@ -125,6 +144,7 @@ const Chart = () => {
     backgroundColor: datasetColors[metric],
     spanGaps: true 
   }));
+  
 
   const data = { labels, datasets };
 
@@ -137,7 +157,7 @@ const Chart = () => {
     {
       chosenPetName &&
       <div>
-        <div className='wrapper'>
+        <div className='wrapper' ref={ref}>
         <h1 className='identifier'>Main Chart</h1>
         <div className='chart-grand'>
           <div className="filter-container">
@@ -268,10 +288,108 @@ const Chart = () => {
           </div>
         </div>
       </div>
-      <div>
+      <div className="sepa-chart__wrapper" >
         <h1 className='identifier'>Separate Charts</h1>
+
+        <div 
+          
+          className={`filter-badge-wrapper ${inView ? "inView" : "outView"}`}
+        >
+          <div className='filter-badge-group'>
+            <div className='filter-badge-add'>
+              <Autocomplete
+                className='filter-badge-input'
+                freeSolo
+                options={allMetrics}
+                inputValue={search}
+                onInputChange={(event, newInputValue) => {
+                  setSearch(newInputValue);
+                }}
+                onChange={(event, value) => {
+                  if (value && !filters.includes(value.toLowerCase())) {
+                    addFilter(value.toLowerCase());
+                    setSearch("");
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Add multiple filter"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const value = search.trim().toLowerCase();
+
+                        if (value && !filters.includes(value)) {
+                          addFilter(value);
+                          setSearch("");
+                        }
+                      }
+                    }}
+                  />
+                )}
+              />
+              <Button 
+                variant="contained" 
+                onClick={() => {
+                  const value = search.trim().toLowerCase();
+                  if (value && !filters.includes(value)) {
+                    addFilter(value);
+                    setSearch("");
+                  }
+                }}
+                endIcon={<LibraryAddIcon />}>
+                <div className='filter-badge-text'>Add</div>
+              </Button>
+            </div>
+
+            <Button 
+              variant="outlined" 
+              onClick={clearFilters}
+              endIcon={<RemoveCircleIcon />}>
+              <div className='filter-badge-text'>Remove&nbsp;</div> all
+            </Button>
+
+          </div>
+          
+          <TextField 
+            id="standard-basic" 
+            label="Seach value" 
+            value={searchSepaChart}
+            onChange={(e) => setSearchSepaChart(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+        
+        <div className="filter-badges">
+          {filters.map((filter) => (
+            <Button 
+              variant="contained" 
+              key={filter}
+              onClick={() => removeFilter(filter)}
+              className="badge"
+              endIcon={<RemoveCircleIcon />}>
+              {filter}
+            </Button>
+          ))}
+        </div>
+
         <div className="separate-chart">
           {allMetrics
+            .filter((metric) =>
+              metric.toLowerCase().includes(searchSepaChart.toLowerCase())
+            )
+            .filter((metric) =>
+              filters.length === 0 ||
+              filters.some((filter) =>
+                metric.toLowerCase().includes(filter)
+              )
+            )
             .sort((a, b) => {
               const aHasData = testResults.some(r => r[a] !== undefined && r[a] !== null);
               const bHasData = testResults.some(r => r[b] !== undefined && r[b] !== null);
@@ -330,10 +448,6 @@ const Chart = () => {
                   font: {
                     weight: "bold",
                   },},
-                  title: {
-                    display: true,
-                    text: metric,
-                  },
                 },
                 scales: {
                   y: {
@@ -346,7 +460,6 @@ const Chart = () => {
 
               return (
                 <div key={metric} className="comp-wrapper">
-                  <h1 className='identifier'>Chart comp</h1>
                   <div key={metric} className="chart-wrapper ">
                     <Line data={data} options={options} />
                   </div>
