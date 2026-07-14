@@ -35,7 +35,6 @@ html{
 
 .comp-wrapper{
     border:rgba(131, 64, 64, 0.63) 3px solid;
-    margin:20px 0px;
     padding:10px;
     background-color: rgba(211, 209, 209, 0.301);
 }
@@ -53,6 +52,143 @@ h1{
 }
 
 
+
+.form__add-input{
+    align-items: center;
+    display: flex;
+    gap:10px;
+    margin: 20px 50px 0 50px !important;
+    justify-content: center;
+    color: var(--white);
+    background-color: var(--darkGreen) !important;
+}
+
+.form__add-wrapper{
+    flex: 1 1 100%; 
+    display: flex;
+    justify-content: center; 
+}
+
+.form__add-input-overlay{
+    position:fixed;
+    z-index: 99;
+    overflow: auto;
+    height: 93vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    background: white;
+    display: grid;
+    width: 500px;
+    max-width: calc(100vw - 32px);
+    gap: 10px;
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid;
+}
+
+.form__add-input-overlay h3{
+    margin:5px 0 8px;
+
+}
+
+.form__add-btn-wrapper{
+    display:flex;
+    margin-top:20px;
+    gap:6px;
+    width: fit-content;
+    justify-content: space-between;
+    width: 100%;
+     
+}
+
+
+.form__add-btn{
+    height: fit-content;
+    align-self: center;
+    display:flex;
+    gap:5px;
+}
+
+.form__add-btn.save{
+    color: var(--white);
+    background-color: var(--darkGreen) !important;
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+
+
+.sepa-chart__wrapper{
+    padding:30px;
+    border-top: 3px solid var(--lightGreen);
+    
+    margin: calc(3% + 20px);
+}
+
+.sepa-chart__wrapper .identifier{
+    margin:0 0 30px 0;
+}
+
+.filter-badge-wrapper{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+}
+
+.filter-badge-group{
+    display:flex;
+    gap:20px;    
+    white-space: nowrap;
+    align-items: center;
+}
+
+.filter-badge-add{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-badge-input{
+    width: 200px;
+}
+
+.filter-badges{
+    display: flex;
+    gap: 4px;
+    margin: 20px;
+    flex-direction: row-reverse;
+    justify-content: center;
+    left: 0;
+    overflow-y: auto;
+}
+
+.filter-badge-wrapper.outView{
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    left: 0;
+    background: var(--white);
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    width: 100vw;
+}
+
+.filter-badges button {
+    
+    min-width: max-content;
+}
+
+.filter-badge-wrapper.outView + .filter-badges{
+    position: fixed;
+    bottom: 105px;
+    left: 0;
+    width: 100vw;
+}
+
+
 @media (max-width: 844px) {
     .bloodtest-wrapper{
         grid-template-columns: 1fr;
@@ -66,6 +202,52 @@ h1{
     .bloodtest-upload-comps {
         height: auto !important;
     }
+
+    .chart-wrapper {
+        width: 156px;
+        height: 183px;
+    }
+
+    .sepa-chart__wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .separate-chart{
+        gap:20px;
+    }
+    
+    .filter-badge-wrapper.inView,
+    .filter-badge-wrapper.outView{
+        display: grid;
+        gap: 21px;
+        padding: 11px;
+        bottom: 0;
+        left: 0;
+        background: var(--white);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    
+    .filter-badge-wrapper.outView{
+        position: fixed;
+    }
+
+    .filter-badge-wrapper.outView + .filter-badges{
+        position: fixed;
+        bottom: 135px;
+        left: 0;
+        width: 100vw;
+    }
+        
+    
+    .filter-badge-wrapper.inView + .filter-badges{
+        width: 100vw;
+    }
+        
+
+    .filter-badge-text {
+        display: none;
+    }
+
 }
 
 .bloodtest-upload-comps{
@@ -119,6 +301,10 @@ h1{
 .identifier{
     color:var(--pink);
     grid-column: 1 / -1;
+    font-size: 40px;
+    white-space: nowrap;
+    
+    margin: 30px;
 }
 
 .calender{
@@ -508,6 +694,11 @@ h1{
     
     .notifocation-message-abs p svg{
         margin-bottom: 4px;
+    }
+
+    
+    .identifier{
+        font-size: 32px;
     }
 
 }
@@ -919,70 +1110,4 @@ h1{
         border: none;
     }
 
-}
-
-
-.form__add-input{
-    align-items: center;
-    display: flex;
-    gap:10px;
-    margin: 20px 50px 0 50px !important;
-    justify-content: center;
-    color: var(--white);
-    background-color: var(--darkGreen) !important;
-}
-
-.form__add-wrapper{
-    flex: 1 1 100%; 
-    display: flex;
-    justify-content: center; 
-}
-
-.form__add-input-overlay{
-    position:fixed;
-    z-index: 99;
-    overflow: auto;
-    height: 93vh;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    background: white;
-    display: grid;
-    width: 500px;
-    max-width: calc(100vw - 32px);
-    gap: 10px;
-    padding: 20px;
-    border-radius: 4px;
-    border: 1px solid;
-}
-
-.form__add-input-overlay h3{
-    margin:5px 0 8px;
-
-}
-
-.form__add-btn-wrapper{
-    display:flex;
-    margin-top:20px;
-    gap:6px;
-    width: fit-content;
-    justify-content: space-between;
-    width: 100%;
-     
-}
-
-
-.form__add-btn{
-    height: fit-content;
-    align-self: center;
-    display:flex;
-    gap:5px;
-}
-
-.form__add-btn.save{
-    color: var(--white);
-    background-color: var(--darkGreen) !important;
-    padding-left: 35px;
-    padding-right: 35px;
 }
