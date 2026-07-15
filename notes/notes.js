@@ -40,13 +40,7 @@
   // does not count since we need it only to compare (urine hometests)
 
 //done 
-  // add search + filter badges in sepa chart with zustand
-    //ui ux to improve
-      //sticky version with ref and observer 
-      //filter search offers autocompllete
-      //removable filter badges in one go or single
-
-
+ 
 //todo
   //dringend: 
     //charts - compare function 
@@ -86,6 +80,11 @@
 
 
 //old done
+ // add search + filter badges in sepa chart with zustand
+    //ui ux to improve
+      //sticky version with ref and observer 
+      //filter search offers autocompllete
+      //removable filter badges in one go or single
   // fix in sepa chart the visibility for out of range datas
   // fetch possible_values from db -> for the names and infos like minmax
     // in chart.js -> instead of using hardcoded bloodtestcontext iniData

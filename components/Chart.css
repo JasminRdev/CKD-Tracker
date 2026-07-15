@@ -60,7 +60,7 @@
     display: flex;
     flex-wrap: wrap;
     gap:40px;
-    
+    margin-bottom: 100px;
     justify-content: center;
 }
 
