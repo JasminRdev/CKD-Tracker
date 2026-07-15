@@ -214,6 +214,7 @@ h1{
     }
     .separate-chart{
         gap:20px;
+        margin-bottom: 200px;
     }
     
     .filter-badge-wrapper.inView,
