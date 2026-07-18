@@ -19,6 +19,8 @@ import DoneIcon from '@mui/icons-material/Done';
 
 import AddIcon from '@mui/icons-material/Add';
 import MenuItem from '@mui/material/MenuItem';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import dayjs from 'dayjs';
 
@@ -28,7 +30,6 @@ import './style.css';
 import PetNameInput from './fields/PetNameInput'
 
 import { useBloodTestContext } from "../context/BloodTestContext";
-import { useFormState } from 'react-dom';
 
 export default function Form() {
   const { file, chosenPetName , resetFileComp
@@ -41,6 +42,7 @@ export default function Form() {
   const [valueDate, setValueDate] = useState(dayjs("2026-03-01"))
   const [selectedType, setSelectedType] = useState("Blood");
   const [openAddValue, setOpenAddValue] = useState(false);
+  const [deleteOffering, setDeleteOffering] = useState(false)
   const testType = [
     {
       value: 'Blood',
@@ -67,7 +69,7 @@ export default function Form() {
   const { getForm, setForm } = useFormStore()
   const [newInput, setNewInput] = useState(iniNewInput);
 
-  const handleChange = (name, newValue) => {
+  const addValueToForm = (name, newValue) => {
     const numericValue = newValue === "" ? "" : parseFloat(newValue);
     setForm((prev) =>
       prev.map((field) =>
@@ -76,14 +78,14 @@ export default function Form() {
           : field
       )
     );
-    // setForm((prev) =>
-    //   prev.map((field) =>
-    //     field.name === name ? { ...field, value: numericValue } : field
-    //   )
-    // );
   };
 
-
+  
+  const removeValueFromForm = async(name) => {
+    const newForm = getForm.filter((field) => field.name !== name);
+    setForm(newForm);
+    await resetNewList(newForm); //update db with removed val in possible values
+  };
 
 
   //upload file to supabase storage
@@ -257,29 +259,47 @@ export default function Form() {
             className='box'
         >
             {getForm && getForm.map((f) => (
-                <TextField
-                    key={f.name}
-                    label={f.name}
-                    type="number"
-                    slotProps={{
-                      input: {
-                        step: "0.01", // allow decimals
-                      },
-                    }}
-                    value={f.value}
-                    onChange={(e) => handleChange(f.name, e.target.value)}
-                    variant="outlined"
-                    focused={f.value == ""}
-                />
+              <>
+                {!deleteOffering && 
+                  <TextField
+                      key={f.name}
+                      label={f.name}
+                      type="number"
+                      slotProps={{
+                        input: {
+                          step: "0.01", // allow decimals
+                        },
+                      }}
+                      value={f.value}
+                      onChange={(e) => addValueToForm(f.name, e.target.value)}
+                      variant="outlined"
+                      focused={f.value == ""}
+                  />
+                }
+                {deleteOffering && 
+                  <div className='form__delete-btn' key={f.name+"1"} onClick={() => removeValueFromForm(f.name)}>
+                  Remove {f.name} <RemoveCircleIcon />
+                  </div>
+                }
+            </>
             ))}
               <div className="form__add-wrapper">
                 <Button 
-                  className="button-save-db form__add-input"
+                  className="button-save-db form__add-input form__value-input"
                   onClick={() => setOpenAddValue(true)}
                   variant="contained"
                   sx={{ color: '#fff' }} 
                 >
                   Add Value <AddIcon />
+                </Button>
+                
+                <Button 
+                  className="button-save-db form__del-input form__value-input"
+                  onClick={() =>  setDeleteOffering((prev) => !prev)}
+                  variant="contained"
+                  sx={{ color: '#fff' }} 
+                >
+                  {deleteOffering ? "Done" : "Remove Value"} <DeleteIcon />
                 </Button>
 
                {openAddValue && (
