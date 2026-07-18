@@ -26,6 +26,9 @@ export const BloodTestProvider = ({ children }) => {
 
   
   const { getForm, setForm } = useFormStore()
+  // useFormStore.subscribe((state) => {
+  //   console.log("Form updated:", state.getForm);
+  // });
   
     //this arr for db ini 
   const [getInitialForm, setIniForm] = useState()
@@ -43,11 +46,7 @@ export const BloodTestProvider = ({ children }) => {
       return json.data;
     };
 
-
-    // const [form, setForm] = useState([]);
-
     const resetForm = () => {
-      // setForm(getInitialForm)
       setForm(getInitialForm)
     }
 
@@ -152,12 +151,23 @@ export const BloodTestProvider = ({ children }) => {
 
     }
 
-    function resetNewList (){
-      let getAgainIniForm = getForm.map(field => ({
-        ...field,
-        value: ""
-      }));
-      handleNewIniForm(getAgainIniForm);
+    function resetNewList (currentForm){
+      //only becouse form was one step behind in updating .. fix for refactoring?
+      if(currentForm){
+
+        let getAgainIniForm = currentForm.map(field => ({
+          ...field,
+          value: ""
+        }));
+        handleNewIniForm(getAgainIniForm);
+      } else {
+
+        let getAgainIniForm = getForm.map(field => ({
+          ...field,
+          value: ""
+        }));
+        handleNewIniForm(getAgainIniForm);
+      }
     }
 
     //Chart Comp

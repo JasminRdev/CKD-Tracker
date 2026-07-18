@@ -40,6 +40,7 @@
   // does not count since we need it only to compare (urine hometests)
 
 //done 
+  // del value in form input - form.js from possible_values db
  
 //todo
   //dringend: 
