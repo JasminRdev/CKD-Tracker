@@ -67,6 +67,8 @@ export default function Form() {
   }
 
   const { getForm, setForm } = useFormStore()
+  
+  const [valueToRemoveInBetween, setValueToRemoveInBetween] = useState([]);
   const [newInput, setNewInput] = useState(iniNewInput);
 
   const addValueToForm = (name, newValue) => {
@@ -81,10 +83,14 @@ export default function Form() {
   };
 
   
-  const removeValueFromForm = async(name) => {
-    const newForm = getForm.filter((field) => field.name !== name);
-    setForm(newForm);
-    await resetNewList(newForm); //update db with removed val in possible values
+  const removeValueFromForm = async() => {
+    if(valueToRemoveInBetween.length){
+      const newForm = getForm.filter(
+        (field) => !valueToRemoveInBetween.includes(field.name)
+      );
+      setForm(newForm);
+      await resetNewList(newForm); //update db with removed val in possible values
+    }
   };
 
 
@@ -277,7 +283,17 @@ export default function Form() {
                   />
                 }
                 {deleteOffering && 
-                  <div className='form__delete-btn' key={f.name+"1"} onClick={() => removeValueFromForm(f.name)}>
+                  <div   
+                    className={`form__delete-btn ${
+                    valueToRemoveInBetween.includes(f.name) ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setValueToRemoveInBetween((prev) =>
+                        prev.includes(f.name)
+                          ? prev.filter((name) => name !== f.name) // deseltec it
+                          : [...prev, f.name] // select it
+                      );
+                    }}>
                   Remove {f.name} <RemoveCircleIcon />
                   </div>
                 }
@@ -295,11 +311,14 @@ export default function Form() {
                 
                 <Button 
                   className="button-save-db form__del-input form__value-input"
-                  onClick={() =>  setDeleteOffering((prev) => !prev)}
+                  onClick={() =>  {
+                    setDeleteOffering((prev) => !prev)
+                    removeValueFromForm();
+                  }}
                   variant="contained"
                   sx={{ color: '#fff' }} 
                 >
-                  {deleteOffering ? "Done" : "Remove Value"} <DeleteIcon />
+                  {deleteOffering ? "Confirm Delete" : "Remove Value"} <DeleteIcon />
                 </Button>
 
                {openAddValue && (
