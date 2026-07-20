@@ -94,9 +94,9 @@ h1{
     
 }
 
-.form__delete-btn:active {
-    opacity: .6;
-    
+
+.form__delete-btn.selected{
+    background:var(--lightGreen);
 }
 
 .form__del-input{
