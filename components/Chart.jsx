@@ -39,13 +39,19 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import Button from '@mui/material/Button';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
+
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+
+
 import InputAdornment from "@mui/material/InputAdornment";
 
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { useChartContext } from "../context/ChartContext";
 
 import { useSepaFilterStore } from "../app/stores/useSepaFilterStore";
-
 
 import PetNameInput from './fields/PetNameInput'
 
@@ -84,18 +90,34 @@ ChartJS.register(
 
 const Chart = () => {
 
-  const { getForm } = useFormStore()
+  const { getForm, setForm } = useFormStore()
   const [searchValue, setSearchValue] = useState("")
   const [searchSepaChart, setSearchSepaChart] = useState("");
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
   const [sideMenuOption, setSideMenuOption] = useState(rawSideMenuOption[0])
   const [filterSpanOpen, setFilterSpanOpen] = useState(false)
   const [showLegend, setShowLegend] = useState(true)
+  const [openEditValue, setOpenEditValue] = useState(false);
+  const [ editOffering, setEditOffering ] = useState(false)
+  const [ selectedOldPossi, setSelectedOldPossi ] = useState("")
+  
+  
+  let iniEditInput = {
+    name: "",
+    keyword: "",
+    probe: "",
+    material: "",
+    datum:"",
+    min:null,
+    max:null,
+    unit:"",
+  }
+  const [editInput, setEditInput] = useState(iniEditInput);
   
   const { search, setSearch, filters, removeFilter, clearFilters, addFilter } = useSepaFilterStore()
 
   const { chosenPetName } = useBloodTestContext();
-  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
+  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors, rawDatas, setRawDatas, updatePossi } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
 
@@ -107,6 +129,8 @@ const Chart = () => {
     rootMargin: "80px 0px 0px 0px",
     threshold: 0,
   });
+
+
 
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) =>
@@ -130,11 +154,84 @@ const Chart = () => {
       setVisibleMetrics(allMetrics);
       
   }, [chosenPetName, getForm]);
+
+
+  async function editInputToFormAndUpdateTestResults() {
+
+    //this must update possi dn#
+    setForm(prev =>
+      prev.map(item =>
+        item.name === selectedOldPossi.name
+          ? { ...item, ...editInput }
+          : item
+      )
+    );
+
+    //runs auto by contexts useEffect with getForm
+    // await updatePossi(currentForm)
+
+    //restart form and remove overlay
+    setOpenEditValue(false)
+    setEditInput(iniEditInput)
+    // setEditOffering(false) //editmode
+
+
+    //info
+    // // setForm(prev => [
+    // //   ...prev,
+    // //   {
+    // //     name: "testNew",
+    // //     value: "999999",
+    // //     keyword: ["KreaTest"],
+    // //     probe: "Labor",
+    // //     material: "Urin",
+    // //     datum: "2022-05-14"
+    // // +min max
+    // //   }
+    // // ])
+    // console.log("form ", newForm)
+    
+    //vlt nicht nötig weil testresult fetch eh nur values ziehen muss anhand der namen
+    //now update old testresults with new keywords we just edited
+    // console.log("old raw ", rawDatas)
+    // const updatedRawDatas = rawDatas.map(group =>
+    //   group.map(item => {
+    //     const obj = typeof item === "string" ? JSON.parse(item) : item;
+
+    //     if (obj.name === selectedOldPossi.name) {
+    //       return JSON.stringify({
+    //         ...obj,
+    //         ...editInput
+    //       });
+    //     }
+
+    //     return item;
+    //   })
+    // );
+    // // console.log("new raw:", updatedRawDatas);
+    // setRawDatas(updatedRawDatas);
+  }
   
   // const datasetColors = {
   //   b_gesamtProteinVal: 'green',
   //   a_Kreatinin: 'pink'
   // };
+
+
+
+  function fillPossiValInForm (name) {
+    let selected = getForm.find(possiVal => possiVal.name === name);
+    console.log("hittttt ", selected)
+    if (selected) {
+      setSelectedOldPossi(selected)
+      setEditInput({
+        ...iniEditInput,
+        ...selected
+      });
+    }
+  }
+
+
   const datasetColors = generateColors(allMetrics);
 
   const datasets = visibleMetrics.map((metric) => ({
@@ -293,7 +390,7 @@ const Chart = () => {
 
         <div 
           
-          className={`filter-badge-wrapper ${inView ? "inView" : "outView"}`}
+          className={`filter-badge-wrapper z-10 ${inView ? "inView" : "outView"}`}
         >
           <div className='filter-badge-group'>
             <div className='filter-badge-add'>
@@ -366,7 +463,7 @@ const Chart = () => {
           />
         </div>
         
-        <div className="filter-badges">
+        <div className="filter-badges z-10">
           {filters.map((filter) => (
             <Button 
               variant="contained" 
@@ -378,6 +475,137 @@ const Chart = () => {
             </Button>
           ))}
         </div>
+
+        {openEditValue && (
+          <div className='form__add-input-overlay'>
+            <h3>Edit input informations</h3>
+            <TextField
+              label="Name"
+              value={editInput.name}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  name: e.target.value,
+                })
+              }
+              variant="outlined"
+              required
+              disabled
+            />
+            <TextField
+              label="Keyword, that can be recognized from the image"
+              value={editInput.keyword}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  keyword: e.target.value,
+                })
+              }
+              variant="outlined"
+              disabled
+            />
+            <TextField
+              label="Probe, like lab or homekit"
+              value={editInput.probe}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  probe: e.target.value,
+                })
+              }
+              variant="outlined"
+              required
+            />
+            <TextField
+              label="Material (Blood/Urine)"
+              value={editInput.material}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  material: e.target.value,
+                })
+              }
+              variant="outlined"
+              required
+            />
+            <TextField
+              label="Today's date"
+              value={editInput.datum}
+              variant="outlined"
+              required
+              disabled
+            />
+            <TextField
+              label="Min toleranz"
+              type="number"
+              value={editInput.min ?? ""}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  min: e.target.value === "" ? null : Number(e.target.value),
+                })
+              }
+              variant="outlined"
+            />
+            <TextField
+              label="Max toleranz"
+              type="number"
+              value={editInput.max ?? ""}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  max: e.target.value === "" ? null : Number(e.target.value),
+                })
+              }
+              variant="outlined"
+            />
+            <TextField
+              label="Unit (mg/dl.. etc)"
+              value={editInput.unit ?? ""}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  unit: e.target.value,
+                })
+              }
+              variant="outlined"
+            />
+            <div className='form__add-btn-wrapper'>
+            <Button 
+                className="form__add-btn save"
+                onClick={() => editInputToFormAndUpdateTestResults()}
+                variant="contained"
+                sx={{ color: '#fff' }} 
+              >
+                Save <DoneIcon />
+              </Button>
+              <Button 
+                className="form__add-btn"
+                onClick={() => {
+                  setEditInput(iniEditInput)
+                  setOpenEditValue(false)
+                }}
+                variant="contained"
+                sx={{ color: '#fff' }} 
+              >
+                Close <CloseIcon />
+              </Button>
+            </div>
+          </div>
+        )}
+                      
+
+        <div className={`edit-possi z-10 ${inView ? "inView" : "outView"}`}>
+          <Button 
+            className="sepaChart__edit-input form__add-input form__value-input"
+            onClick={() => setEditOffering((prev) => !prev)}
+            variant="contained"
+            sx={{ color: '#fff' }} 
+          >
+            { editOffering ? "Exit edit mode" : "Edit Value"} <EditIcon />
+          </Button>
+        </div>
+
 
         <div className="separate-chart">
           {allMetrics
@@ -459,9 +687,21 @@ const Chart = () => {
               };
 
               return (
-                <div key={metric} className="comp-wrapper">
+                <div key={metric} className={`comp-wrapper ${editOffering ? "edit-mode" : ""}`}
+                >
+                  <div className={`edit-icon-hidden ${editOffering ? "edit-mode" : ""}`}>
+                    <EditIcon />
+                  </div>
                   <div key={metric} className="chart-wrapper ">
-                    <Line data={data} options={options} />
+                    <Line 
+                      data={data} 
+                      options={options} 
+                      onClick={() => {
+                        setOpenEditValue(true)
+                        // console.log("name like a_chloridVal:", metric);
+                        fillPossiValInForm(metric)
+                      }}
+                    />
                   </div>
                 </div>
               );

@@ -15,11 +15,31 @@ export const ChartProvider = ({ children }) => {
   // ]);
   
   const [testResults, setTestResults] = useState([])
+  const [rawDatas, setRawDatas] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
   const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
   
   const { getForm } = useFormStore()
+
+  async function updatePossi(){
+    let cleanedForm = getForm.map(field => ({
+        ...field,
+        value: ""
+      }));
+
+    //update new form to own possi
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
+
+    await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+  
   
   useEffect(() => {
     setDateRangeRaw([
@@ -45,6 +65,7 @@ export const ChartProvider = ({ children }) => {
   useEffect(() => {
     const fetchAndTransform = async () => {
       const rawData = await getBloodTestData();
+      setRawDatas(rawData.map(item => item.data))
       const testResults_func = rawData
         .filter(item => {
           const itemDate = new Date(item.test_date);
@@ -80,7 +101,8 @@ export const ChartProvider = ({ children }) => {
         setTestResults(testResults_func);
       };
       fetchAndTransform();  
-      console.log("hit chart ", getForm)  
+      console.log("hit chart ", getForm) 
+      updatePossi() 
   }, [dateFilter, chosenPetName, getForm]);
 
  
@@ -113,7 +135,8 @@ export const ChartProvider = ({ children }) => {
 
 
   return (
-    <ChartContext.Provider value={{ chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker }}>
+    <ChartContext.Provider value={{ rawDatas, setRawDatas,
+      chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker, updatePossi }}>
       {children}
     </ChartContext.Provider>
   );

@@ -1,5 +1,15 @@
 // current
-  // edit form input for adjusting min max/ units etc
+  //sepa chart
+    // edit sepa chart values input for adjusting min max/ units etc
+    // ui
+    // update db ->  
+      // müssen testresult fetch machen und alten wert raus und neue keywords rein    
+      // doch nicht weil testresult nur value und namen zieht sowieso
+  
+  //next now
+    // for add new possi we need to check if the name doesnt exist already,
+    // for deleting possi we need to del it also in test result as almost coded already in chartcontext 32
+
 
 // next (form.js)
   // user based fetch possible values, if no own ones from pet, then get admins ini form - that the iniform and form sets in form

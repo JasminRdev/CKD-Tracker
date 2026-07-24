@@ -34,11 +34,16 @@ export default function bloodTest() {
                 </div>
               }
               {loading && 
-                <div className="absoluteLoading">
-                  <div className='loadingIcon'>
-                    <CircularProgress size="6rem" />
+                <>
+                  <div className='absoluteLoading__text'> 
+                    Please wait, this may take a while
                   </div>
-                </div>
+                  <div className="absoluteLoading">
+                    <div className='loadingIcon'>
+                      <CircularProgress size="6rem" />
+                    </div>
+                  </div>
+                </>
               }
               <div className='bloodtest-wrapper'>
                 <Documents />

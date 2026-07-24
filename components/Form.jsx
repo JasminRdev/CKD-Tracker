@@ -59,7 +59,7 @@ export default function Form() {
     keyword: "",
     probe: "",
     material: "",
-    datum:"",
+    datum:new Date().toISOString().split("T")[0],
     min:null,
     max:null,
     unit:"",
@@ -342,7 +342,7 @@ export default function Form() {
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
-                          keyword: e.target.value,
+                          keyword: [e.target.value],
                         })
                       }
                       variant="outlined"
@@ -374,7 +374,7 @@ export default function Form() {
                     />
                     <TextField
                       label="Today's date"
-                      value={new Date().toLocaleDateString("en-GB").replace(/\//g, "-")}
+                      value={new Date().toISOString().split("T")[0]}
                       variant="outlined"
                       required
                       disabled
