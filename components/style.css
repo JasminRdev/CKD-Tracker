@@ -37,6 +37,37 @@ html{
     border:rgba(131, 64, 64, 0.63) 3px solid;
     padding:10px;
     background-color: rgba(211, 209, 209, 0.301);
+    
+    position: relative;
+}
+
+.comp-wrapper.edit-mode{
+    opacity: .7;
+    animation: wiggle 0.22s ease-in-out infinite alternate;
+}
+
+.edit-icon-hidden,
+.edit-icon-hidden *{
+    pointer-events:none;
+}
+
+.z-10{
+    
+    z-index: 10;
+}
+
+.edit-icon-hidden{
+    visibility: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%) scale(3);
+    left: 50%;
+    top: 50%;
+
+}
+
+.edit-icon-hidden.edit-mode{
+    visibility: visible;
+
 }
 
 h1{
@@ -114,6 +145,23 @@ h1{
     justify-content: center;
     color: var(--white);
     background-color: var(--darkGreen) !important;
+}
+
+.edit-possi{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    
+    position: relative;
+}
+
+
+.edit-possi.outView button{
+    margin: 0 !important;
+    margin-bottom: 10px !important;
+    position: fixed;
+    bottom: 189px;
+    left: 10px;
 }
 
 .form__add-wrapper{
