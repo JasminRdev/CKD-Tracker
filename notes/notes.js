@@ -1,15 +1,7 @@
 // current
-  //sepa chart
-    // edit sepa chart values input for adjusting min max/ units etc
-    // ui
-    // update db ->  
-      // müssen testresult fetch machen und alten wert raus und neue keywords rein    
-      // doch nicht weil testresult nur value und namen zieht sowieso
-  
-  //next now
-    // for add new possi we need to check if the name doesnt exist already,
-    // for deleting possi we need to del it also in test result as almost coded already in chartcontext 32
-
+    // refactor
+      // form.js post testresult only with its value anyway? since no keyword, minmax etc not needed and only confuses
+      // and also need to extend that in future anyway with original unit wert and normilized unit data wert
 
 // next (form.js)
   // user based fetch possible values, if no own ones from pet, then get admins ini form - that the iniform and form sets in form
@@ -50,9 +42,13 @@
   // does not count since we need it only to compare (urine hometests)
 
 //done 
-  //form.js 
-    //adjust del process, -> from instant del to selection and then agreeing to del
- 
+  // form.js and bloodcontext
+    // for deleting possi we need to del it also in testresult 
+  // ui form.js mobile with 2 inputs next to each
+  // ui notification mobile text fix
+  // form.js for add new possi we need to check if the name doesnt exist already,
+
+
 //todo
   //dringend: 
     //charts - compare function 
@@ -92,6 +88,14 @@
 
 
 //old done
+  //sepa chart
+      // edit sepa chart values input for adjusting min max/ units etc
+      // ui
+      // update db ->  
+        // müssen testresult fetch machen und alten wert raus und neue keywords rein    
+        // doch nicht weil testresult nur value und namen zieht sowieso
+  //form.js 
+    //adjust del process, -> from instant del to selection and then agreeing to del
  // del value in form input - form.js from possible_values db
  // add search + filter badges in sepa chart with zustand
     //ui ux to improve

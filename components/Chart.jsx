@@ -117,7 +117,7 @@ const Chart = () => {
   const { search, setSearch, filters, removeFilter, clearFilters, addFilter } = useSepaFilterStore()
 
   const { chosenPetName } = useBloodTestContext();
-  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors, rawDatas, setRawDatas, updatePossi } = useChartContext();
+  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
 

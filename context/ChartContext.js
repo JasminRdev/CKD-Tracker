@@ -15,7 +15,6 @@ export const ChartProvider = ({ children }) => {
   // ]);
   
   const [testResults, setTestResults] = useState([])
-  const [rawDatas, setRawDatas] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
   const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
@@ -65,7 +64,6 @@ export const ChartProvider = ({ children }) => {
   useEffect(() => {
     const fetchAndTransform = async () => {
       const rawData = await getBloodTestData();
-      setRawDatas(rawData.map(item => item.data))
       const testResults_func = rawData
         .filter(item => {
           const itemDate = new Date(item.test_date);
@@ -135,8 +133,8 @@ export const ChartProvider = ({ children }) => {
 
 
   return (
-    <ChartContext.Provider value={{ rawDatas, setRawDatas,
-      chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker, updatePossi }}>
+    <ChartContext.Provider value={{ getBloodTestData,
+      chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker }}>
       {children}
     </ChartContext.Provider>
   );
