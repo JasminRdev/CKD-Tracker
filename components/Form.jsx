@@ -33,7 +33,7 @@ import { useBloodTestContext } from "../context/BloodTestContext";
 
 export default function Form() {
   const { file, chosenPetName , resetFileComp
-    ,resetNewList, getDocsImg, resetForm, checkUsersLimit, getNames,resetInputForm} = useBloodTestContext();
+    ,resetNewList, handleNewIniForm, getDocsImg, resetForm, checkUsersLimit, getNames,resetInputForm} = useBloodTestContext();
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
       setNotification_warn, setLoading
@@ -66,9 +66,9 @@ export default function Form() {
     value:""
   }
 
-  const { getForm, setForm } = useFormStore()
+  const { getForm, setForm, valueToRemoveInBetween, setValueToRemoveInBetween } = useFormStore()
   
-  const [valueToRemoveInBetween, setValueToRemoveInBetween] = useState([]);
+  // const [valueToRemoveInBetween, setValueToRemoveInBetween] = useState([]);
   const [newInput, setNewInput] = useState(iniNewInput);
 
   const addValueToForm = (name, newValue) => {
@@ -89,7 +89,8 @@ export default function Form() {
         (field) => !valueToRemoveInBetween.includes(field.name)
       );
       setForm(newForm);
-      await resetNewList(newForm); //update db with removed val in possible values
+      // auto useeffect in bloodtestcontext
+      // await resetNewList(newForm); //update db with removed val in possible values
     }
   };
 
@@ -172,8 +173,8 @@ export default function Form() {
             } else {
               console.log('Data saved:', data)
 
-              //send new form to possible vals
-              await resetNewList();
+              //send new form to possible vals - happens auto with getForm update in bloodcontext
+              // await handleNewIniForm(); //resetNewList wars davor - refactored
               
               setNotification_warn(true)
               setNotification_warn_message("Successfull uploaded data - now included in the Chart")
@@ -200,10 +201,21 @@ export default function Form() {
 
     function addNewInputToForm() {
       setOpenAddValue(false)
-      setForm(prev => [
-        ...prev,
-        { ...newInput }
-      ]);
+      const alreadyExists = getForm.some(item => item.name === newInput.name);
+
+      if (alreadyExists) {
+        console.log("Name already exists");
+        
+        setNotification_warn(true)
+        setNotification_warn_message("Name already exists for this pet. Please choose another.")
+        setNotification_warn_color("warning")
+      } else {
+        setForm(prev => [
+          ...prev,
+          { ...newInput }
+        ]);
+      };
+
       // setForm(prev => [
       //   ...prev,
       //   { ...newInput }
@@ -221,7 +233,7 @@ export default function Form() {
       // +min max
       //   }
       // ])
-      console.log("updated ini ", getForm, openAddValue)
+      // console.log("updated ini ", getForm, openAddValue)
     }
 
   return (
@@ -268,6 +280,7 @@ export default function Form() {
               <>
                 {!deleteOffering && 
                   <TextField
+                      className='form__fillable'
                       key={f.name}
                       label={f.name}
                       type="number"
@@ -450,11 +463,6 @@ export default function Form() {
 
             <h2><Filter4RoundedIcon />Saving</h2>
             <div className='full-width'>
-              
-
-
-
-
               {
                 user  
                 ? (

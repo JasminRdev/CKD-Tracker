@@ -22,10 +22,10 @@ export const BloodTestProvider = ({ children }) => {
   
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
-  const { chosenPetName } = useChartContext();
+  const { chosenPetName, getBloodTestData } = useChartContext();
 
   
-  const { getForm, setForm } = useFormStore()
+  const { getForm, setForm, valueToRemoveInBetween, setValueToRemoveInBetween } = useFormStore()
   // useFormStore.subscribe((state) => {
   //   console.log("Form updated:", state.getForm);
   // });
@@ -68,6 +68,85 @@ export const BloodTestProvider = ({ children }) => {
       resetInputForm()
     },[])
 
+    
+    
+    useEffect(() => {
+      //these will be only used for adding new possi val, removing possi val and update removing/updating result names 
+      //if those get err in the proccess, this here still is working? -should be not or doesnt matter?
+      //then dont update getForm but doesnt work -> then another state that waites for approval from success saving?
+      //but not so neccessary bc for possi is not cirtical
+      //only for the result with stored val is problem, but once added/removed name in result while the doc img didnt work 
+        //its important to not send the val, otherwise with retry we have double the val for that day?, is problem so big to need to remove?
+      //so in the end, its not that mandatory
+      let cleanedForm = getForm.map(field => ({
+        ...field,
+        value: ""
+      }));
+
+      const updatePossiAndResults = async () => {
+        //form.js when del possi vals
+        await resetNewList(cleanedForm);   
+        // now remove also the testresult name 
+        await removeNameFromTestResults();
+        setValueToRemoveInBetween([]);  
+      };
+
+      if(valueToRemoveInBetween.length){
+        updatePossiAndResults(); //db
+      }
+      
+      //added new val to possi db from getForm
+      handleNewIniForm(cleanedForm)
+      
+    },[getForm])
+
+    async function resetNewList (cleanedForm){
+
+      //update new form to own possi
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
+
+      await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
+    async function removeNameFromTestResults(){
+      console.log(' ["mio", "test"] for example',valueToRemoveInBetween)
+
+      const { data: rows, error } = await supabase
+        .from("testResult_data")
+        .select("id, data")
+        .eq("pet", chosenPetName)
+        .eq("user_id", user.id);
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        //remove names from valuetoremoveinbetween in testresults
+        for (const row of rows) {
+          const updatedData = row.data.filter(item => {
+            const obj = JSON.parse(item);
+            return !valueToRemoveInBetween.includes(obj.name);
+          });
+
+          const { error: updateError } = await supabase
+            .from("testResult_data")
+            .update({ data: updatedData })
+            .eq("id", row.id);
+
+          if (updateError) {
+            console.error(updateError);
+          }
+        }
+    }
+
+    
     async function handleNewIniForm(cleanedForm) {
 
       const getPossibleValuesAdmin = async () => {
@@ -136,39 +215,11 @@ export const BloodTestProvider = ({ children }) => {
             },
           });
         }
-      } else {
-        //update new form to own possi
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
-
-        await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
+      } 
 
     }
 
-    function resetNewList (currentForm){
-      //only becouse form was one step behind in updating .. fix for refactoring?
-      if(currentForm){
 
-        let getAgainIniForm = currentForm.map(field => ({
-          ...field,
-          value: ""
-        }));
-        handleNewIniForm(getAgainIniForm);
-      } else {
-
-        let getAgainIniForm = getForm.map(field => ({
-          ...field,
-          value: ""
-        }));
-        handleNewIniForm(getAgainIniForm);
-      }
-    }
 
     //Chart Comp
   //     const testResults = [
@@ -450,7 +501,7 @@ export const BloodTestProvider = ({ children }) => {
 
   return (
     <BloodTestContext.Provider value={{ 
-      getNames, resetNewList,
+      getNames, resetNewList, handleNewIniForm,
     delDocs, editDocs, checkUsersLimit, bloodTestCompReset, resetInputForm,
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
