@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet } = req.query;
+  const { pet, testtype } = req.query;
   
   if (!pet) {
     return res.status(400).json({ error: "Pet name is required" });
@@ -28,6 +28,7 @@ export default async function handler(req, res) {
       )
     : publicClient; // Logged out user
 
+    console.log("hit testtype", testtype)
   // Now safely get user
   const {
     data: { user },
@@ -39,6 +40,7 @@ export default async function handler(req, res) {
     .from("testResult_data")
     .select("*")
     .eq("pet", pet)
+    .eq("test_type", testtype)
 
   if (error) return res.status(400).json({ error: error.message });
 

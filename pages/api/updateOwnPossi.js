@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet, form } = req.query;
+  const { pet, form, testtype } = req.query;
 
   let parsedForm;
   try {
@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     }])
     .eq("user_id", user.id)
     .eq("pet", pet) 
+    .eq("test_type", testtype)
 
     if (error) {
       return res.status(400).json({ error: error.message })

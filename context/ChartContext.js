@@ -4,11 +4,12 @@ import { supabase } from '../app/lib/supabaseClient'
 import { useFormStore } from "../app/stores/useFormStore";
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { useBloodTestContext } from './BloodTestContext';
+import useUser from '../app/lib/useUser'
 const ChartContext = createContext();
 
 export const ChartProvider = ({ children }) => {
 
+  const user = useUser();
   // setTestResults([
   //   { date: '01', Kreatinin: 139, Protein: 62.5, ...
   //   { date: '07', Kreatinin: 133, Protein: 62 },
@@ -19,20 +20,25 @@ export const ChartProvider = ({ children }) => {
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
   const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
   
-  const { getForm } = useFormStore()
+  const { getForm, selectedType } = useFormStore()
 
   async function updatePossi(){
     let cleanedForm = getForm.map(field => ({
         ...field,
         value: ""
       }));
+      //upload site
+      //this runs when we add new possi to existing row (update row)
+      // complete new row in possi
+      // or updating row by del something
+      //or in testresult if change attribute of value
 
     //update new form to own possi
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
 
-    await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+    await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,7 +57,7 @@ export const ChartProvider = ({ children }) => {
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
 
-    const res = await fetch(`/api/getTestResults?pet=${chosenPetName}`, {
+    const res = await fetch(`/api/getTestResults?pet=${chosenPetName}&testtype=${selectedType}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -64,6 +70,7 @@ export const ChartProvider = ({ children }) => {
   useEffect(() => {
     const fetchAndTransform = async () => {
       const rawData = await getBloodTestData();
+      console.log("hit raaa", rawData)
       const testResults_func = rawData
         .filter(item => {
           const itemDate = new Date(item.test_date);
@@ -100,7 +107,10 @@ export const ChartProvider = ({ children }) => {
       };
       fetchAndTransform();  
       console.log("hit chart ", getForm) 
-      updatePossi() 
+      if(!user) return
+      if(getForm.length){
+        updatePossi() 
+      }
   }, [dateFilter, chosenPetName, getForm]);
 
  

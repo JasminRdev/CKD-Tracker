@@ -14,6 +14,8 @@ export const LoadingProvider = ({ children }) => {
   const [notification_warn, setNotification_warn] = useState(false);
   const [notification_warn_color, setNotification_warn_color] = useState("")
   const [notification_warn_message, setNotification_warn_message] = useState("")
+  const [extra_message, setExtra_message] = useState(false)
+  const [extra_message_action, setExtra_message_action] = useState("")
   
   
   const user = useUser();
@@ -42,7 +44,9 @@ export const LoadingProvider = ({ children }) => {
       notification_warn_color, setNotification_warn_color,
       notification_warn, setNotification_warn, 
       loading, setLoading, showOverlay, 
-      setShowOverlay,overlayerElement, setOverlayerElement }}>
+      setShowOverlay,overlayerElement, setOverlayerElement,
+      extra_message, setExtra_message,
+      extra_message_action, setExtra_message_action }}>
       {children}
     </LoadingContext.Provider>
   );

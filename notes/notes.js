@@ -1,7 +1,48 @@
 // current
-    // refactor
-      // form.js post testresult only with its value anyway? since no keyword, minmax etc not needed and only confuses
-      // and also need to extend that in future anyway with original unit wert and normilized unit data wert
+  //unit calc 
+    //db with chosen unit and ori/normalized val 
+      // in possi (ori unit + factor) and result (ori unit + val, normalized val)
+      // for recalc func must bind those two tables..
+    //with saving existing possi val to result, always neccessary to fetch possis unit and its formular
+      // and then post to result the neutralized value and also ori value
+    // we cant change unit in possi but we can offer user to swich units in graph
+      // otherwise if we allow user to change oriUnit -> problems
+        // like has to update in all results and recalc their ori and neutralized vals
+  
+  // possi gets chosen unit that never changes
+    // chosenUnit (qmol/L)
+  // add db unit table + factor for each unit
+    // name (cre) unit (mg/dL) factor (88.4) offset (0) (((petname + userid + testtype)))
+    // name (cre) unit (qmol/L) factor (1) offset (0) (((petname + userid + testtype)))
+  // workflow
+    // scann values -> fill values + read unit -> does unit not exist -> ask user -> create unit? -> save unit -> able to save result
+    // before creating new unit 
+      // detected: mg/L
+      // Know units | x mg/dl | x qmol/L | 
+      // or | x add new unit |
+    // while checking unit (detected 1.4 mg/dL)
+      // findUnit("CRE", "mg/dL", petname, userId/adminId)
+      // normalized = value * factor (1.4 * 88.4)
+    // saving to testresult
+      // oriVal 124
+      // oriUnit "qmol/L"
+      // normalizedVal 124
+      // normalizedUnit "qmol/L"
+
+
+// info
+  // setNotification_warn(true)
+  // setNotification_warn_message("You have reached the limit of 4 uploads.")
+  // setNotification_warn_color("warning")
+
+  //https://ckd-tracker.vercel.app/
+                      
+                      
+
+//next form.js
+  // refactor
+    // form.js post testresult only with its value anyway? since no keyword, minmax etc not needed and only confuses
+    // and also need to extend that in future anyway with original unit wert and normilized unit data wert
 
 // next (form.js)
   // user based fetch possible values, if no own ones from pet, then get admins ini form - that the iniform and form sets in form
@@ -20,19 +61,6 @@
   // ☑ EDTA-Blut
   // ☑ Urin
 
-  const dbName = [
-    {
-      keyword: ["Leukozyten", "Leukoz"],
-      name: "c_leukozytenVal", //unique
-      wert: "",
-      einheit: "mg/dl", // erstmal vernachlässigen
-      probe: "Serum",
-      material: "Blut",
-      datum: "2022-05-14",
-      min: 3.9,
-      max: 12.5
-    },
-  ]
 
 // restructure
   //urin and blood results can be mixed
@@ -41,13 +69,25 @@
   // main charts / separate charts need blood and urin switch if i want to specify
   // does not count since we need it only to compare (urine hometests)
 
-//done 
-  // form.js and bloodcontext
-    // for deleting possi we need to del it also in testresult 
-  // ui form.js mobile with 2 inputs next to each
-  // ui notification mobile text fix
-  // form.js for add new possi we need to check if the name doesnt exist already,
+  
 
+//done 
+  // form.js
+    // template form button that fetches admins form 
+    // possi instant fetch of update, add or remove bug fix 
+  // bug fix, admins data untouchable, and avoid that del the whole possi into empty arr
+    // refactored
+      // possi db gets testtype + adds new row if new testtype (blood/urine) 
+      // btn form functions form.js use template form
+      // so in form and later in result they can be filtered based on with selectedtype 
+
+
+//important
+//behavoir to keep in mind
+  //upload site
+    //once added new value its saved to db without submitting testresult
+    //once removed an value, testresult must be submitted together in the process to update that form to db
+      //because in case we clear the form/template, we have no data anymore
 
 //todo
   //dringend: 
@@ -88,6 +128,11 @@
 
 
 //old done
+  // form.js and bloodcontext
+    // for deleting possi we need to del it also in testresult 
+  // ui form.js mobile with 2 inputs next to each
+  // ui notification mobile text fix
+  // form.js for add new possi we need to check if the name doesnt exist already,
   //sepa chart
       // edit sepa chart values input for adjusting min max/ units etc
       // ui
@@ -296,3 +341,54 @@
     // let c_monozyten; //immunzellen
     // let c_eosinophile; //immunzellen
     // let c_basophile; //immunzellen
+
+
+
+
+//     [
+//   "{\"name\":\"a_Kreatinin\",\"value\":\"\",\"keyword\":[\"Kreatinin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_kaliumVal\",\"value\":\"\",\"keyword\":[\"Kalium\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_kalziumVal\",\"value\":\"\",\"keyword\":[\"Kalzium\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_natriumVal\",\"value\":\"\",\"keyword\":[\"Natrium\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_chloridVal\",\"value\":\"\",\"keyword\":[\"Chlorid\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_albuminVal\",\"value\":\"\",\"keyword\":[\"Albumin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_eisenVal\",\"value\":\"\",\"keyword\":[\"Eisen\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_magnesiumVal\",\"value\":\"\",\"keyword\":[\"Magnesium\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_naKQuotientVal\",\"value\":\"\",\"keyword\":[\"Na-/K-Quotient\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_AGQuotientVal\",\"value\":\"\",\"keyword\":[\"Na-/K-Quotient\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_T4Val\",\"value\":\"\",\"keyword\":[\"T4\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_hämatokritVal\",\"value\":\"\",\"keyword\":[\"hämatokrit\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_retikulozytenVal\",\"value\":\"\",\"keyword\":[\"Retikulozyten\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_retHeVal\",\"value\":\"\",\"keyword\":[\"Ret-He\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_alphaAmylaseVal\",\"value\":\"\",\"keyword\":[\"Amylase\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_dggrLipaseVal\",\"value\":\"\",\"keyword\":[\"DGGR-Lipase\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_glukoseVal\",\"value\":\"\",\"keyword\":[\"Glucose\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_fuctosaminVal\",\"value\":\"\",\"keyword\":[\"Fructosamin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_triglyzerideVal\",\"value\":\"\",\"keyword\":[\"Triglyceride\",\"Trigiyceride\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_cholesterinVal\",\"value\":\"\",\"keyword\":[\"Cholesterin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_bilirubinVal\",\"value\":\"\",\"keyword\":[\"Bülrubin\",\"Bilirubin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_APVal\",\"value\":\"\",\"keyword\":[\"AP\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_GLDHVal\",\"value\":\"\",\"keyword\":[\"GLDH\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_GGTVal\",\"value\":\"\",\"keyword\":[\"G-GT\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_ALTVal\",\"value\":\"\",\"keyword\":[\"ALT\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_ASTVal\",\"value\":\"\",\"keyword\":[\"AST\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_CKVal\",\"value\":\"\",\"keyword\":[\"CK\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"b_gesamtProteinVal\",\"value\":\"\",\"keyword\":[\"Protein\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\",\"min\":57,\"max\":94}",
+//   "{\"name\":\"b_globulineVal\",\"value\":\"\",\"keyword\":[\"Globuline\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_neutrophileVal\",\"value\":\"\",\"keyword\":[\"Neutrophile\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_MCV\",\"value\":\"\",\"keyword\":[\"MCV\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"keyword\":[\"MCH\"],\"name\":\"c_MCH\",\"exclude\":\"MCHC\",\"value\":\"\",\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_MCHC\",\"value\":\"\",\"keyword\":[\"MCHC\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_hypochromasie\",\"value\":\"\",\"keyword\":[\"Hypochromasie\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"a_hämoglobinVal\",\"value\":\"\",\"keyword\":[\"hämaglobin\",\"hämoglobin\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"min\":108,\"max\":169,\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_erythrozytenVal\",\"value\":\"\",\"keyword\":[\"Erythrozyten\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"min\":7.2,\"max\":11,\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_leukozytenVal\",\"value\":\"\",\"keyword\":[\"Leukozyten\",\"Leukoz\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"min\":3.9,\"max\":12.5,\"datum\":\"2025-12-31\"}",
+//   "{\"name\":\"c_anisozytose\",\"keyword\":[\"Anisozytose\"],\"value\":\"\",\"probe\":\"Serum\",\"material\":\"Blut\"}",
+//   "{\"name\":\"Index (urin)\",\"value\":\"\",\"keyword\":[\"Index\"],\"probe\":\"Labor\",\"material\":\"Urin\",\"datum\":\"2022-05-14\",\"min\":0,\"max\":0.2}",
+//   "{\"name\":\"Calcium\",\"value\":\"\",\"keyword\":[\"Calcium\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2022-05-14\",\"min\":2.3,\"max\":3}",
+//   "{\"name\":\"Ca ionisiert\",\"value\":\"\",\"keyword\":[\"Ca ion\"],\"probe\":\"Serum\",\"material\":\"Blut\",\"datum\":\"2022-05-14\",\"min\":1.07,\"max\":1.47}",
+//   "{\"name\":\"Eiweiß (urin)\",\"value\":\"\",\"keyword\":[\"Eiweiß\"],\"probe\":\"Labor\",\"material\":\"Urin\",\"datum\":\"2022-05-14\"}",
+//   "{\"name\":\"Krea. (urin)\",\"value\":\"\",\"keyword\":[\"Krea\"],\"probe\":\"Labor\",\"material\":\"Urin\",\"datum\":\"2022-05-14\"}",
+//   "{\"name\":\"test\",\"value\":\"\",\"keyword\":[\"Krea\"],\"probe\":\"Labor\",\"material\":\"Urin\",\"datum\":\"2022-05-14\"}",
+//   "{\"name\":\"oooooo\",\"keyword\":[\"o\"],\"probe\":\"o\",\"material\":\"o\",\"datum\":\"2026-07-27\",\"min\":null,\"max\":null,\"unit\":\"\",\"value\":\"\"}"
+// ]
