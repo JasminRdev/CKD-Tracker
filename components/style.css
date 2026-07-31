@@ -194,6 +194,10 @@ h1{
 
 }
 
+.form__add-input-overlay-petname{
+    color: var(--darkGreen);
+}
+
 .form__add-btn-wrapper{
     display:flex;
     margin-top:20px;
@@ -220,7 +224,15 @@ h1{
 }
 
 
+.no-data span{
+    color: var(--blue);
+}
 
+.no-data {
+    
+    white-space: nowrap;
+    margin: 30px;
+}
 
 
 .sepa-chart__wrapper{
@@ -350,6 +362,11 @@ h1{
 
     .filter-badge-text {
         display: none;
+    }
+
+    
+    .with-more-options{
+        margin-right: 25px;
     }
 
 }
@@ -519,8 +536,10 @@ h1{
 }
 
 
-.petNameInput__wrapper{
+.mainChartFilter__wrapper{
     padding:50px 100px;
+    display:flex;
+    gap:5px;
 }
 
 .doc-container{
@@ -788,6 +807,36 @@ h1{
     top:-75px
 }
 
+
+.extra-message-wrapper{
+    transition: top 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+    background: var(--white);
+    
+    top: 70px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 0 50px;
+
+}
+
+.extra-message{
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--blue);
+}
+
+
+
 /* messages comp */
 @media (max-width: 508px) {
     .notifocation-message-abs p{
@@ -827,8 +876,49 @@ h2{
     margin: 7px 37px !important;
 }
 
+.with-more-options{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-right: 65px;
+    justify-content: space-between;
+    position: relative;
+}
+
+svg.more-options{
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    background: #fddf85;
+    padding: 4px;
+    box-sizing: content-box;
+    position: relative;
+
+}
+
+.more-options-button{
+    visibility: hidden;
+    gap: 10px;
+    display: grid;
+    position: absolute;
+    right: 0;
+    bottom: -100px;
+    background: var(--white);
+    padding: 12px 17px;
+    border-radius: 3px;
+    z-index: 9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
 
 
+.more-options:hover + .more-options-button,
+.more-options-button:hover{
+    visibility: visible;
+}
+
+
+.more-options:hover{
+    opacity: .7;
+}
 
 .menu-wrapper{
     display: flex;
@@ -1110,6 +1200,11 @@ h2{
         background: none;
         bottom: 0px;
         top: unset;
+    }
+
+    .mainChartFilter__wrapper{
+        display: grid;
+        gap: 20px;
     }
 
 }

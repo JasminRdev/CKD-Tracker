@@ -2,8 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet } = req.query
-  const { lookForAdminsMatch } = req.query
+  const { pet, testtype, lookForAdminsMatch } = req.query
 
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ")
@@ -49,6 +48,7 @@ export default async function handler(req, res) {
             .select("inputValues")
             .eq("user_id", user.id)
             .eq("pet", pet) 
+            .eq("test_type", testtype)
 
         res.status(200).json({ data: data });
     } catch (err){
@@ -62,6 +62,7 @@ export default async function handler(req, res) {
           .from("possible_values")
           .select("inputValues")
           .neq("user_id", user.id)
+          .eq("test_type", testtype)
 
           res.status(200).json({ data: data });
       } catch (err){
@@ -70,6 +71,7 @@ export default async function handler(req, res) {
           });
       }
   }
+
 }
 
 

@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet, form } = req.query;
+  const { pet, form, testtype } = req.query;
 
   let parsedForm;
   try {
@@ -46,7 +46,8 @@ export default async function handler(req, res) {
         id:tableRow,
         inputValues: parsedForm,
         created_at : new Date(), 
-        pet: pet
+        pet: pet,
+        test_type:testtype, 
     }]) 
 
     if (error) {

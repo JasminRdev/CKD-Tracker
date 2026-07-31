@@ -22,14 +22,13 @@ export const BloodTestProvider = ({ children }) => {
   
   const [extractedText, setExtractedText] = useState('')
   const [file, setFile] = useState(null)
-  const { chosenPetName, getBloodTestData } = useChartContext();
+  const { chosenPetName } = useChartContext();
 
   
-  const { getForm, setForm, valueToRemoveInBetween, setValueToRemoveInBetween } = useFormStore()
-  // useFormStore.subscribe((state) => {
-  //   console.log("Form updated:", state.getForm);
-  // });
-  
+  const { getForm, setForm, valueToRemoveInBetween, 
+    setValueToRemoveInBetween,
+    selectedType
+   } = useFormStore()
     //this arr for db ini 
   const [getInitialForm, setIniForm] = useState()
 
@@ -37,13 +36,30 @@ export const BloodTestProvider = ({ children }) => {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
 
-      const res = await fetch(`/api/getInputValues?pet=${chosenPetName}`, {
+      const res = await fetch(`/api/getInputValues?pet=${chosenPetName}&testtype=${selectedType}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const json = await res.json(); 
+      return json.data;
+    };
+
+    
+    const fetchInitialFormTemplate = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const res = await fetch(`/api/getInputValues?&testtype=${selectedType}&autoForm=true`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const json = await res.json();
-      return json.data;
+      
+      setIniForm(json.data) 
+      setForm(json.data)
+      console.log("data hit", json.data)
     };
 
     const resetForm = () => {
@@ -53,7 +69,7 @@ export const BloodTestProvider = ({ children }) => {
     function resetInputForm() {
       const fetchInputVal = async () => {
         let rawData = await fetchInitialForm();
-        // setForm(rawData)
+        console.log("raw ", rawData)
         setIniForm(rawData)
         setForm(rawData)
       }
@@ -62,7 +78,7 @@ export const BloodTestProvider = ({ children }) => {
       
     useEffect(() => {
       resetInputForm()
-    },[chosenPetName])
+    },[chosenPetName, selectedType])
     
     useEffect(() => {
       resetInputForm()
@@ -70,44 +86,37 @@ export const BloodTestProvider = ({ children }) => {
 
     
     
-    useEffect(() => {
-      //these will be only used for adding new possi val, removing possi val and update removing/updating result names 
-      //if those get err in the proccess, this here still is working? -should be not or doesnt matter?
-      //then dont update getForm but doesnt work -> then another state that waites for approval from success saving?
-      //but not so neccessary bc for possi is not cirtical
-      //only for the result with stored val is problem, but once added/removed name in result while the doc img didnt work 
-        //its important to not send the val, otherwise with retry we have double the val for that day?, is problem so big to need to remove?
-      //so in the end, its not that mandatory
-      let cleanedForm = getForm.map(field => ({
-        ...field,
-        value: ""
-      }));
-
-      const updatePossiAndResults = async () => {
-        //form.js when del possi vals
-        await resetNewList(cleanedForm);   
-        // now remove also the testresult name 
-        await removeNameFromTestResults();
-        setValueToRemoveInBetween([]);  
-      };
-
-      if(valueToRemoveInBetween.length){
-        updatePossiAndResults(); //db
-      }
+    // useEffect(() => {
+    //   if(!user)
+    //     return
       
-      //added new val to possi db from getForm
-      handleNewIniForm(cleanedForm)
-      
-    },[getForm])
+    //   let cleanedForm = getForm.map(field => ({
+    //     ...field,
+    //     value: ""
+    //   }));
+
+    //   const updatePossiAndResults = async () => {
+    //     //form.js when del possi vals
+    //     await resetNewList(cleanedForm);   
+    //     // now remove also the testresult name 
+    //     await removeNameFromTestResults();
+    //     setValueToRemoveInBetween([]);  
+    //   };
+
+    //   if(valueToRemoveInBetween.length){
+    //     updatePossiAndResults(); //db
+    //   }      
+    // },[getForm])
 
     async function resetNewList (cleanedForm){
-
+      if(!user) return
+      console.log("hit bloodtestcontext clean update ", cleanedForm)
       //update new form to own possi
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
 
-      await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+      await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -153,7 +162,7 @@ export const BloodTestProvider = ({ children }) => {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
 
-        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=true`, {
+        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=true&testtype=${selectedType}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -179,8 +188,17 @@ export const BloodTestProvider = ({ children }) => {
               );
             })
           );
+
+          let dbAdminFormNotEqual;
           const flatPossibleValAdmin = possibleValAdmin.flat();
-          const dbAdminFormNotEqual = cleanedForm.some(a => {
+
+          //if removed
+          if (cleanedForm.length !== flatPossibleValAdmin.length) {
+            dbAdminFormNotEqual = true;
+            return dbAdminFormNotEqual;
+          }
+          //id added new possi to form
+          dbAdminFormNotEqual = cleanedForm.some(a => {
             return !flatPossibleValAdmin.some(b => b.name === a.name);
           });
           // console.log("is NOT ------------ equal to aadmin form ", dbAdminFormNotEqual)
@@ -191,7 +209,7 @@ export const BloodTestProvider = ({ children }) => {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
 
-        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=false`, {
+        const res = await fetch(`/api/getPossibleVal?pet=${chosenPetName}&lookForAdminsMatch=false&testtype=${selectedType}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -209,7 +227,7 @@ export const BloodTestProvider = ({ children }) => {
           const token = session?.access_token;
           const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
 
-          await fetch(`/api/postOwnPossi?pet=${chosenPetName}&form=${encoded}`, {
+          await fetch(`/api/postOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -505,7 +523,7 @@ export const BloodTestProvider = ({ children }) => {
     delDocs, editDocs, checkUsersLimit, bloodTestCompReset, resetInputForm,
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
-      setSelectedImage, chosenPetName, savedPetNames, allNames,
+      setSelectedImage, chosenPetName, savedPetNames, allNames, fetchInitialFormTemplate,
       resetForm, resetFileComp, fileKey, file, setFile, handleExtractAndSave, extractedText, }}>
       {children}
     </BloodTestContext.Provider>

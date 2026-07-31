@@ -13,6 +13,7 @@ import { useInView } from "react-intersection-observer";
 import { useFormStore } from "../app/stores/useFormStore";
 
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import MenuItem from '@mui/material/MenuItem';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css'; 
 
@@ -89,8 +90,14 @@ ChartJS.register(
 );
 
 const Chart = () => {
+  
 
-  const { getForm, setForm } = useFormStore()
+  const { 
+    getForm, 
+    setForm,
+    testType,
+    selectedType,
+    setSelectedType } = useFormStore()
   const [searchValue, setSearchValue] = useState("")
   const [searchSepaChart, setSearchSepaChart] = useState("");
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
@@ -105,8 +112,6 @@ const Chart = () => {
   let iniEditInput = {
     name: "",
     keyword: "",
-    probe: "",
-    material: "",
     datum:"",
     min:null,
     max:null,
@@ -221,7 +226,7 @@ const Chart = () => {
 
   function fillPossiValInForm (name) {
     let selected = getForm.find(possiVal => possiVal.name === name);
-    console.log("hittttt ", selected)
+    console.log("selected ", selected)
     if (selected) {
       setSelectedOldPossi(selected)
       setEditInput({
@@ -247,8 +252,24 @@ const Chart = () => {
 
   return (
     <div> 
-       <div className='petNameInput__wrapper'>
+       <div className='mainChartFilter__wrapper'>
         <PetNameInput />
+        <TextField
+          className='input-wide'
+          select
+          label="Test type"
+          value={selectedType}
+          onChange={(e) => {
+              setSelectedType(e.target.value);
+          }}
+          // helperText="Please select your test type"
+          >
+          {testType.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+              {option.label}
+              </MenuItem>
+          ))}
+        </TextField>
       </div>
       
     {
@@ -339,8 +360,7 @@ const Chart = () => {
               )}
               
               <div className='button-rainbow-container'>
-
-                { allMetrics.map((metric) => (
+                { getForm && allMetrics.map((metric) => (
                   searchValue ? (metric.includes(searchValue) && <button
                     key={metric}
                     onClick={() => toggleMetric(metric)}
@@ -369,20 +389,30 @@ const Chart = () => {
               </div>
             </div>
           </div>
-          <div className={`chart-body ${!filterSpanOpen && "full-width"} `}>
-            <Line data={data}  options={{ maintainAspectRatio: false, 
-            plugins: {
-              legend: {
-                  display: showLegend,
-              },
-              colors: {
-                enabled: false
-              },
-              datalabels: {
-                color: "transparent",},}}
-              }
-            />
-          </div>
+          { getForm.length == 0 ? (
+            <>
+              <div className='no-data'>
+                No data from <span>{chosenPetName}</span> in test type <span>{selectedType}</span>
+              </div>
+            </>
+            ) : (
+            <>
+              <div className={`chart-body ${!filterSpanOpen && "full-width"} `}>
+                <Line data={data}  options={{ maintainAspectRatio: false, 
+                plugins: {
+                  legend: {
+                      display: showLegend,
+                  },
+                  colors: {
+                    enabled: false
+                  },
+                  datalabels: {
+                    color: "transparent",},}}
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div className="sepa-chart__wrapper" >
@@ -498,7 +528,7 @@ const Chart = () => {
               onChange={(e) =>
                 setEditInput({
                   ...editInput,
-                  keyword: e.target.value,
+                  keyword: [e.target.value],
                 })
               }
               variant="outlined"
@@ -608,7 +638,14 @@ const Chart = () => {
 
 
         <div className="separate-chart">
-          {allMetrics
+          { getForm.length == 0 && (
+            <>
+              <div className='no-data'>
+                No data from <span>{chosenPetName}</span> in test type <span>{selectedType}</span>
+              </div>
+            </>
+          )}
+          { getForm.length != 0 && allMetrics
             .filter((metric) =>
               metric.toLowerCase().includes(searchSepaChart.toLowerCase())
             )
