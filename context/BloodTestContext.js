@@ -27,86 +27,157 @@ export const BloodTestProvider = ({ children }) => {
   
   const { getForm, setForm, valueToRemoveInBetween, 
     setValueToRemoveInBetween,
-    selectedType
+    selectedType, setUsersUnits, usersUnits, newInput,newUnitForm, setNewUnitForm, iniNewUnitForm
    } = useFormStore()
+
+   async function addUnitToDB () {
+    console.log("addUnitToDB post")
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    await fetch(`/api/postUnit?pet=${chosenPetName}&testtype=${selectedType}&name=${newInput.name}&fromUnit=${newInput.unit}&settedUnit=${newInput.unit}&factor=1&offset=0`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setNewUnitForm(iniNewUnitForm)
+   }
+   
+  const getUnits = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch(`/api/getAllUsersUnits?pet=${chosenPetName}&testtype=${selectedType}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await res.json();
+    console.log("getUnits get", json.data)
+
+    setUsersUnits(json.data);
+  };
+  
+
     //this arr for db ini 
   const [getInitialForm, setIniForm] = useState()
 
-    const fetchInitialForm = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
+  async function addNewUnitToForm() {
+    let factor = Number(newUnitForm.calcForFactor)/1000;
+    console.log("addUnitToDB post to another unit ")
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
 
-      const res = await fetch(`/api/getInputValues?pet=${chosenPetName}&testtype=${selectedType}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const json = await res.json(); 
-      return json.data;
-    };
+    await fetch(`/api/postUnit?pet=${chosenPetName}&testtype=${selectedType}&name=${newUnitForm.name}&fromUnit=${newUnitForm.fromUnit}&settedUnit=${newUnitForm.settedUnit}&factor=${factor}&offset=0`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setNewUnitForm(iniNewUnitForm)
+  }
+
+  const fetchInitialForm = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch(`/api/getInputValues?pet=${chosenPetName}&testtype=${selectedType}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await res.json(); 
+    return json.data;
+  };
+
+  
+  const fetchInitialFormTemplate = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    const res = await fetch(`/api/getInputValues?&testtype=${selectedType}&autoForm=true`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await res.json();
+    
+    setIniForm(json.data) 
+    setForm(json.data)
+    console.log("data hit", json.data)
+  };
+
+  const resetForm = () => {
+    setForm(getInitialForm)
+  }
+
+  function resetInputForm() {
+    const fetchInputVal = async () => {
+      let rawData = await fetchInitialForm();
+      console.log("raw ", rawData)
+      setIniForm(rawData)
+      setForm(rawData)
+    }
+    fetchInputVal()
+  }
+    
+  useEffect(() => {
+    resetInputForm()
+    getUnits()
+  },[chosenPetName, selectedType])
+    
+  //when db api insert happend
+  useEffect(() => {
+    getUnits()
+  },[getForm])
+  
+  useEffect(() => {
+    resetInputForm()
+    getUnits()
+  },[])
 
     
-    const fetchInitialFormTemplate = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
+  async function removeNameFromUnits() {
+    console.log(' remove from unit too',valueToRemoveInBetween)
+    for (const nameToRemove of valueToRemoveInBetween) {
+      const { error } = await supabase
+        .from("units")
+        .delete()
+        .eq("name", nameToRemove)
+        .eq("pet", chosenPetName)
+        .eq("test_type", selectedType)
+        .eq("user_id", user.id);
 
-      const res = await fetch(`/api/getInputValues?&testtype=${selectedType}&autoForm=true`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const json = await res.json();
-      
-      setIniForm(json.data) 
-      setForm(json.data)
-      console.log("data hit", json.data)
-    };
-
-    const resetForm = () => {
-      setForm(getInitialForm)
-    }
-
-    function resetInputForm() {
-      const fetchInputVal = async () => {
-        let rawData = await fetchInitialForm();
-        console.log("raw ", rawData)
-        setIniForm(rawData)
-        setForm(rawData)
+      if (error) {
+        console.error(error);
+        return;
       }
-      fetchInputVal()
     }
-      
-    useEffect(() => {
-      resetInputForm()
-    },[chosenPetName, selectedType])
+  }
     
-    useEffect(() => {
-      resetInputForm()
-    },[])
-
+  useEffect(() => {
+    if(!user)
+      return
     
-    
-    // useEffect(() => {
-    //   if(!user)
-    //     return
-      
-    //   let cleanedForm = getForm.map(field => ({
-    //     ...field,
-    //     value: ""
-    //   }));
+    let cleanedForm = getForm.map(field => ({
+      ...field,
+      value: ""
+    }));
 
-    //   const updatePossiAndResults = async () => {
-    //     //form.js when del possi vals
-    //     await resetNewList(cleanedForm);   
-    //     // now remove also the testresult name 
-    //     await removeNameFromTestResults();
-    //     setValueToRemoveInBetween([]);  
-    //   };
+    const updatePossiAndResultsAndUnits = async () => {
+      //form.js when del possi vals
+      await resetNewList(cleanedForm);   
+      // now remove also the testresult name 
+      await removeNameFromTestResults();
+      // units have to be removed too
+      await removeNameFromUnits();
+      setValueToRemoveInBetween([]);  
+    };
 
-    //   if(valueToRemoveInBetween.length){
-    //     updatePossiAndResults(); //db
-    //   }      
-    // },[getForm])
+    if(valueToRemoveInBetween.length){
+      updatePossiAndResultsAndUnits(); //db
+
+    }      
+  },[getForm])
 
     async function resetNewList (cleanedForm){
       if(!user) return
@@ -157,7 +228,14 @@ export const BloodTestProvider = ({ children }) => {
 
     
     async function handleNewIniForm(cleanedForm) {
-
+      if(user == null){
+        setNotification_warn(true)
+        setNotification_warn_message("Please log in.")
+        setNotification_warn_color("warning")
+        
+        setLoading(false)
+        return
+      }
       const getPossibleValuesAdmin = async () => {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
@@ -232,9 +310,23 @@ export const BloodTestProvider = ({ children }) => {
               Authorization: `Bearer ${token}`,
             },
           });
+
+
+          // await fetch(`/api/postUnit?pet=${chosenPetName}&testtype=${selectedType}&name=${newInput.name}&fromUnit=${newInput.unit}&settedUnit=${newInput.settedUnit}&factor="1"&offset="0`, {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // });
         }
       } 
 
+
+      
+
+      // const json = await res.json();
+      // // return json.data;
+      // console.log("returns from post own possi ", json)
+      // console.log("returns data ", json.data)
     }
 
 
@@ -316,7 +408,7 @@ export const BloodTestProvider = ({ children }) => {
 
       getForm.forEach(({ keyword, name, exclude }) => {
         if (exclude && line.includes(exclude)) return;
-        if (keyword.some(k => line.includes(k))) {
+        if (keyword && keyword.some(k => line.includes(k))) {
           const field = getForm.find(f => f.name === name);
           if (field) field.value = Number(numMatch);
         }
@@ -524,7 +616,8 @@ export const BloodTestProvider = ({ children }) => {
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 
       setSelectedImage, chosenPetName, savedPetNames, allNames, fetchInitialFormTemplate,
-      resetForm, resetFileComp, fileKey, file, setFile, handleExtractAndSave, extractedText, }}>
+      resetForm, resetFileComp, fileKey, file, setFile, handleExtractAndSave,
+      extractedText, addUnitToDB, addNewUnitToForm, getUnits }}>
       {children}
     </BloodTestContext.Provider>
   );

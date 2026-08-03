@@ -18,14 +18,16 @@ export const ChartProvider = ({ children }) => {
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
-  const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
+  const [chosenPetName, setChosenPetName] = useState("unitTest");
   
-  const { getForm, selectedType } = useFormStore()
+  const { getForm, selectedType, newInput } = useFormStore()
 
   async function updatePossi(){
     let cleanedForm = getForm.map(field => ({
         ...field,
-        value: ""
+        value: "",
+        normalizedValue: "",
+        originalUnit: ""
       }));
       //upload site
       //this runs when we add new possi to existing row (update row)
@@ -70,7 +72,7 @@ export const ChartProvider = ({ children }) => {
   useEffect(() => {
     const fetchAndTransform = async () => {
       const rawData = await getBloodTestData();
-      console.log("hit raaa", rawData)
+      console.log("raaaw", rawData)
       const testResults_func = rawData
         .filter(item => {
           const itemDate = new Date(item.test_date);
@@ -91,13 +93,37 @@ export const ChartProvider = ({ children }) => {
 
           let result = { date: `${month}.${year}` };
           // Convert array of JSON strings to object
+          // item.data.forEach(str => {
+          //   const { name, value, normalizedValue } = JSON.parse(str);
+          //   if (value !== "") {
+          //     // convert to number if possible
+          //     const numValue = isNaN(value) ? value : parseFloat(value);
+          //     result[name] = numValue;
+          //   }
+            
+          //   // if (normalizedValue !== "") {
+          //   //   // convert to number if possible
+          //   //   const numValue = isNaN(normalizedValue) ? normalizedValue : parseFloat(normalizedValue);
+          //   //   result[name] = numValue;
+          //   // }
+          // });
           item.data.forEach(str => {
-            const { name, value } = JSON.parse(str);
+            const { name, value, normalizedValue } = JSON.parse(str);
 
-            if (value !== "") {
-              // convert to number if possible
-              const numValue = isNaN(value) ? value : parseFloat(value);
-              result[name] = numValue;
+            const resultValue = {};
+
+            if (value !== "" && value !== null && value !== undefined) {
+              resultValue.value = isNaN(value) ? value : parseFloat(value);
+            }
+
+            if (normalizedValue !== "" && normalizedValue !== null && normalizedValue !== undefined) {
+              resultValue.normalizedValue = isNaN(normalizedValue)
+                ? normalizedValue
+                : parseFloat(normalizedValue);
+            }
+
+            if (Object.keys(resultValue).length > 0) {
+              result[name] = resultValue;
             }
           });
           return result; 
@@ -106,7 +132,7 @@ export const ChartProvider = ({ children }) => {
         setTestResults(testResults_func);
       };
       fetchAndTransform();  
-      console.log("hit chart ", getForm) 
+      console.log("getForm and api update possi ", getForm) 
       if(!user) return
       if(getForm.length){
         updatePossi() 
@@ -114,6 +140,7 @@ export const ChartProvider = ({ children }) => {
   }, [dateFilter, chosenPetName, getForm]);
 
  
+
   const formatMonthYear = (date) => {
     if (!date) return "";
     const month = date.getMonth();
