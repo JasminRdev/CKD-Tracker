@@ -1,34 +1,83 @@
-// current
-  //unit calc 
-    //db with chosen unit and ori/normalized val 
-      // in possi (ori unit + factor) and result (ori unit + val, normalized val)
-      // for recalc func must bind those two tables..
-    //with saving existing possi val to result, always neccessary to fetch possis unit and its formular
-      // and then post to result the neutralized value and also ori value
-    // we cant change unit in possi but we can offer user to swich units in graph
-      // otherwise if we allow user to change oriUnit -> problems
-        // like has to update in all results and recalc their ori and neutralized vals
-  
-  // possi gets chosen unit that never changes
-    // chosenUnit (qmol/L)
-  // add db unit table + factor for each unit
-    // name (cre) unit (mg/dL) factor (88.4) offset (0) (((petname + userid + testtype)))
-    // name (cre) unit (qmol/L) factor (1) offset (0) (((petname + userid + testtype)))
-  // workflow
-    // scann values -> fill values + read unit -> does unit not exist -> ask user -> create unit? -> save unit -> able to save result
-    // before creating new unit 
-      // detected: mg/L
-      // Know units | x mg/dl | x qmol/L | 
-      // or | x add new unit |
-    // while checking unit (detected 1.4 mg/dL)
-      // findUnit("CRE", "mg/dL", petname, userId/adminId)
-      // normalized = value * factor (1.4 * 88.4)
-    // saving to testresult
-      // oriVal 124
-      // oriUnit "qmol/L"
-      // normalizedVal 124
-      // normalizedUnit "qmol/L"
+// add in form.js span.with-more-options back in when logic and data feeding is ready
+//  <TextField
+//                 className='input-wide'
+//                 select
+//                 label="Test type"
+//                 value={selectedType}
+//                 onChange={(e) => {
+//                     setSelectedType(e.target.value);
+//                 }}
+//                 // helperText="Please select your test type"
+//                 >
+//                 {testType.map((option) => (
+//                     <MenuItem key={option.value} value={option.value}>
+//                     {option.label}
+//                     </MenuItem>
+//                 ))}
+//               </TextField>
+//                <PetNameInput requiredByForm="true" />
 
+
+//             <span className='with-more-options'>
+//               <h2><Filter3RoundedIcon />Add/Edit Values </h2>  
+//               <MoreVertIcon
+//                 className='more-options'
+//               />
+//               <span className='more-options-button'>
+//                 <Button 
+//                   disabled={getForm.length === 0}
+//                   variant="contained"
+//                   sx={{ color: '#fff' }} 
+//                   onClick={(e) => {
+//                     e.preventDefault();
+//                     setForm([])
+//                   }}
+//                 >Delete all</Button>
+//                 <Button 
+//                   variant="contained"
+//                   sx={{ color: '#fff' }}
+//                   onClick={(e) => {
+//                     e.preventDefault();
+//                     if(!selectedType){
+//                         setNotification_warn(true)
+//                         setNotification_warn_message("Choose test type in step 2.")
+//                         setNotification_warn_color("warning")
+//                       return
+//                     }
+//                     fetchInitialFormTemplate()
+//                   }} 
+//                 >Use Template Form</Button>
+//               </span>
+//             </span>
+//and
+//  <Box
+//             component="form"
+//             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+//             noValidate
+//             autoComplete="off"
+//             className='box'
+//         >   
+//             { getForm.length == 0 &&
+              
+//               <Button 
+//                 variant="contained"
+//                 sx={{ color: '#fff' }}
+//                 onClick={(e) => {
+//                 e.preventDefault();
+//                 if(!selectedType){
+//                     setNotification_warn(true)
+//                     setNotification_warn_message("Choose test type in step 2.")
+//                     setNotification_warn_color("warning")
+//                   return
+//                 }
+//                 fetchInitialFormTemplate()
+//               }}
+//               >use template form</Button>
+
+//             }
+
+// current
+  // units admins have to be useable for users who dont have that unit saved for themself
 
 // info
   // setNotification_warn(true)
@@ -36,6 +85,9 @@
   // setNotification_warn_color("warning")
 
   //https://ckd-tracker.vercel.app/
+  
+  //icons
+  //➕
                       
                       
 
@@ -72,15 +124,14 @@
   
 
 //done 
-  // form.js
-    // template form button that fetches admins form 
-    // possi instant fetch of update, add or remove bug fix 
-  // bug fix, admins data untouchable, and avoid that del the whole possi into empty arr
-    // refactored
-      // possi db gets testtype + adds new row if new testtype (blood/urine) 
-      // btn form functions form.js use template form
-      // so in form and later in result they can be filtered based on with selectedtype 
-
+  // remove val in possi -> remove name in units too
+  //form.js shows for each possi options of units
+    //make it not save in the possi db so on reload the old data are not there still
+    //in chart is value from the getForm used and not the normalized one - admin uses only value and has no normilized -> use here in that showcase the value
+    //ini add possi with units in form.js
+    //and new unit function options 
+    //unit calc 
+  
 
 //important
 //behavoir to keep in mind
@@ -128,6 +179,15 @@
 
 
 //old done
+  // form.js
+    // template form button that fetches admins form 
+    // possi instant fetch of update, add or remove bug fix 
+    // added to notification extra link to instantly reach chart after successfully adding testresult
+  // bug fix, admins data untouchable, and avoid that del the whole possi into empty arr
+    // refactored
+      // possi db gets testtype + adds new row if new testtype (blood/urine) 
+      // btn form functions form.js use template form
+      // so in form and later in result they can be filtered based on with selectedtype 
   // form.js and bloodcontext
     // for deleting possi we need to del it also in testresult 
   // ui form.js mobile with 2 inputs next to each

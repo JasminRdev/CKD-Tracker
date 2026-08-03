@@ -19,8 +19,8 @@ export default function Notification_warn() {
   const router = useRouter()
 
   const {notification_warn, setNotification_warn,
-          notification_warn_color,
-          notification_warn_message, extra_message, setExtra_message,
+          notification_warn_color, setNotification_warn_message, setNotification_warn_color,
+          notification_warn_message, extra_message, setExtra_message, setExtra_message_action,
           extra_message_action} = useLoadingContext();
 
  if(notification_warn){
@@ -34,6 +34,14 @@ export default function Notification_warn() {
       setExtra_message(false)
     }, 7000)
   }
+
+  
+              // setNotification_warn(true)
+              // setNotification_warn_message("Successfull uploaded data - now included in the Chart")
+              // setNotification_warn_color("success")
+
+              // setExtra_message(true)
+              // setExtra_message_action("visit-chart")
 
   return (
     <>

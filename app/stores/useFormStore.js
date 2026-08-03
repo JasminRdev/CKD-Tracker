@@ -1,5 +1,23 @@
 import { create } from "zustand";
 
+const iniNewInput = {
+  name: "",
+  keyword: "",
+  datum: new Date().toISOString().split("T")[0],
+  min: null,
+  max: null,
+  unit: "",
+  value: "",
+};
+
+const iniNewUnitForm = {
+  name: "",
+  fromUnit: "",
+  settedUnit: "",
+  offset: "",
+  calcForFactor: ""
+};
+
 export const useFormStore = create((set) => ({
   
   testType: [{
@@ -14,10 +32,50 @@ export const useFormStore = create((set) => ({
       value: 'Homekit urine',
       label: 'Homekit urine',
   }],
-  selectedType: "Urine (Lab)",
+  selectedType: "Homekit urine",
 
   getForm: [],
   valueToRemoveInBetween: [],
+  usersUnits: [],
+  chosenUnit: [],
+  iniNewUnitForm,
+  newUnitForm: [iniNewUnitForm],
+
+  iniNewInput,
+  newInput: [iniNewInput],
+  
+
+  setNewUnitForm: (valueOrUpdater) =>
+    set((state) => ({
+      newUnitForm:
+        typeof valueOrUpdater === "function"
+          ? valueOrUpdater(state.newUnitForm)
+          : valueOrUpdater,
+    })),
+
+  setNewInput: (valueOrUpdater) =>
+    set((state) => ({
+      newInput:
+        typeof valueOrUpdater === "function"
+          ? valueOrUpdater(state.newInput)
+          : valueOrUpdater,
+    })),
+    
+  setChosenUnit: (valueOrUpdater) =>
+    set((state) => ({
+      chosenUnit:
+        typeof valueOrUpdater === "function"
+          ? valueOrUpdater(state.chosenUnit)
+          : valueOrUpdater,
+    })),
+    
+  setUsersUnits: (valueOrUpdater) =>
+    set((state) => ({
+      usersUnits:
+        typeof valueOrUpdater === "function"
+          ? valueOrUpdater(state.usersUnits)
+          : valueOrUpdater,
+    })),
 
   setSelectedType: (valueOrUpdater) =>
     set((state) => ({

@@ -2,12 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet, testtype } = req.query;
-  
-  if (!pet) {
-    return res.status(400).json({ error: "Pet name is required" });
-  }
-  
+  const { pet, testtype, name, fromUnit, settedUnit, factor, offset } = req.query;
+
+
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.replace("Bearer ", "")
@@ -28,6 +25,7 @@ export default async function handler(req, res) {
       )
     : publicClient; // Logged out user
 
+  
   // Now safely get user
   const {
     data: { user },
@@ -35,15 +33,27 @@ export default async function handler(req, res) {
     ? dbClient.auth.getUser()
     : { data: { user: null } });
 
+  const tableRow = crypto.randomUUID();
   const { data, error } = await dbClient
-    .from("testResult_data")
-    .select("*")
-    .eq("pet", pet)
-    .eq("test_type", testtype)
+    .from('units')
+    .insert([{ 
+        user_id: user.id, 
+        id:tableRow,
+        name: name,
+        fromUnit: fromUnit,
+        settedUnit: settedUnit,
+        factor: Number(Number(factor).toFixed(4)),
+        offset: Number(Number(offset).toFixed(4)),
+        created_at : new Date(), 
+        pet: pet,
+        test_type:testtype, 
+    }]) 
 
-  if (error) return res.status(400).json({ error: error.message });
+    if (error) {
+        console.log("SUPABASE INSERT ERROR:", error);
+        return res.status(400).json({ error: error.message });
+    }
 
-  res.status(200).json({ data: data });
-}
-
+    return res.status(200).json(data);
+  }
 

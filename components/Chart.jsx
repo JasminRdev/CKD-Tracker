@@ -241,7 +241,8 @@ const Chart = () => {
 
   const datasets = visibleMetrics.map((metric) => ({
     label: metric,
-    data: testResults.map((r) => r[metric]),
+    // data: testResults.map((r) => r[metric]),
+    data: testResults.map((r) => r[metric]?.normalizedValue ?? r[metric]?.value ?? null),
     borderColor: datasetColors[metric],
     backgroundColor: datasetColors[metric],
     spanGaps: true 
@@ -532,34 +533,9 @@ const Chart = () => {
                 })
               }
               variant="outlined"
-              disabled
             />
             <TextField
-              label="Probe, like lab or homekit"
-              value={editInput.probe}
-              onChange={(e) =>
-                setEditInput({
-                  ...editInput,
-                  probe: e.target.value,
-                })
-              }
-              variant="outlined"
-              required
-            />
-            <TextField
-              label="Material (Blood/Urine)"
-              value={editInput.material}
-              onChange={(e) =>
-                setEditInput({
-                  ...editInput,
-                  material: e.target.value,
-                })
-              }
-              variant="outlined"
-              required
-            />
-            <TextField
-              label="Today's date"
+              label="Date on creation"
               value={editInput.datum}
               variant="outlined"
               required
@@ -599,6 +575,7 @@ const Chart = () => {
                 })
               }
               variant="outlined"
+              disabled
             />
             <div className='form__add-btn-wrapper'>
             <Button 
@@ -665,12 +642,15 @@ const Chart = () => {
               return 0; // keep original order if both same
             })
             .map((metric) => {
-              const testResultVal =
-                Number(
-                  testResults.find((r) => r[metric] !== undefined && r[metric] !== null)?.[metric]
-                ) || 0;
+              const foundResult = testResults.find((r) => {
+                const val = r[metric]?.normalizedValue ?? r[metric]?.value;
+                return val !== undefined && val !== null;
+              });
 
-              const normRanges = Object.fromEntries(
+              const testResultVal =
+                Number(foundResult?.[metric]?.normalizedValue ?? foundResult?.[metric]?.value) || 0;
+              
+                const normRanges = Object.fromEntries(
                 getForm.map((item) => [
                   item.name,
                   {
@@ -685,7 +665,8 @@ const Chart = () => {
                 datasets: [
                   {
                     label: metric,
-                    data: testResults.map((r) => r[metric]),
+                    // data: testResults.map((r) => r[metric]),
+                    data: testResults.map((r) => r[metric]?.normalizedValue ?? r[metric]?.value ?? null),
                     borderColor: datasetColors[metric],
                     backgroundColor: datasetColors[metric],
                     spanGaps: true 

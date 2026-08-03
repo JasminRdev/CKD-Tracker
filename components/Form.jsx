@@ -2,25 +2,27 @@
 
 import { supabase } from '../app/lib/supabaseClient'
 import { useFormStore } from "../app/stores/useFormStore";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useUser from '../app/lib/useUser'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Filter2RoundedIcon from '@mui/icons-material/Filter2Rounded';
 import Filter3RoundedIcon from '@mui/icons-material/Filter3Rounded';
 import Filter4RoundedIcon from '@mui/icons-material/Filter4Rounded';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-
 import AddIcon from '@mui/icons-material/Add';
 import MenuItem from '@mui/material/MenuItem';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Divider from "@mui/material/Divider";
 
 import dayjs from 'dayjs';
 
@@ -30,12 +32,13 @@ import './style.css';
 import PetNameInput from './fields/PetNameInput'
 
 import { useBloodTestContext } from "../context/BloodTestContext";
+import { normalize } from 'path';
 
 export default function Form() {
   const { file, chosenPetName , resetFileComp, 
     getDocsImg, resetForm, checkUsersLimit, 
     getNames, resetInputForm, fetchInitialFormTemplate,
-  handleNewIniForm} = useBloodTestContext();
+  handleNewIniForm, addUnitToDB, addNewUnitToForm, getUnits} = useBloodTestContext();
 
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
@@ -46,18 +49,8 @@ export default function Form() {
   const [valueDate, setValueDate] = useState(dayjs(new Date().toISOString().split("T")[0]))
   const [openAddValue, setOpenAddValue] = useState(false);
   const [deleteOffering, setDeleteOffering] = useState(false)
+  const [openAddUnit, setOpenAddUnit] = useState(false)
   
-
-  let iniNewInput = {
-    name: "",
-    keyword: "",
-    datum:new Date().toISOString().split("T")[0],
-    min:null,
-    max:null,
-    unit:"",
-    value:""
-  }
-
   const { 
     getForm, 
     setForm, 
@@ -65,17 +58,57 @@ export default function Form() {
     setValueToRemoveInBetween,
     testType,
     selectedType,
-    setSelectedType
+    setSelectedType, setUsersUnits, usersUnits, chosenUnit, setChosenUnit,
+    newInput, setNewInput, iniNewInput,newUnitForm, setNewUnitForm
    } = useFormStore()
   
-  const [newInput, setNewInput] = useState(iniNewInput);
+  const addValueToForm = (name, usersValue, chosenUnit) => {
+    const unitDB = usersUnits.find(
+      (colDB) => colDB.name == name && colDB.fromUnit == chosenUnit
+    );
 
-  const addValueToForm = (name, newValue) => {
-    const numericValue = newValue === "" ? "" : parseFloat(newValue);
+    const normalizedValue = unitDB
+      ? Number((unitDB.factor * Number(usersValue)).toFixed(4))
+      : usersValue;
+
+
+    const getSettedUnit = usersUnits.find(
+      (colDB) => colDB.name == name 
+    );
+
+    const numericValue = usersValue === "" ? "" : parseFloat(usersValue);
+
     setForm((prev) =>
       prev.map((field) =>
         field.name === name
-          ? { ...field, value: numericValue }
+          ? { 
+            ...field, 
+              value: numericValue,
+              normalizedValue: normalizedValue,
+              originalUnit: !unitDB ? getSettedUnit.settedUnit : chosenUnit
+          }
+          : field
+      )
+    );
+  };
+  
+  const addUnitToForm = (name, chosenUnit, usersValue) => {
+    const unitData = usersUnits.find(
+      (colDB) => colDB.name == name && colDB.fromUnit == chosenUnit
+    );
+
+    const normalizedValue = unitData
+      ? Number((unitData.factor * Number(usersValue)).toFixed(4))
+      : usersValue;
+
+    setForm((prev) =>
+      prev.map((field) =>
+        field.name === name
+          ? {
+              ...field,
+              originalUnit: chosenUnit,
+              normalizedValue: normalizedValue,
+            }
           : field
       )
     );
@@ -92,6 +125,11 @@ export default function Form() {
       // await resetNewList(newForm); //update db with removed val in possible values
     }
   };
+
+  useEffect(() => {
+    console.log("hit newUnitForm" ,newUnitForm)
+    getUnits();
+  },[newUnitForm])
 
 
   //upload file to supabase storage
@@ -146,7 +184,7 @@ export default function Form() {
 
       let allowSave;
       let countSavedOnes = await checkUsersLimit();
-      if(countSavedOnes > 4) {
+      if(countSavedOnes > 3) {
         console.log("------------over 4 - shpuld no saving happen ", countSavedOnes)
         allowSave = false;
         setLoading(false) 
@@ -181,7 +219,9 @@ export default function Form() {
               console.log('Data saved:', data)
               let cleanedForm = getForm.map(field => ({
                 ...field,
-                value: ""
+                value: "",
+                normalizedValue: "",
+                originalUnit: ""
               }));
               //send new form to possible vals - happens auto with getForm update in bloodcontext
               await handleNewIniForm(cleanedForm); //resetNewList wars davor - refactored
@@ -214,7 +254,6 @@ export default function Form() {
     }
 
     function addNewInputToForm() {
-      setOpenAddValue(false)
       const alreadyExists = getForm.some(item => item.name === newInput.name);
 
       if (alreadyExists) {
@@ -228,13 +267,17 @@ export default function Form() {
           ...prev,
           { ...newInput }
         ]);
+        console.log(("hit now add unit db"))
+        addUnitToDB()
+        setOpenAddValue(false)
+        setNewInput(iniNewInput)
       };
 
       // setForm(prev => [
       //   ...prev,
       //   { ...newInput }
       // ]);
-      setNewInput(iniNewInput)
+      // setNewInput(iniNewInput)
       // setForm(prev => [
       //   ...prev,
       //   {
@@ -250,6 +293,8 @@ export default function Form() {
       // console.log("updated ini ", getForm, openAddValue)
     }
 
+
+    
   return (
     <div className="comp-wrapper form-wrapper">
         <h2 ><Filter2RoundedIcon />Basic informations</h2>
@@ -285,34 +330,7 @@ export default function Form() {
 
             <span className='with-more-options'>
               <h2><Filter3RoundedIcon />Add/Edit Values </h2>  
-              <MoreVertIcon
-                className='more-options'
-              />
-              <span className='more-options-button'>
-                <Button 
-                  disabled={getForm.length === 0}
-                  variant="contained"
-                  sx={{ color: '#fff' }} 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setForm([])
-                  }}
-                >Remove all</Button>
-                <Button 
-                  variant="contained"
-                  sx={{ color: '#fff' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if(!selectedType){
-                        setNotification_warn(true)
-                        setNotification_warn_message("Choose test type in step 2.")
-                        setNotification_warn_color("warning")
-                      return
-                    }
-                    fetchInitialFormTemplate()
-                  }} 
-                >Use Template Form</Button>
-              </span>
+              
             </span>
         <Box
             component="form"
@@ -321,43 +339,148 @@ export default function Form() {
             autoComplete="off"
             className='box'
         >   
-            { getForm.length == 0 &&
-              
-              <Button 
-                variant="contained"
-                sx={{ color: '#fff' }}
-                onClick={(e) => {
-                e.preventDefault();
-                if(!selectedType){
-                    setNotification_warn(true)
-                    setNotification_warn_message("Choose test type in step 2.")
-                    setNotification_warn_color("warning")
-                  return
-                }
-                fetchInitialFormTemplate()
-              }}
-              >use template form</Button>
-
-            }
+           
             {getForm && getForm.map((f) => (
               <>
                 {!deleteOffering && 
-                  <TextField
-                      className='form__fillable'
-                      key={f.name+"_uni"}
-                      label={f.name}
-                      type="number"
-                      slotProps={{
-                        input: {
-                          step: "0.01", // allow decimals
-                        },
-                      }}
-                      value={f.value}
-                      onChange={(e) => addValueToForm(f.name, e.target.value)}
-                      variant="outlined"
-                      focused={f.value == ""}
-                  />
+                  <div className='form_wrapper'> 
+                    <TextField
+                        className='form__fillable'
+                        key={f.name+"_uni"}
+                        label={f.name}
+                        type="number"
+                        slotProps={{
+                          input: {
+                            step: "0.01", // allow decimals
+                          },
+                        }}
+                        value={f.value}
+                        onChange={(e) => addValueToForm(f.name, e.target.value, f.originalUnit)}
+                        variant="outlined"
+                        focused={f.value == ""}
+                    />
+                    
+                    <TextField
+                      className='form_unit_wrapper'
+                      select
+                      label="Unit"
+                      value={f.originalUnit}
+                      onChange={(e) => addUnitToForm(f.name, e.target.value, f.value)}
+                      helperText={
+                        <Box
+                          className='form_unit-flex'
+                          component="span"
+                          display="inline-flex"
+                          alignItems="center"
+                          gap={0.5}
+                        >
+                          <span>
+                            <span className="form-unit_helperText">
+                              {f.normalizedValue}
+                            </span>{" "}
+                            {usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? ""}
+                          </span>
+
+                          <Tooltip title="Charts compare values using a single unit. Your value will be converted to the unit shown below when displayed in charts, so all data can be compared consistently. The original value and the unit you selected are still saved and are used for lookups.">
+                            <InfoOutlinedIcon
+                              fontSize="inherit"
+                              sx={{ cursor: "pointer" }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      }
+                      >
+
+                      {usersUnits
+                      .filter((colDB) => colDB.name === f.name)
+                      .map((colDB) => (
+                        <MenuItem key={colDB.fromUnit} value={colDB.fromUnit}>
+                          {colDB.fromUnit}
+                        </MenuItem>
+                      ))}
+                      <Divider />
+                      <MenuItem value="form-unit_extendUnit"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenAddUnit(true);
+                          setNewUnitForm(
+                            {
+                              name: f.name,
+                              settedUnit:usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? "" ,
+                            }
+                          )
+                        }}
+                      >
+                        ➕ unit
+                      </MenuItem>
+                    </TextField>
+                  </div>
                 }
+                {openAddUnit &&
+                  (<div className='form__add-input-overlay unit'>
+                    <h3>Add another unit to <span className="form__add-input-overlay-petname">{chosenPetName}`s {newUnitForm.name}</span> in {selectedType}</h3>
+                    <TextField
+                      label="New unit"
+                      value={newUnitForm.fromUnit ?? ""}
+                      onChange={(e) => 
+                        setNewUnitForm({
+                          ...newUnitForm,
+                          fromUnit: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <TextField
+                      label={`1000 ${newUnitForm.fromUnit ?? "new unit"} = how much ${newUnitForm.settedUnit}?`} 
+                      type="number"
+                      value={newUnitForm.calcForFactor ?? ""}
+                      onChange={(e) =>
+                        setNewUnitForm({
+                          ...newUnitForm,
+                          calcForFactor: e.target.value,
+                        })
+                      }
+                      variant="outlined"
+                      required
+                    />
+                    <div className='form__add-btn-wrapper'>
+                      <Button 
+                        className="form__add-btn save"
+                        onClick={() => {
+                          if(!newUnitForm.fromUnit || !newUnitForm.calcForFactor){
+                            setNotification_warn(true)
+                            setNotification_warn_message("Please fill out required fields.")
+                            setNotification_warn_color("warning")
+                            return
+                          } 
+                          if(usersUnits.find((colDB) => colDB.fromUnit.toLowerCase() === newUnitForm.fromUnit.toLowerCase()) || 
+                          usersUnits.find((colDB) => colDB.settedUnit.toLowerCase() === newUnitForm.fromUnit.toLowerCase())){
+                            setNotification_warn(true)
+                            setNotification_warn_message("Unit exists already")
+                            setNotification_warn_color("warning")
+                            return
+                          }
+                          addNewUnitToForm()
+                          setOpenAddUnit(false)
+                        }}
+                        variant="contained"
+                        sx={{ color: '#fff' }} 
+                      >
+                        Save <DoneIcon />
+                      </Button>
+                      <Button 
+                        className="form__add-btn"
+                        onClick={() => setOpenAddUnit(false)}
+                        variant="contained"
+                        sx={{ color: '#fff' }} 
+                      >
+                        Cancel <CloseIcon />
+                      </Button>
+                    </div>
+                  </div>)
+                }
+
                 {deleteOffering && 
                   <div   
                     className={`form__delete-btn ${
@@ -410,8 +533,8 @@ export default function Form() {
                     <h3>New input informations for <span className="form__add-input-overlay-petname">{chosenPetName}</span></h3>
                     <TextField
                       label="Name"
-                      value={newInput.name}
-                      onChange={(e) =>
+                      value={newInput.name ?? ""}
+                      onChange={(e) => 
                         setNewInput({
                           ...newInput,
                           name: e.target.value,
@@ -422,7 +545,7 @@ export default function Form() {
                     />
                     <TextField
                       label="Keyword, that can be recognized from the image"
-                      value={newInput.keyword}
+                      value={newInput.keyword ?? ""}
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
@@ -434,7 +557,7 @@ export default function Form() {
                     <TextField
                       select
                       label="Test type inserted from step 2"
-                      value={selectedType ?? newInput.material}
+                      value={selectedType ?? (newInput.material ?? "")}
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
@@ -484,7 +607,7 @@ export default function Form() {
                     />
                     <TextField
                       label="Unit (mg/dL.. etc)"
-                      value={newInput.unit}
+                      value={newInput.unit ?? ""}
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
@@ -496,7 +619,7 @@ export default function Form() {
                     />
                     <TextField
                       label="Value"
-                      value={newInput.value}
+                      value={newInput.value ?? ""}
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
