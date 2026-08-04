@@ -410,7 +410,34 @@ export const BloodTestProvider = ({ children }) => {
         if (exclude && line.includes(exclude)) return;
         if (keyword && keyword.some(k => line.includes(k))) {
           const field = getForm.find(f => f.name === name);
-          if (field) field.value = Number(numMatch);
+          if (field) {
+            field.value = Number(numMatch)
+            
+            const getSettedUnit = usersUnits.find(
+              (colDB) => colDB.name == name 
+            );
+
+            const unitDB = usersUnits.find(
+              (colDB) => colDB.name == name && colDB.fromUnit == getSettedUnit.settedUnit
+            );
+
+            const normalizedValue = unitDB
+            ? Number((unitDB.factor * Number(field.value)).toFixed(4))
+            : field.value;
+
+            // const numericValue = field.value === "" ? "" : parseFloat(field.value);
+            setForm((prev) =>
+              prev.map((field) =>
+                field.name === name
+                  ? { 
+                    ...field, 
+                      normalizedValue: normalizedValue,
+                      originalUnit: getSettedUnit.settedUnit
+                  }
+                  : field
+              )
+            );
+          };
         }
       });
     });

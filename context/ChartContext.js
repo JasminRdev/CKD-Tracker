@@ -18,7 +18,7 @@ export const ChartProvider = ({ children }) => {
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
-  const [chosenPetName, setChosenPetName] = useState("unitTest");
+  const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
   
   const { getForm, selectedType, newInput } = useFormStore()
 

@@ -32,7 +32,7 @@ export const useFormStore = create((set) => ({
       value: 'Homekit urine',
       label: 'Homekit urine',
   }],
-  selectedType: "Homekit urine",
+  selectedType: "Blood (Lab)",
 
   getForm: [],
   valueToRemoveInBetween: [],
