@@ -30,6 +30,12 @@ export default async function handler(req, res) {
     ? dbClient.auth.getUser()
     : { data: { user: null } });
 
+  const isAdmin = user?.app_metadata?.role === "admin";
+
+  if (isAdmin) {
+    return res.status(200).json({ data: 1 });
+  }
+
   try {
     const { data, error } = await dbClient
       .from("testResult_data")
