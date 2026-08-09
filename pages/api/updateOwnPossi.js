@@ -4,6 +4,10 @@ import { supabase as publicClient } from "../../app/lib/supabaseClient";
 export default async function handler(req, res) {
   const { pet, form, testtype } = req.query;
 
+  if (!pet) {
+    return res.status(400).json({ error: "pet is required" });
+  }
+
   let parsedForm;
   try {
     parsedForm = JSON.parse(form);

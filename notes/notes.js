@@ -76,7 +76,7 @@
 
 //             }
 
-// current
+// next
   // units admins have to be useable for users who dont have that unit saved for themself
 
 // info
@@ -124,13 +124,16 @@
   
 
 //done 
-  // remove val in possi -> remove name in units too
-  //form.js shows for each possi options of units
-    //make it not save in the possi db so on reload the old data are not there still
-    //in chart is value from the getForm used and not the normalized one - admin uses only value and has no normilized -> use here in that showcase the value
-    //ini add possi with units in form.js
-    //and new unit function options 
-    //unit calc 
+ // possi got updated unwillingly overwritten by reload from old data?
+      // possi mit lii auf chart -> dann code change triggered relaod -> suddenly i had admins ini form from the raloads ini petname after i changed back to lii
+      // bevor form updates, nochmal abfrage, before es dann in possi geändert wird?
+        //def check cases 
+        // done // - add new val on nonexisting pet
+        // done noCase // - add new val on existing pet but empty possi (possible even?)
+        // done // - add new val on normal case (with existing pet & possi)
+        // done // - chart -> change value func
+        
+
   
 
 //important
@@ -141,24 +144,14 @@
       //because in case we clear the form/template, we have no data anymore
 
 //todo
-  //dringend: 
-    //charts - compare function 
-      //for home test to lab
-      //for two different pets (blus and lee any correlation for seasons)
-    // dashboaard as hospital
-  // charts 
-    // add searvh function for val in filter color and sepa charts
-    // edit function for min/max val
-      //db need user based val saved, info of test type and the min max and currency
-
+  //charts - compare function 
+    //for home test to lab
+    //for two different pets (blus and lee any correlation for seasons)
+  // dashboaard as hospital
   // for vet -
     // make vet acc to only see jasmins data
   //update forms
-    //with einheiten
     //options to add marker, values to form comp
-  //blooftest comp
-  // next we visually show for admin own and other uers data - batch from user?
-    // look whio i am as logged person! 
   //docs dashboard -> docs comp that gets also integrated with the other comps 
     //(bloodtest and form etc?)
   // chart comp side menu height of rainbow btns fix
@@ -179,6 +172,13 @@
 
 
 //old done
+  // remove val in possi -> remove name in units too
+  //form.js shows for each possi options of units
+    //make it not save in the possi db so on reload the old data are not there still
+    //in chart is value from the getForm used and not the normalized one - admin uses only value and has no normilized -> use here in that showcase the value
+    //ini add possi with units in form.js
+    //and new unit function options 
+    //unit calc 
   // form.js
     // template form button that fetches admins form 
     // possi instant fetch of update, add or remove bug fix 

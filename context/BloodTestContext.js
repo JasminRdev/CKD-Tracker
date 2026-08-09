@@ -157,15 +157,8 @@ export const BloodTestProvider = ({ children }) => {
   useEffect(() => {
     if(!user)
       return
-    
-    let cleanedForm = getForm.map(field => ({
-      ...field,
-      value: ""
-    }));
 
     const updatePossiAndResultsAndUnits = async () => {
-      //form.js when del possi vals
-      await resetNewList(cleanedForm);   
       // now remove also the testresult name 
       await removeNameFromTestResults();
       // units have to be removed too
@@ -179,20 +172,20 @@ export const BloodTestProvider = ({ children }) => {
     }      
   },[getForm])
 
-    async function resetNewList (cleanedForm){
-      if(!user) return
-      console.log("hit bloodtestcontext clean update ", cleanedForm)
-      //update new form to own possi
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
+    // async function resetNewList (cleanedForm){
+    //   if(!user) return
+    //   console.log("hit bloodtestcontext clean update ", cleanedForm)
+    //   //update new form to own possi
+    //   const { data: { session } } = await supabase.auth.getSession();
+    //   const token = session?.access_token;
+    //   const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
 
-      await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
+    //   await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    // }
 
     async function removeNameFromTestResults(){
       console.log(' ["mio", "test"] for example',valueToRemoveInBetween)
@@ -310,85 +303,9 @@ export const BloodTestProvider = ({ children }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-
-
-          // await fetch(`/api/postUnit?pet=${chosenPetName}&testtype=${selectedType}&name=${newInput.name}&fromUnit=${newInput.unit}&settedUnit=${newInput.settedUnit}&factor="1"&offset="0`, {
-          //   headers: {
-          //     Authorization: `Bearer ${token}`,
-          //   },
-          // });
         }
       } 
-
-
-      
-
-      // const json = await res.json();
-      // // return json.data;
-      // console.log("returns from post own possi ", json)
-      // console.log("returns data ", json.data)
     }
-
-
-
-    //Chart Comp
-  //     const testResults = [
-  //   { date: '01', Kreatinin: 139, Protein: 62.5 },
-  //   { date: '02', Kreatinin: 139, Protein: 62.5 },
-  //   { date: '03', Kreatinin: 133, Protein: 62.5 },
-  //   { date: '05', Kreatinin: 135, Protein: 62 },
-  //   { date: '07', Kreatinin: 133, Protein: 62 },
-  // ];
-
-    //Form Comp - possible Value DB (::TODO) + bloodtest value setForm
-    //05.03.24
-    //this array for app - read img 
-    // const keywordMapping = [
-    //   { keyword: ["Leukozyten", "Leukoz"], name: "c_leukozytenVal",min:3.9, max:12.5, value:""},
-    //   { keyword: ["Erythrozyten"], name: "c_erythrozytenVal",min:7.2, max:11, value:""},
-    //   { keyword: ["Protein"], name: "b_gesamtProteinVal", min: 57, max: 94,value: ""},
-    //   { keyword: ["Kreatinin"], name: "a_Kreatinin", min: 0, max:168, value: ""  },
-    //   { keyword: ["Kalium"], name: "a_kaliumVal", value: "" },
-    //   { keyword: ["Kalzium"], name: "a_kalziumVal", value: "" },
-    //   { keyword: ["Natrium"], name: "a_natriumVal", value: "" },
-    //   { keyword: ["Chlorid"], name: "a_chloridVal", value: "" },
-    //   { keyword: ["Albumin"], name: "a_albuminVal", value: "" },
-    //   { keyword: ["Eisen"], name: "a_eisenVal", value: "" },
-    //   { keyword: ["Magnesium"], name: "a_magnesiumVal", value: "" },
-    //   { keyword: ["Na-/K-Quotient"], name: "a_naKQuotientVal", value: "" },
-    //   { keyword: ["A/G-Quotient"], name: "a_AGQuotientVal", value: "" },
-    //   { keyword: ["T4"], name: "a_T4Val", value: "" },
-    //   { keyword: ["hämatokrit"], name: "a_hämatokritVal", value: "" },
-    //   { keyword: ["hämaglobin","hämoglobin"], name:"a_hämoglobinVal", value: "", min: 108, max:169 },
-    //   { keyword: ["Retikulozyten"], name: "a_retikulozytenVal", value: "" },
-    //   { keyword: ["Ret-He"], name: "a_retHeVal", value: "" },
-    //   { keyword: ["Amylase"], name: "b_alphaAmylaseVal", value: "" },
-    //   { keyword: ["DGGR-Lipase"], name: "b_dggrLipaseVal", value: "" },
-    //   { keyword: ["Glucose"], name: "b_glukoseVal", value: "" },
-    //   { keyword: ["Fructosamin"], name: "b_fuctosaminVal", value: "" },
-    //   { keyword: ["Triglyceride", "Trigiyceride"], name: "b_triglyzerideVal", value: "" },
-    //   { keyword: ["Cholesterin"], name: "b_cholesterinVal", value: "" },
-    //   { keyword: ["Bülrubin", "Bilirubin"], name: "b_bilirubinVal", value: "" },
-    //   { keyword: ["AP"], name: "b_APVal", value: "" },
-    //   { keyword: ["GLDH"], name: "b_GLDHVal", value: "" },
-    //   { keyword: ["G-GT"], name: "b_GGTVal", value: "" },
-    //   { keyword: ["ALT"], name: "b_ALTVal", value: "" },
-    //   { keyword: ["AST"], name: "b_ASTVal", value: "" },
-    //   { keyword: ["CK"], name: "b_CKVal", value: "" },
-    //   { keyword: ["Globuline"], name: "b_globulineVal", value: "" },
-    //   { keyword: ["Neutrophile"], name: "c_neutrophileVal", value: "" },
-    //   { keyword: ["MCV"], name: "c_MCV", value: "" },
-    //   { keyword: ["MCH"], name: "c_MCH", exclude: "MCHC", value: "" },
-    //   { keyword: ["MCHC"], name: "c_MCHC", value: "" },
-    //   { keyword: ["Hypochromasie"], name: "c_hypochromasie", value: "" },
-    //   { keyword: ["Anisozytose"], name: "c_anisozytose" , value: "" },
-    //   { keyword: ["Index"], name: "Index (urin)", value: "",
-    //     min: 0,
-    //     max: 0.7},
-    //   { keyword: ["Eiweiß"], name: "Eiweiß (urin)", value: ""},
-    //   { keyword: ["Krea"], name: "Krea. (urin)", value: ""}
-    // ];
-
 
   const handleExtractAndSave = async () => {
     setLoading(true)
@@ -410,7 +327,34 @@ export const BloodTestProvider = ({ children }) => {
         if (exclude && line.includes(exclude)) return;
         if (keyword && keyword.some(k => line.includes(k))) {
           const field = getForm.find(f => f.name === name);
-          if (field) field.value = Number(numMatch);
+          if (field) {
+            field.value = Number(numMatch)
+            
+            const getSettedUnit = usersUnits.find(
+              (colDB) => colDB.name == name 
+            );
+
+            const unitDB = usersUnits.find(
+              (colDB) => colDB.name == name && colDB.fromUnit == getSettedUnit.settedUnit
+            );
+
+            const normalizedValue = unitDB
+            ? Number((unitDB.factor * Number(field.value)).toFixed(4))
+            : field.value;
+
+            // const numericValue = field.value === "" ? "" : parseFloat(field.value);
+            setForm((prev) =>
+              prev.map((field) =>
+                field.name === name
+                  ? { 
+                    ...field, 
+                      normalizedValue: normalizedValue,
+                      originalUnit: getSettedUnit.settedUnit
+                  }
+                  : field
+              )
+            );
+          };
         }
       });
     });
@@ -611,7 +555,7 @@ export const BloodTestProvider = ({ children }) => {
 
   return (
     <BloodTestContext.Provider value={{ 
-      getNames, resetNewList, handleNewIniForm,
+      getNames, handleNewIniForm,
     delDocs, editDocs, checkUsersLimit, bloodTestCompReset, resetInputForm,
       setBloodTestCompReset, getDocsImg, getDocImg, handleClickPreviewImg_fromDocs, 
       handleClickPreviewImg_forExtraction, handleFileChange, selectedImage, 

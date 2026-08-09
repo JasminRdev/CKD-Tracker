@@ -18,12 +18,12 @@ export const ChartProvider = ({ children }) => {
   const [testResults, setTestResults] = useState([])
   const [dateRangeRaw, setDateRangeRaw] = useState();
   const [dateFilter, setDateFilter] = useState({startDate: "1.2000", endDate: "12.2029"})
-  const [chosenPetName, setChosenPetName] = useState("unitTest");
+  const [chosenPetName, setChosenPetName] = useState("Blus (admin)");
   
   const { getForm, selectedType, newInput } = useFormStore()
 
-  async function updatePossi(){
-    let cleanedForm = getForm.map(field => ({
+  async function updatePossi(newestForm){
+    let cleanedForm = newestForm.map(field => ({
         ...field,
         value: "",
         normalizedValue: "",
@@ -132,11 +132,11 @@ export const ChartProvider = ({ children }) => {
         setTestResults(testResults_func);
       };
       fetchAndTransform();  
-      console.log("getForm and api update possi ", getForm) 
+      // console.log("getForm and api update possi ", getForm) 
       if(!user) return
-      if(getForm.length){
-        updatePossi() 
-      }
+      // if(getForm.length){
+      //   updatePossi() 
+      // }
   }, [dateFilter, chosenPetName, getForm]);
 
  
@@ -171,7 +171,13 @@ export const ChartProvider = ({ children }) => {
 
   return (
     <ChartContext.Provider value={{ getBloodTestData,
-      chosenPetName, setChosenPetName, generateColors, testResults, dateRangeRaw, handleDateRangePicker }}>
+      chosenPetName, 
+      setChosenPetName, 
+      generateColors, 
+      testResults, 
+      dateRangeRaw, 
+      updatePossi,
+      handleDateRangePicker }}>
       {children}
     </ChartContext.Provider>
   );

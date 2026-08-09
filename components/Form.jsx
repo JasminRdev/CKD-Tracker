@@ -33,12 +33,15 @@ import PetNameInput from './fields/PetNameInput'
 
 import { useBloodTestContext } from "../context/BloodTestContext";
 import { normalize } from 'path';
+import { useChartContext } from '@/context/ChartContext';
 
 export default function Form() {
   const { file, chosenPetName , resetFileComp, 
     getDocsImg, resetForm, checkUsersLimit, 
     getNames, resetInputForm, fetchInitialFormTemplate,
   handleNewIniForm, addUnitToDB, addNewUnitToForm, getUnits} = useBloodTestContext();
+  
+  const { updatePossi} = useChartContext();
 
   const {loading, setNotification_warn_message,
       setNotification_warn_color,
@@ -121,8 +124,8 @@ export default function Form() {
         (field) => !valueToRemoveInBetween.includes(field.name)
       );
       setForm(newForm);
-      // auto useeffect in bloodtestcontext
-      // await resetNewList(newForm); //update db with removed val in possible values
+      console.log("api fetch - update possi", newForm)
+      updatePossi(newForm); //activly update possi db
     }
   };
 
@@ -263,11 +266,21 @@ export default function Form() {
         setNotification_warn_message("Name already exists for this pet. Please choose another.")
         setNotification_warn_color("warning")
       } else {
-        setForm(prev => [
-          ...prev,
-          { ...newInput }
-        ]);
-        console.log(("hit now add unit db"))
+        setForm(prev => {
+          const updatedForm = [
+            ...prev,
+            { ...newInput }
+          ];
+
+          console.log("api fetch - update possi", updatedForm);
+            
+          updatePossi(updatedForm); //activly update possi db
+
+          console.log(("api fetch - add new unit"))
+
+          return updatedForm;
+        });
+
         addUnitToDB()
         setOpenAddValue(false)
         setNewInput(iniNewInput)
@@ -330,6 +343,7 @@ export default function Form() {
 
             <span className='with-more-options'>
               <h2><Filter3RoundedIcon />Add/Edit Values </h2>  
+              
               
             </span>
         <Box

@@ -122,7 +122,7 @@ const Chart = () => {
   const { search, setSearch, filters, removeFilter, clearFilters, addFilter } = useSepaFilterStore()
 
   const { chosenPetName } = useBloodTestContext();
-  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors } = useChartContext();
+  const { dateRangeRaw, handleDateRangePicker, testResults, generateColors, updatePossi } = useChartContext();
 
   const labels = testResults.map((r) => r.date);
 
@@ -162,66 +162,34 @@ const Chart = () => {
 
 
   async function editInputToFormAndUpdateTestResults() {
+    // let newForm = setForm(prev =>
+    //   prev.map(item =>
+    //     item.name === selectedOldPossi.name
+    //       ? { ...item, ...editInput }
+    //       : item
+    //   )
+    // );
 
-    //this must update possi dn#
-    setForm(prev =>
-      prev.map(item =>
+    setForm(prev => {
+      const updatedForm = prev.map(item =>
         item.name === selectedOldPossi.name
           ? { ...item, ...editInput }
           : item
-      )
-    );
+      );
 
-    //runs auto by contexts useEffect with getForm
-    // await updatePossi(currentForm)
+      console.log("api fetch - update possi", updatedForm)
+      updatePossi(updatedForm); //activly update possi db
+
+      return updatedForm;
+    });
+
+    
 
     //restart form and remove overlay
     setOpenEditValue(false)
     setEditInput(iniEditInput)
-    // setEditOffering(false) //editmode
-
-
-    //info
-    // // setForm(prev => [
-    // //   ...prev,
-    // //   {
-    // //     name: "testNew",
-    // //     value: "999999",
-    // //     keyword: ["KreaTest"],
-    // //     probe: "Labor",
-    // //     material: "Urin",
-    // //     datum: "2022-05-14"
-    // // +min max
-    // //   }
-    // // ])
-    // console.log("form ", newForm)
-    
-    //vlt nicht nötig weil testresult fetch eh nur values ziehen muss anhand der namen
-    //now update old testresults with new keywords we just edited
-    // console.log("old raw ", rawDatas)
-    // const updatedRawDatas = rawDatas.map(group =>
-    //   group.map(item => {
-    //     const obj = typeof item === "string" ? JSON.parse(item) : item;
-
-    //     if (obj.name === selectedOldPossi.name) {
-    //       return JSON.stringify({
-    //         ...obj,
-    //         ...editInput
-    //       });
-    //     }
-
-    //     return item;
-    //   })
-    // );
-    // // console.log("new raw:", updatedRawDatas);
-    // setRawDatas(updatedRawDatas);
   }
   
-  // const datasetColors = {
-  //   b_gesamtProteinVal: 'green',
-  //   a_Kreatinin: 'pink'
-  // };
-
 
 
   function fillPossiValInForm (name) {
