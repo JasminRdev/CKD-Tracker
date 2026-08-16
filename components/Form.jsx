@@ -558,12 +558,12 @@ export default function Form() {
                       required
                     />
                     <TextField
-                      label="Keyword, that can be recognized from the image"
+                      label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
                       value={newInput.keyword ?? ""}
                       onChange={(e) =>
                         setNewInput({
                           ...newInput,
-                          keyword: [e.target.value],
+                          keyword: e.target.value.split(","),
                         })
                       }
                       variant="outlined"

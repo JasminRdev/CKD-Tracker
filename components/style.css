@@ -159,7 +159,6 @@ h1{
     
 }
 
-
 .form__add-input{
     align-items: center;
     display: flex;
@@ -170,21 +169,46 @@ h1{
     background-color: var(--darkGreen) !important;
 }
 
+.sepaChart__edit-input{
+    margin:25px !important;
+}
+
 .edit-possi{
     display: flex;
     justify-content: center;
     margin: 10px;
-    
     position: relative;
+    align-items: center;
 }
 
-
-.edit-possi.outView button{
+.edit-possi.outView button,
+.edit-possi.outView .possiSticky{
     margin: 0 !important;
     margin-bottom: 10px !important;
     position: fixed;
     bottom: 189px;
     left: 10px;
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+    will-change: opacity, transform;
+
+    transform: translateY(0);
+}
+
+.edit-possi.outView .possiSticky{
+    bottom: 248px;
+    background: var(--white);
+    padding: 20px;
+}
+
+
+
+.edit-possi.outView.scrollsDown button,
+.edit-possi.outView.scrollsDown .possiSticky{
+    transform: translateY(-50px);
+    visibility: hidden;
 }
 
 .form__add-wrapper{
@@ -318,6 +342,19 @@ h1{
     padding: 30px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     width: 100vw;
+    
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+    will-change: opacity, transform;
+
+    transform: translateY(0);
+}
+
+
+.filter-badge-wrapper.outView.scrollsDown{
+    transform: translateX(-50px);
+    visibility: hidden;
 }
 
 .filter-badges button {

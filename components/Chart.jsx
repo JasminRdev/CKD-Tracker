@@ -40,6 +40,9 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import Button from '@mui/material/Button';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
@@ -55,6 +58,8 @@ import { useChartContext } from "../context/ChartContext";
 import { useSepaFilterStore } from "../app/stores/useSepaFilterStore";
 
 import PetNameInput from './fields/PetNameInput'
+
+
 
 const backgroundRangePlugin = {
   id: 'backgroundRange',
@@ -118,8 +123,7 @@ const Chart = () => {
     unit:"",
   }
   const [editInput, setEditInput] = useState(iniEditInput);
-  
-  const { search, setSearch, filters, removeFilter, clearFilters, addFilter } = useSepaFilterStore()
+  const { search, setSearch, filters, removeFilter, clearFilters, addFilter, yMain, setYMain } = useSepaFilterStore()
 
   const { chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors, updatePossi } = useChartContext();
@@ -135,6 +139,60 @@ const Chart = () => {
     threshold: 0,
   });
 
+
+  
+  const marks = [
+    {
+      value: 0,
+      label: '0',
+    },
+    {
+      value: 30,
+      label: '30',
+    },
+    {
+      value: 60,
+      label: '60',
+    },
+    {
+      value: 100,
+      label: '100',
+    },
+    {
+      value: 200,
+      label: '200',
+    },
+  ];
+
+  function useScrollDirection() {
+    const [direction, setDirection] = useState("up");
+
+    useEffect(() => {
+      let previous = window.scrollY;
+
+      const handleScroll = () => {
+        const current = window.scrollY;
+
+        if (current > previous) {
+          setDirection("down");
+        } else if (current < previous) {
+          setDirection("up");
+        }
+
+        previous = current;
+      };
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
+
+    return direction;
+  }
+
+  const scrollDirection = useScrollDirection();
 
 
   const toggleMetric = (metric) => {
@@ -389,7 +447,8 @@ const Chart = () => {
 
         <div 
           
-          className={`filter-badge-wrapper z-10 ${inView ? "inView" : "outView"}`}
+          className={`filter-badge-wrapper z-10 ${inView ? "inView" : "outView"} 
+            ${scrollDirection === "up" ? "scrollsUp" : "scrollsDown"}`}
         >
           <div className='filter-badge-group'>
             <div className='filter-badge-add'>
@@ -492,12 +551,12 @@ const Chart = () => {
               disabled
             />
             <TextField
-              label="Keyword, that can be recognized from the image"
+              label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
               value={editInput.keyword}
               onChange={(e) =>
                 setEditInput({
                   ...editInput,
-                  keyword: [e.target.value],
+                  keyword: e.target.value.split(","),
                 })
               }
               variant="outlined"
@@ -570,7 +629,9 @@ const Chart = () => {
         )}
                       
 
-        <div className={`edit-possi z-10 ${inView ? "inView" : "outView"}`}>
+        <div className={`edit-possi z-10 ${
+          inView ? "inView" : "outView"
+        } ${scrollDirection === "up" ? "scrollsUp" : "scrollsDown"}`}>
           <Button 
             className="sepaChart__edit-input form__add-input form__value-input"
             onClick={() => setEditOffering((prev) => !prev)}
@@ -579,6 +640,23 @@ const Chart = () => {
           >
             { editOffering ? "Exit edit mode" : "Edit Value"} <EditIcon />
           </Button>
+
+           <Box className="possiSticky" sx={{ width: 300 }}>
+            <Slider
+              aria-label="Custom marks"
+
+              value={yMain}
+              min={0}
+              max={200}
+              getAriaValueText={(val) => `${val}`}
+              onChange={(_, percentVisualize) => {
+                setYMain(percentVisualize)
+              }}
+              step={10}
+              valueLabelDisplay="auto"
+              marks={marks}
+            /> 
+          </Box>
         </div>
 
 
@@ -643,8 +721,8 @@ const Chart = () => {
               };
 
               const range = normRanges[metric];
-              const yMin = range.min - (range.max-range.min)*0.3; 
-              const yMax = range.max + (range.max-range.min)*0.3; 
+              const yMin = range.min - (range.max-range.min)*(yMain/100); 
+              const yMax = range.max + (range.max-range.min)*(yMain/100); 
               //range of min max val from blood test acceptance
               
               const options = {

@@ -3,7 +3,10 @@ import { create } from "zustand";
 export const useSepaFilterStore = create((set) => ({
     search: "",
     filters: [],
-    
+    yMain: 30,
+
+    setYMain: (yMain) => set({ yMain: yMain }),
+
     setSearch: (search) => set({ search }),
 
     addFilter: (filter) =>
