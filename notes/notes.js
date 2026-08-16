@@ -76,6 +76,8 @@
 
 //             }
 
+// current
+
 // next
   // units admins have to be useable for users who dont have that unit saved for themself
 
@@ -124,6 +126,11 @@
   
 
 //done 
+  // chart.js
+    //slider for visual range in values
+    //scrollup /down visualize features or hide for better ux and view
+  //form.js / chart.js 
+    //multi keywords
  // possi got updated unwillingly overwritten by reload from old data?
       // possi mit lii auf chart -> dann code change triggered relaod -> suddenly i had admins ini form from the raloads ini petname after i changed back to lii
       // bevor form updates, nochmal abfrage, before es dann in possi geändert wird?
