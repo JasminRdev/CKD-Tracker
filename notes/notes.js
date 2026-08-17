@@ -126,20 +126,14 @@
   
 
 //done 
-  // chart.js
-    //slider for visual range in values
-    //scrollup /down visualize features or hide for better ux and view
-  //form.js / chart.js 
-    //multi keywords
- // possi got updated unwillingly overwritten by reload from old data?
-      // possi mit lii auf chart -> dann code change triggered relaod -> suddenly i had admins ini form from the raloads ini petname after i changed back to lii
-      // bevor form updates, nochmal abfrage, before es dann in possi geändert wird?
-        //def check cases 
-        // done // - add new val on nonexisting pet
-        // done noCase // - add new val on existing pet but empty possi (possible even?)
-        // done // - add new val on normal case (with existing pet & possi)
-        // done // - chart -> change value func
-        
+  // Form.js / TestResult.js 
+    // exclude option for form
+  // add possi input
+    //gets to see extracted data and img for better overview
+    //mobile needs it underneath with order 
+  // form.js
+    //same for form in general once checking data after insertig auto/extract 
+ 
 
   
 
@@ -179,6 +173,19 @@
 
 
 //old done
+ // chart.js
+    //slider for visual range in values
+    //scrollup /down visualize features or hide for better ux and view
+  //form.js / chart.js 
+    //multi keywords
+ // possi got updated unwillingly overwritten by reload from old data?
+      // possi mit lii auf chart -> dann code change triggered relaod -> suddenly i had admins ini form from the raloads ini petname after i changed back to lii
+      // bevor form updates, nochmal abfrage, before es dann in possi geändert wird?
+        //def check cases 
+        // done // - add new val on nonexisting pet
+        // done noCase // - add new val on existing pet but empty possi (possible even?)
+        // done // - add new val on normal case (with existing pet & possi)
+        // done // - chart -> change value func
   // remove val in possi -> remove name in units too
   //form.js shows for each possi options of units
     //make it not save in the possi db so on reload the old data are not there still

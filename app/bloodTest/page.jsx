@@ -3,8 +3,8 @@
 
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { useInView } from "react-intersection-observer";
 
-import useUser from '../lib/useUser'
 import BloodTest from '../../components/BloodTest.jsx'
 
 //comp
@@ -22,7 +22,11 @@ export default function bloodTest() {
   // useLoadingContext
   const { loading, showOverlay} = useLoadingContext();
 
-  const user = useUser();
+  const { ref, inView } = useInView({
+    rootMargin: "80px 0px 0px 0px",
+    threshold: 0,
+  });
+
     return (
         <div>
           <Menu />
@@ -48,8 +52,11 @@ export default function bloodTest() {
               <div className='bloodtest-wrapper'>
                 <Documents />
                 <div className='bloodtest-upload-comps'>
-                  <BloodTest />
-                  <Form />
+                  <div ref={ref} >
+                    <BloodTest />
+                  </div>
+
+                  <Form inView={inView} />
                 </div>
               </div>
             </>

@@ -1,5 +1,7 @@
 "use client"
 
+import { useRef } from "react";
+
 import { supabase } from '../app/lib/supabaseClient'
 import { useFormStore } from "../app/stores/useFormStore";
 import { useEffect, useState } from 'react';
@@ -27,6 +29,7 @@ import Divider from "@mui/material/Divider";
 import dayjs from 'dayjs';
 
 import { useLoadingContext} from '../context/LoadingContext';
+
 import './style.css';
 
 import PetNameInput from './fields/PetNameInput'
@@ -35,11 +38,14 @@ import { useBloodTestContext } from "../context/BloodTestContext";
 import { normalize } from 'path';
 import { useChartContext } from '@/context/ChartContext';
 
-export default function Form() {
+export default function Form({inView}) {
+
   const { file, chosenPetName , resetFileComp, 
-    getDocsImg, resetForm, checkUsersLimit, 
-    getNames, resetInputForm, fetchInitialFormTemplate,
-  handleNewIniForm, addUnitToDB, addNewUnitToForm, getUnits} = useBloodTestContext();
+    getDocsImg, resetForm, checkUsersLimit, extractedText,
+    getNames, resetInputForm,
+    selectedImage,
+    handleNewIniForm, addUnitToDB, addNewUnitToForm, getUnits} 
+  = useBloodTestContext();
   
   const { updatePossi} = useChartContext();
 
@@ -134,6 +140,42 @@ export default function Form() {
     getUnits();
   },[newUnitForm])
 
+
+   const [helperWidth, setHelperWidth] = useState(500);
+
+  const startResize = (e, side) => {
+    e.preventDefault();
+
+    const startX = e.clientX;
+    const startWidth = helperWidth;
+
+    const handleMove = (e) => {
+      const diff = e.clientX - startX;
+
+      if (side === "right") {
+        setHelperWidth(
+          Math.max(250, Math.min(1000, startWidth + diff))
+        );
+      } else {
+        setHelperWidth(
+          Math.max(250, Math.min(1000, startWidth - diff))
+        );
+      }
+    };
+
+    const handleUp = () => {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
+    };
+
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleUp);
+  };
+
+
+  // useEffect(() => {
+  //   console.log("extractedText img filed", extractedText, selectedImage)
+  // },[extractedText, selectedImage])
 
   //upload file to supabase storage
   const uploadFile = async () => {
@@ -351,7 +393,7 @@ export default function Form() {
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
             noValidate
             autoComplete="off"
-            className='box'
+            className={`box ${inView ? "inView" : "outView"}`}
         >   
            
             {getForm && getForm.map((f) => (
@@ -429,7 +471,8 @@ export default function Form() {
                       </MenuItem>
                     </TextField>
                   </div>
-                }
+                }              
+
                 {openAddUnit &&
                   (<div className='form__add-input-overlay unit'>
                     <h3>Add another unit to <span className="form__add-input-overlay-petname">{chosenPetName}`s {newUnitForm.name}</span> in {selectedType}</h3>
@@ -512,6 +555,43 @@ export default function Form() {
                 }
             </>
             ))}
+            
+            {(selectedImage || extractedText) &&
+
+              <div
+                className="main-helper-container"
+                style={{ width: `${helperWidth}px` }}
+              >
+                {/* IMAGE */}
+                {selectedImage && (
+                  <div className="form__add-helper-img">
+                    <img
+                      src={selectedImage}
+                      alt="preview"
+                    />
+                  </div>
+                )}
+
+                {/* TEXT */}
+                {extractedText && (
+                  <div className="main-helper-text">
+                    {extractedText.split("\n").map((line, index) => (
+                      <div key={index}>
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* RIGHT RESIZE HANDLE */}
+                <div
+                  className="resize-handle resize-right"
+                  onPointerDown={(e) => startResize(e, "right")}
+                />
+
+              </div>
+            }
+
               <div className="form__add-wrapper">
                 <Button 
                   className="button-save-db form__add-input form__value-input"
@@ -543,131 +623,164 @@ export default function Form() {
                 </Button>
 
                {openAddValue && (
-                  <div className='form__add-input-overlay'>
-                    <h3>New input informations for <span className="form__add-input-overlay-petname">{chosenPetName}</span></h3>
-                    <TextField
-                      label="Name"
-                      value={newInput.name ?? ""}
-                      onChange={(e) => 
-                        setNewInput({
-                          ...newInput,
-                          name: e.target.value,
-                        })
-                      }
-                      variant="outlined"
-                      required
-                    />
-                    <TextField
-                      label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
-                      value={newInput.keyword ?? ""}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          keyword: e.target.value.split(","),
-                        })
-                      }
-                      variant="outlined"
-                    />
-                    <TextField
-                      select
-                      label="Test type inserted from step 2"
-                      value={selectedType ?? (newInput.material ?? "")}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          material: e.target.value,
-                        })
-                      }
-                      variant="outlined"
-                      disabled
-                      required
-                      >
-                      {testType.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                          </MenuItem>
-                      ))}
-                    </TextField>
-                    <TextField
-                      label="Today's date"
-                      value={new Date().toISOString().split("T")[0]}
-                      variant="outlined"
-                      required
-                      disabled
-                    />
-                    <TextField
-                      label="Min toleranz"
-                      type="number"
-                      value={newInput.min ?? ""}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          min: e.target.value === "" ? null : Number(e.target.value),
-                        })
-                      }
-                      variant="outlined"
-                    />
-                    <TextField
-                      label="Max toleranz"
-                      type="number"
-                      value={newInput.max ?? ""}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          max: e.target.value === "" ? null : Number(e.target.value),
-                        })
-                      }
-                      variant="outlined"
-                    />
-                    <TextField
-                      label="Unit (mg/dL.. etc)"
-                      value={newInput.unit ?? ""}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          unit: e.target.value,
-                        })
-                      }
-                      variant="outlined"
-                      required
-                    />
-                    <TextField
-                      label="Value"
-                      value={newInput.value ?? ""}
-                      onChange={(e) =>
-                        setNewInput({
-                          ...newInput,
-                          value: e.target.value,
-                        })
-                      }
-                      variant="outlined"
-                    />
-                    <div className='form__add-btn-wrapper'>
-                    <Button 
-                        className="form__add-btn save"
-                        onClick={() => {
-                          if(!newInput.name || !newInput.unit){
-                            console.log("", newInput.unit, newInput.name)
-                            setNotification_warn(true)
-                            setNotification_warn_message("Please fill out required fields.")
-                            setNotification_warn_color("warning")
-                            return
-                          }
-                          addNewInputToForm()
-                        }}
-                        variant="contained"
-                        sx={{ color: '#fff' }} 
-                      >
-                        Save <DoneIcon />
-                      </Button>
+                  <div className='form__add-container'>
+
+                    {selectedImage && (
+                      <div className='form__add-helper-img'>
+                        <img 
+                          src={selectedImage} 
+                          alt="preview" 
+                        />
+                      </div>
+                    )
+                    }
+
+                    {extractedText && (
+                      <div className='form__add-helper-text'>
+                        {extractedText.split('\n').map((line, index) => (
+                          <div key={index}>
+                            {line}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className='form__add-input-overlay'>
+                      <h3>New input informations for <span className="form__add-input-overlay-petname">{chosenPetName}</span></h3>
+                      <TextField
+                        label="Name"
+                        value={newInput.name ?? ""}
+                        onChange={(e) => 
+                          setNewInput({
+                            ...newInput,
+                            name: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                        required
+                      />
+                      <TextField
+                        label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
+                        value={newInput.keyword ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            keyword: e.target.value.split(","),
+                          })
+                        }
+                        variant="outlined"
+                      /><TextField
+                        label="Keyword, that need to be excluded (Calcium -> Calcium ionisiert)"
+                        value={newInput.exclude ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            exclude: e.target.value.split(","),
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <TextField
+                        select
+                        label="Test type inserted from step 2"
+                        value={selectedType ?? (newInput.material ?? "")}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            material: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                        disabled
+                        required
+                        >
+                        {testType.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                            </MenuItem>
+                        ))}
+                      </TextField>
+                      <TextField
+                        label="Today's date"
+                        value={new Date().toISOString().split("T")[0]}
+                        variant="outlined"
+                        required
+                        disabled
+                      />
+                      <TextField
+                        label="Min toleranz"
+                        type="number"
+                        value={newInput.min ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            min: e.target.value === "" ? null : Number(e.target.value),
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <TextField
+                        label="Max toleranz"
+                        type="number"
+                        value={newInput.max ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            max: e.target.value === "" ? null : Number(e.target.value),
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <TextField
+                        label="Unit (mg/dL.. etc)"
+                        value={newInput.unit ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            unit: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                        required
+                      />
+                      <TextField
+                        label="Value"
+                        value={newInput.value ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            value: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <div className='form__add-btn-wrapper'>
                       <Button 
-                        className="form__add-btn"
-                        onClick={() => setOpenAddValue(false)}
-                        variant="contained"
-                        sx={{ color: '#fff' }} 
-                      >
-                        Cancel <CloseIcon />
-                      </Button>
+                          className="form__add-btn save"
+                          onClick={() => {
+                            if(!newInput.name || !newInput.unit){
+                              console.log("", newInput.unit, newInput.name)
+                              setNotification_warn(true)
+                              setNotification_warn_message("Please fill out required fields.")
+                              setNotification_warn_color("warning")
+                              return
+                            }
+                            addNewInputToForm()
+                          }}
+                          variant="contained"
+                          sx={{ color: '#fff' }} 
+                        >
+                          Save <DoneIcon />
+                        </Button>
+                        <Button 
+                          className="form__add-btn"
+                          onClick={() => setOpenAddValue(false)}
+                          variant="contained"
+                          sx={{ color: '#fff' }} 
+                        >
+                          Cancel <CloseIcon />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}

@@ -117,6 +117,7 @@ const Chart = () => {
   let iniEditInput = {
     name: "",
     keyword: "",
+    exclude:"",
     datum:"",
     min:null,
     max:null,
@@ -535,7 +536,7 @@ const Chart = () => {
         </div>
 
         {openEditValue && (
-          <div className='form__add-input-overlay'>
+          <div className='form__edit-input-overlay'>
             <h3>Edit input informations</h3>
             <TextField
               label="Name"
@@ -557,6 +558,16 @@ const Chart = () => {
                 setEditInput({
                   ...editInput,
                   keyword: e.target.value.split(","),
+                })
+              }
+              variant="outlined"
+            /><TextField
+              label="Keyword, that to be excluded (Calcium -> Calcium ionisiert)"
+              value={editInput.exclude}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  exclude: e.target.value.split(","),
                 })
               }
               variant="outlined"

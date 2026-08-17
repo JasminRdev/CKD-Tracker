@@ -349,7 +349,7 @@ export const BloodTestProvider = ({ children }) => {
                   ? { 
                     ...field, 
                       normalizedValue: normalizedValue,
-                      originalUnit: getSettedUnit.settedUnit
+                      originalUnit: getSettedUnit?.settedUnit
                   }
                   : field
               )
