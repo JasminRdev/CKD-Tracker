@@ -3,6 +3,7 @@ import { create } from "zustand";
 const iniNewInput = {
   name: "",
   keyword: "",
+  exclude: "",
   datum: new Date().toISOString().split("T")[0],
   min: null,
   max: null,
