@@ -442,6 +442,10 @@ h1{
 
 
 @media (max-width: 844px) {
+    .main-helper-container{
+        display: none !important;
+
+    }
     .form__add-container {
         
         grid-template-rows: 20% 20% 60%;
@@ -1584,4 +1588,23 @@ h1{
 .resize-handle:active::after {
   opacity: 1;
   height: 80px;
+}
+
+.docs .wrap{
+    margin: 10px 10px 30px 10px !important;
+    width: fit-content !important;
+}
+
+.docs-filter{
+    display:grid;
+    width: fit-content;
+    gap:20px;
+    margin: 10px;
+    z-index: 9;
+    position: relative;
+}
+
+.docs-date{
+    position: relative;
+    z-index: 99;
 }
