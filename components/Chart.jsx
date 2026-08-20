@@ -102,7 +102,12 @@ const Chart = () => {
     setForm,
     testType,
     selectedType,
-    setSelectedType } = useFormStore()
+    setSelectedType,
+    prioLevels,
+    selectedPrioLevel,
+    setSelectedPrioLevel
+  } = useFormStore()
+
   const [searchValue, setSearchValue] = useState("")
   const [searchSepaChart, setSearchSepaChart] = useState("");
   const rawSideMenuOption = ["SwitchButton", "Calender", "Search"]
@@ -122,6 +127,7 @@ const Chart = () => {
     min:null,
     max:null,
     unit:"",
+    description: ""
   }
   const [editInput, setEditInput] = useState(iniEditInput);
   const { search, setSearch, filters, removeFilter, clearFilters, addFilter, yMain, setYMain } = useSepaFilterStore()
@@ -216,7 +222,7 @@ const Chart = () => {
 
   useEffect(() => {
       setVisibleMetrics(allMetrics);
-      
+      console.log("all ", allMetrics)
   }, [chosenPetName, getForm]);
 
 
@@ -506,7 +512,29 @@ const Chart = () => {
             </Button>
 
           </div>
-          
+
+
+          <TextField
+            className='input-wide'
+            select
+            label="Priority level"
+            value={selectedPrioLevel}
+            onChange={(e) => setSelectedPrioLevel(e.target.value)}
+            variant="outlined"
+            >
+              <MenuItem value="all">
+                All
+              </MenuItem>
+              <MenuItem value="noSet">
+                Without levels
+              </MenuItem>
+              {prioLevels.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                  </MenuItem>
+              ))}
+          </TextField>
+
           <TextField 
             id="standard-basic" 
             label="Seach value" 
@@ -550,6 +578,17 @@ const Chart = () => {
               variant="outlined"
               required
               disabled
+            />
+            <TextField
+              label="Beschreibung"
+              value={editInput.description ?? ""}
+              onChange={(e) => 
+                setEditInput({
+                  ...editInput,
+                  description: e.target.value,
+                })
+              }
+              variant="outlined"
             />
             <TextField
               label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
@@ -615,6 +654,24 @@ const Chart = () => {
               variant="outlined"
               disabled
             />
+            <TextField
+              select
+              label="Priority level"
+              value={editInput.prioLevel ?? ""}
+              onChange={(e) =>
+                setEditInput({
+                  ...editInput,
+                  prioLevel: e.target.value,
+                })
+              }
+              variant="outlined"
+              >
+              {prioLevels.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                  </MenuItem>
+              ))}
+            </TextField>
             <div className='form__add-btn-wrapper'>
             <Button 
                 className="form__add-btn save"
@@ -679,108 +736,162 @@ const Chart = () => {
               </div>
             </>
           )}
-          { getForm.length != 0 && allMetrics
-            .filter((metric) =>
-              metric.toLowerCase().includes(searchSepaChart.toLowerCase())
-            )
-            .filter((metric) =>
-              filters.length === 0 ||
-              filters.some((filter) =>
-                metric.toLowerCase().includes(filter)
+          {getForm.length !== 0 &&
+            allMetrics
+              .filter((metric) =>
+                metric.toLowerCase().includes(searchSepaChart.toLowerCase())
               )
-            )
-            .sort((a, b) => {
-              const aHasData = testResults.some(r => r[a] !== undefined && r[a] !== null);
-              const bHasData = testResults.some(r => r[b] !== undefined && r[b] !== null);
-
-              // Sort: metrics with data first
-              if (aHasData && !bHasData) return -1;
-              if (!aHasData && bHasData) return 1;
-              return 0; // keep original order if both same
-            })
-            .map((metric) => {
-              const foundResult = testResults.find((r) => {
-                const val = r[metric]?.normalizedValue ?? r[metric]?.value;
-                return val !== undefined && val !== null;
-              });
-
-              const testResultVal =
-                Number(foundResult?.[metric]?.normalizedValue ?? foundResult?.[metric]?.value) || 0;
-              
-                const normRanges = Object.fromEntries(
-                getForm.map((item) => [
-                  item.name,
-                  {
-                    min: item.min ?? (testResultVal - 50),
-                    max: item.max ?? (testResultVal + 50),
-                  },
-                ])
+              .filter(
+                (metric) =>
+                  filters.length === 0 ||
+                  filters.some((filter) =>
+                    metric.toLowerCase().includes(filter)
+                  )
               )
+              .sort((a, b) => {
+                const aHasData = testResults.some(
+                  (r) => r[a] !== undefined && r[a] !== null
+                );
 
-              const data = {
-                labels,
-                datasets: [
-                  {
-                    label: metric,
-                    // data: testResults.map((r) => r[metric]),
-                    data: testResults.map((r) => r[metric]?.normalizedValue ?? r[metric]?.value ?? null),
-                    borderColor: datasetColors[metric],
-                    backgroundColor: datasetColors[metric],
-                    spanGaps: true 
+                const bHasData = testResults.some(
+                  (r) => r[b] !== undefined && r[b] !== null
+                );
+
+                // Sort: metrics with data first
+                if (aHasData && !bHasData) return -1;
+                if (!aHasData && bHasData) return 1;
+
+                // Keep original order if both are the same
+                return 0;
+              })
+              .map((metric) => {
+                const foundResult = testResults.find((r) => {
+                  const val =
+                    r[metric]?.normalizedValue ?? r[metric]?.value;
+
+                  return val !== undefined && val !== null;
+                });
+
+                const testResultVal =
+                  Number(
+                    foundResult?.[metric]?.normalizedValue ??
+                      foundResult?.[metric]?.value
+                  ) || 0;
+
+                // Find the form item for this metric and selected priority
+                const rangeItem = getForm.find((item) => {
+                  // First make sure this is the current metric
+                  if (item.name !== metric) {
+                    return false;
+                  }
+
+                  // No priority selected -> accept any priority
+                  if (selectedPrioLevel === "all" || selectedPrioLevel === "") {
+                    return true;
+                  }
+
+                  // "noSet" -> only items without a priority
+                  if (selectedPrioLevel === "noSet") {
+                    return !item.prioLevel;
+                  }
+
+                  // Specific priority -> exact match
+                  return item.prioLevel === selectedPrioLevel;
+                });
+
+                // No matching form/range for this metric
+                if (!rangeItem) {
+                  return null;
+                }
+
+                const range = {
+                  min: rangeItem.min ?? (testResultVal - 50),
+                  max: rangeItem.max ?? (testResultVal + 50),
+                };
+
+                const rangeSize = range.max - range.min;
+
+                const yMin =
+                  range.min - rangeSize * (yMain / 100);
+
+                const yMax =
+                  range.max + rangeSize * (yMain / 100);
+
+                const data = {
+                  labels,
+                  datasets: [
+                    {
+                      label: metric,
+                      data: testResults.map(
+                        (r) =>
+                          r[metric]?.normalizedValue ??
+                          r[metric]?.value ??
+                          null
+                      ),
+                      borderColor: datasetColors[metric],
+                      backgroundColor: datasetColors[metric],
+                      spanGaps: true,
+                    },
+                  ],
+                };
+
+                const options = {
+                  maintainAspectRatio: false,
+
+                  rangeFill: {
+                    min: range.min,
+                    max: range.max,
+                    color: "rgba(0, 200, 0, 0.15)",
                   },
-                ],
-              };
 
-              const range = normRanges[metric];
-              const yMin = range.min - (range.max-range.min)*(yMain/100); 
-              const yMax = range.max + (range.max-range.min)*(yMain/100); 
-              //range of min max val from blood test acceptance
-              
-              const options = {
-                maintainAspectRatio: false,
-                rangeFill: {
-                  min: range.min,
-                  max: range.max,
-                  color: 'rgba(0, 200, 0, 0.15)', // light green background
-                },
-                plugins: {
-                  datalabels: {
-                  color: "black",   
-                  anchor: "end",
-                  align: "top",
-                  font: {
-                    weight: "bold",
-                  },},
-                },
-                scales: {
-                  y: {
-                    beginAtZero: false,
-                    min: yMin,
-                    max: yMax,
+                  plugins: {
+                    datalabels: {
+                      color: "black",
+                      anchor: "end",
+                      align: "top",
+                      font: {
+                        weight: "bold",
+                      },
+                    },
                   },
-                },
-              };
 
-              return (
-                <div key={metric} className={`comp-wrapper ${editOffering ? "edit-mode" : ""}`}
-                >
-                  <div className={`edit-icon-hidden ${editOffering ? "edit-mode" : ""}`}>
-                    <EditIcon />
+                  scales: {
+                    y: {
+                      beginAtZero: false,
+                      min: yMin,
+                      max: yMax,
+                    },
+                  },
+                };
+
+                return (
+                  <div
+                    key={metric}
+                    className={`comp-wrapper ${
+                      editOffering ? "edit-mode" : ""
+                    }`}
+                  >
+                    <div
+                      className={`edit-icon-hidden ${
+                        editOffering ? "edit-mode" : ""
+                      }`}
+                    >
+                      <EditIcon />
+                    </div>
+
+                    <div className="chart-wrapper">
+                      <Line
+                        data={data}
+                        options={options}
+                        onClick={() => {
+                          setOpenEditValue(true);
+                          fillPossiValInForm(metric);
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div key={metric} className="chart-wrapper ">
-                    <Line 
-                      data={data} 
-                      options={options} 
-                      onClick={() => {
-                        setOpenEditValue(true)
-                        // console.log("name like a_chloridVal:", metric);
-                        fillPossiValInForm(metric)
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
         </div>
       </div>
       </div>

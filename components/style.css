@@ -1608,3 +1608,8 @@ h1{
     position: relative;
     z-index: 99;
 }
+
+
+.extractedElement img{
+    object-fit: contain !important;
+}

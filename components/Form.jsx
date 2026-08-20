@@ -68,7 +68,8 @@ export default function Form({inView}) {
     testType,
     selectedType,
     setSelectedType, setUsersUnits, usersUnits, chosenUnit, setChosenUnit,
-    newInput, setNewInput, iniNewInput,newUnitForm, setNewUnitForm
+    newInput, setNewInput, iniNewInput,newUnitForm, setNewUnitForm,
+    selectedPrioLevel, prioLevels
    } = useFormStore()
   
   const addValueToForm = (name, usersValue, chosenUnit) => {
@@ -555,7 +556,7 @@ export default function Form({inView}) {
                 }
             </>
             ))}
-            
+
             {(selectedImage || extractedText) &&
 
               <div
@@ -660,6 +661,17 @@ export default function Form({inView}) {
                         required
                       />
                       <TextField
+                        label="Beschreibung"
+                        value={newInput.description ?? ""}
+                        onChange={(e) => 
+                          setNewInput({
+                            ...newInput,
+                            description: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <TextField
                         label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"
                         value={newInput.keyword ?? ""}
                         onChange={(e) =>
@@ -669,7 +681,8 @@ export default function Form({inView}) {
                           })
                         }
                         variant="outlined"
-                      /><TextField
+                      />
+                      <TextField
                         label="Keyword, that need to be excluded (Calcium -> Calcium ionisiert)"
                         value={newInput.exclude ?? ""}
                         onChange={(e) =>
@@ -754,6 +767,24 @@ export default function Form({inView}) {
                         }
                         variant="outlined"
                       />
+                      <TextField
+                        select
+                        label="Priority level"
+                        value={newInput.prioLevel ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            prioLevel: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                        >
+                        {prioLevels.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                            </MenuItem>
+                        ))}
+                      </TextField>
                       <div className='form__add-btn-wrapper'>
                       <Button 
                           className="form__add-btn save"

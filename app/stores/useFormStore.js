@@ -8,6 +8,8 @@ const iniNewInput = {
   min: null,
   max: null,
   unit: "",
+  description: "",
+  prioLevel: "",
   value: "",
 };
 
@@ -16,7 +18,7 @@ const iniNewUnitForm = {
   fromUnit: "",
   settedUnit: "",
   offset: "",
-  calcForFactor: ""
+  calcForFactor: "",
 };
 
 export const useFormStore = create((set) => ({
@@ -34,6 +36,25 @@ export const useFormStore = create((set) => ({
       label: 'Homekit urine',
   }],
   selectedType: "Blood (Lab)",
+
+
+  
+  prioLevels: [{
+      value: 'Primary',
+      label: 'Primary',
+    },
+    {
+      value: 'Sekundary',
+      label: 'Sekundary',
+    },
+    {
+      value: 'Minor',
+      label: 'Minor',
+  }],
+  
+  selectedPrioLevel: "",
+  setSelectedPrioLevel: (selectedPrioLevel) => set({ selectedPrioLevel }),
+
 
   getForm: [],
   valueToRemoveInBetween: [],
