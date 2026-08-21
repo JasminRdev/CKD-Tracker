@@ -82,10 +82,19 @@ h1{
     gap:10px;
 }
 
+.form__labelcopy{
+    color:var(--blue)
+}
 
 .form_wrapper{
-    display: flex;
+    display: grid;
     gap:2px;
+}
+
+
+.form__groupInput{
+    display: flex;
+    gap:3px;
 }
 
 .form_unit_wrapper{
@@ -268,10 +277,27 @@ h1{
     grid-template-columns: 1fr 1fr 1fr;
     width: 100%;
     padding: 12px;
-    height: 99vh;
-    
+    height: 100vh;    
     gap: 18px;
     background: #0000007a;
+}
+
+.form__add-close{
+    position: absolute;
+    background: var(--white);
+    padding: 10px;
+    border-radius: 35px;
+    align-items: center;
+    display: flex;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+}
+
+.form__add-container > div{
+    height: 90vh;
+    margin-top: auto;
 }
 
 .form__add-helper-img img{
@@ -299,7 +325,6 @@ h1{
 .form__add-helper-text > div,
 .main-helper-text > div{
     padding: 10px;
-
 }
 
 .form__add-helper-text > div:nth-child(even),
@@ -309,8 +334,41 @@ h1{
 
 }
 
+.form__add-helper-img {
+  position: relative;
+}
+
+.form__add-helper-img-controls {
+  position: fixed;
+  top: 24px;
+  left: 31px;
+  width: fit-content;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  background: white;
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--header);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
 .form__add-input-overlay.unit{
     height: fit-content;
+    z-index: 99;
+    background: #fff;
+    border-radius: 4px;
+    gap: 10px;
+    max-width: calc(100vw - 32px);
+    padding: 20px;
+    display: grid;
+    top: 50%;
+    left: 50%;
+    overflow: auto;
+    box-shadow: 0 4px 16px #00000014;
+    position: absolute;
+    width: 335px !important;
+    transform: translate(-50%, -50%);
 }
 
 .form__add-input-overlay h3{

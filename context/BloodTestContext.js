@@ -297,7 +297,7 @@ export const BloodTestProvider = ({ children }) => {
           const { data: { session } } = await supabase.auth.getSession();
           const token = session?.access_token;
           const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
-
+          console.log("api - postownpossi")
           await fetch(`/api/postOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
             headers: {
               Authorization: `Bearer ${token}`,

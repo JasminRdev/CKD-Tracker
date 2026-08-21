@@ -77,8 +77,6 @@
 //             }
 
 // current
-  // charts.js filter to add -> priority
-  
 
 // next
   // units admins have to be useable for users who dont have that unit saved for themself
@@ -128,15 +126,12 @@
   
 
 //done 
-  // Form.js / TestResult.js 
-    // exclude option for form
-  // add possi input
-    //gets to see extracted data and img for better overview
-    //mobile needs it underneath with order 
   // form.js
-    //same for form in general once checking data after insertig auto/extract 
- 
-
+    // css - show long label name
+    // search input added
+    // val removed in getForm if no result in input - bug fix 
+  //chart.js
+    //show count of testresult of value (2/3)
   
 
 //important
@@ -175,6 +170,14 @@
 
 
 //old done
+  // charts.js filter to add -> priority
+  // Form.js / TestResult.js 
+    // exclude option for form
+  // add possi input
+    //gets to see extracted data and img for better overview
+    //mobile needs it underneath with order 
+  // form.js
+    //same for form in general once checking data after insertig auto/extract 
  // chart.js
     //slider for visual range in values
     //scrollup /down visualize features or hide for better ux and view
