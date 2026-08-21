@@ -83,14 +83,6 @@ export default function Documents() {
   ])
   }, [])
   
-  useEffect(() => {
-    getDocImg && getDocImg.map(i => {
-      console.log(i)
-    })
-    dateFilter_docs && console.log(dateFilter_docs)
-  },[getDocImg, dateFilter_docs])
-
-  
   function isTestDateInRange(testDate, startDate, endDate) {
     if (!testDate || !startDate || !endDate) return true;
 

@@ -25,6 +25,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Divider from "@mui/material/Divider";
+import { Typography } from '@mui/material';
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from '@mui/icons-material/Search';
+import { IconButton } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+
+
 
 import dayjs from 'dayjs';
 
@@ -59,6 +67,20 @@ export default function Form({inView}) {
   const [openAddValue, setOpenAddValue] = useState(false);
   const [deleteOffering, setDeleteOffering] = useState(false)
   const [openAddUnit, setOpenAddUnit] = useState(false)
+  const [searchFormInput, setSearchFormInput] = useState("");
+  const [scale, setScale] = useState(140);
+
+  const zoomIn = () => {
+    setScale((prev) => Math.min(prev + 20, 500));
+  };
+
+  const zoomOut = () => {
+    setScale((prev) => Math.max(prev - 20, 50));
+  };
+
+  const resetZoom = () => {
+    setScale(140);
+  };
   
   const { 
     getForm, 
@@ -73,6 +95,7 @@ export default function Form({inView}) {
    } = useFormStore()
   
   const addValueToForm = (name, usersValue, chosenUnit) => {
+    console.log("usersV ", usersValue == "")
     const unitDB = usersUnits.find(
       (colDB) => colDB.name == name && colDB.fromUnit == chosenUnit
     );
@@ -86,8 +109,14 @@ export default function Form({inView}) {
       (colDB) => colDB.name == name 
     );
 
-    const numericValue = usersValue === "" ? "" : parseFloat(usersValue);
+    if(usersValue == ""){
+      setForm((prev) =>
+        prev.filter((field) => field.name !== name)
+      );
+      return;
+    }
 
+    const numericValue = usersValue === "" ? "" : parseFloat(usersValue);
     setForm((prev) =>
       prev.map((field) =>
         field.name === name
@@ -99,7 +128,8 @@ export default function Form({inView}) {
           }
           : field
       )
-    );
+    )
+
   };
   
   const addUnitToForm = (name, chosenUnit, usersValue) => {
@@ -386,9 +416,20 @@ export default function Form({inView}) {
 
             <span className='with-more-options'>
               <h2><Filter3RoundedIcon />Add/Edit Values </h2>  
-              
-              
             </span>
+            <TextField 
+              id="standard-basic" 
+              label="Seach value" 
+              value={searchFormInput}
+              onChange={(e) => setSearchFormInput(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
         <Box
             component="form"
             sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
@@ -397,83 +438,119 @@ export default function Form({inView}) {
             className={`box ${inView ? "inView" : "outView"}`}
         >   
            
-            {getForm && getForm.map((f) => (
+            {getForm && getForm
+              .filter((findName) =>
+                findName.name.toLowerCase().includes(searchFormInput.toLowerCase())
+              )
+              .map((f) => (
               <>
                 {!deleteOffering && 
                   <div className='form_wrapper'> 
-                    <TextField
-                        className='form__fillable'
-                        key={f.name+"_uni"}
-                        label={f.name}
-                        type="number"
-                        slotProps={{
-                          input: {
-                            step: "0.01", // allow decimals
-                          },
-                        }}
-                        value={f.value}
-                        onChange={(e) => addValueToForm(f.name, e.target.value, f.originalUnit)}
-                        variant="outlined"
-                        focused={f.value == ""}
-                    />
-                    
-                    <TextField
-                      className='form_unit_wrapper'
-                      select
-                      label="Unit"
-                      value={f.originalUnit}
-                      onChange={(e) => addUnitToForm(f.name, e.target.value, f.value)}
-                      helperText={
-                        <Box
-                          className='form_unit-flex'
-                          component="span"
-                          display="inline-flex"
-                          alignItems="center"
-                          gap={0.5}
+                    <Typography
+                      className="form__labelcopy"
+                      component="label"
+                      sx={{
+                        display: 'block',
+                        mb: 0.5,
+                        whiteSpace: 'normal',
+                      }}
+                    >
+                      {f.name}
+                    </Typography>
+                    <div className="form__groupInput">                  
+                      <TextField
+                          className='form__fillable'
+                          key={f.name+"_uni"}
+                          type="number"
+                          slotProps={{
+                            input: {
+                              step: "0.01", // allow decimals
+                            },
+                          }}
+                          value={f.value}
+                          onChange={(e) => addValueToForm(f.name, e.target.value, f.originalUnit)}
+                          variant="outlined"
+                          focused={f.value == ""}
+                      />                      
+                      
+                      <TextField
+                        className='form_unit_wrapper'
+                        select
+                        label="Unit"
+                        value={f.originalUnit}
+                        onChange={(e) => addUnitToForm(f.name, e.target.value, f.value)}
+                        helperText={
+                          <Box
+                            className='form_unit-flex'
+                            component="span"
+                            display="inline-flex"
+                            alignItems="center"
+                            gap={0.5}
+                          >
+                            <span>
+                              <span className="form-unit_helperText">
+                                {f.normalizedValue}
+                              </span>{" "}
+                              {usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? ""}
+                            </span>
+
+                            <Tooltip title="Charts compare values using a single unit. Your value will be converted to the unit shown below when displayed in charts, so all data can be compared consistently. The original value and the unit you selected are still saved and are used for lookups.">
+                              <InfoOutlinedIcon
+                                fontSize="inherit"
+                                sx={{ cursor: "pointer" }}
+                              />
+                            </Tooltip>
+                          </Box>
+                        }
                         >
-                          <span>
-                            <span className="form-unit_helperText">
-                              {f.normalizedValue}
-                            </span>{" "}
-                            {usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? ""}
-                          </span>
 
-                          <Tooltip title="Charts compare values using a single unit. Your value will be converted to the unit shown below when displayed in charts, so all data can be compared consistently. The original value and the unit you selected are still saved and are used for lookups.">
-                            <InfoOutlinedIcon
-                              fontSize="inherit"
-                              sx={{ cursor: "pointer" }}
-                            />
-                          </Tooltip>
-                        </Box>
-                      }
-                      >
-
-                      {usersUnits
-                      .filter((colDB) => colDB.name === f.name)
-                      .map((colDB) => (
-                        <MenuItem key={colDB.fromUnit} value={colDB.fromUnit}>
-                          {colDB.fromUnit}
+                        {usersUnits
+                        .filter((colDB) => colDB.name === f.name)
+                        .map((colDB) => (
+                          <MenuItem key={colDB.fromUnit} value={colDB.fromUnit}>
+                            {colDB.fromUnit}
+                          </MenuItem>
+                        ))}
+                        <Divider />
+                        <MenuItem value="form-unit_extendUnit"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenAddUnit(true);
+                            setNewUnitForm(
+                              {
+                                name: f.name,
+                                settedUnit:usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? "" ,
+                              }
+                            )
+                          }}
+                        >
+                          ➕ unit
                         </MenuItem>
-                      ))}
-                      <Divider />
-                      <MenuItem value="form-unit_extendUnit"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenAddUnit(true);
-                          setNewUnitForm(
-                            {
-                              name: f.name,
-                              settedUnit:usersUnits.find((colDB) => colDB.name === f.name)?.settedUnit ?? "" ,
-                            }
-                          )
-                        }}
-                      >
-                        ➕ unit
-                      </MenuItem>
-                    </TextField>
+                      </TextField>
+                    </div>
+
                   </div>
                 }              
 
+
+                {deleteOffering && 
+                  <div   
+                    className={`form__delete-btn ${
+                    valueToRemoveInBetween.includes(f.name) ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setValueToRemoveInBetween((prev) =>
+                        prev.includes(f.name)
+                          ? prev.filter((name) => name !== f.name) // deseltec it
+                          : [...prev, f.name] // select it
+                      );
+                    }}>
+                  Remove {f.name} <RemoveCircleIcon />
+                  </div>
+                }
+            </>
+            ))}
+            
                 {openAddUnit &&
                   (<div className='form__add-input-overlay unit'>
                     <h3>Add another unit to <span className="form__add-input-overlay-petname">{chosenPetName}`s {newUnitForm.name}</span> in {selectedType}</h3>
@@ -539,24 +616,6 @@ export default function Form({inView}) {
                   </div>)
                 }
 
-                {deleteOffering && 
-                  <div   
-                    className={`form__delete-btn ${
-                    valueToRemoveInBetween.includes(f.name) ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setValueToRemoveInBetween((prev) =>
-                        prev.includes(f.name)
-                          ? prev.filter((name) => name !== f.name) // deseltec it
-                          : [...prev, f.name] // select it
-                      );
-                    }}>
-                  Remove {f.name} <RemoveCircleIcon />
-                  </div>
-                }
-            </>
-            ))}
-
             {(selectedImage || extractedText) &&
 
               <div
@@ -566,10 +625,32 @@ export default function Form({inView}) {
                 {/* IMAGE */}
                 {selectedImage && (
                   <div className="form__add-helper-img">
-                    <img
-                      src={selectedImage}
-                      alt="preview"
-                    />
+
+                    <div className="form__add-helper-img-controls">
+                      <IconButton onClick={zoomOut} size="small">
+                        <RemoveIcon />
+                      </IconButton>
+
+                      <IconButton onClick={resetZoom} size="small">
+                        <RestartAltIcon />
+                      </IconButton>
+
+                      <IconButton onClick={zoomIn} size="small">
+                        <AddIcon />
+                      </IconButton>
+                    </div>
+
+                    <div className="form__add-helper-img-container">
+                      <img
+                        src={selectedImage}
+                        alt="preview"
+                        style={{
+                          width: `${scale}%`,
+                          maxWidth: 'none',
+                        }}
+                      />
+                    </div>
+
                   </div>
                 )}
 
@@ -624,14 +705,41 @@ export default function Form({inView}) {
                 </Button>
 
                {openAddValue && (
-                  <div className='form__add-container'>
 
+                  <div className='form__add-container'>
+                    <span class="form__add-close">
+                      <CloseIcon 
+                        onClick={() => setOpenAddValue(false)} 
+                      />
+                    </span>
                     {selectedImage && (
-                      <div className='form__add-helper-img'>
-                        <img 
-                          src={selectedImage} 
-                          alt="preview" 
-                        />
+                      <div className="form__add-helper-img">
+
+                        <div className="form__add-helper-img-controls">
+                          <IconButton onClick={zoomOut} size="small">
+                            <RemoveIcon />
+                          </IconButton>
+
+                          <IconButton onClick={resetZoom} size="small">
+                            <RestartAltIcon />
+                          </IconButton>
+
+                          <IconButton onClick={zoomIn} size="small">
+                            <AddIcon />
+                          </IconButton>
+                        </div>
+
+                        <div className="form__add-helper-img-container">
+                          <img
+                            src={selectedImage}
+                            alt="preview"
+                            style={{
+                              width: `${scale}%`,
+                              maxWidth: 'none',
+                            }}
+                          />
+                        </div>
+
                       </div>
                     )
                     }
@@ -661,7 +769,11 @@ export default function Form({inView}) {
                         required
                       />
                       <TextField
-                        label="Beschreibung"
+                        fullWidth
+                        label="Description"
+                        placeholder="Enter description..."
+                        multiline
+                        minRows={1}
                         value={newInput.description ?? ""}
                         onChange={(e) => 
                           setNewInput({
@@ -669,7 +781,6 @@ export default function Form({inView}) {
                             description: e.target.value,
                           })
                         }
-                        variant="outlined"
                       />
                       <TextField
                         label="Keyword, that can be recognized from the image, f.e. Calcium,Talcium,Talci"

@@ -169,6 +169,10 @@ const Chart = () => {
       value: 200,
       label: '200',
     },
+    {
+      value: 500,
+      label: '500',
+    },
   ];
 
   function useScrollDirection() {
@@ -580,7 +584,11 @@ const Chart = () => {
               disabled
             />
             <TextField
-              label="Beschreibung"
+              fullWidth
+              label="Description"
+              placeholder="Enter description..."
+              multiline
+              minRows={1}
               value={editInput.description ?? ""}
               onChange={(e) => 
                 setEditInput({
@@ -715,7 +723,7 @@ const Chart = () => {
 
               value={yMain}
               min={0}
-              max={200}
+              max={500}
               getAriaValueText={(val) => `${val}`}
               onChange={(_, percentVisualize) => {
                 setYMain(percentVisualize)
@@ -765,6 +773,10 @@ const Chart = () => {
                 return 0;
               })
               .map((metric) => {
+                const valueCount = testResults.filter((r) => {
+                  const val = r[metric]?.normalizedValue ?? r[metric]?.value;
+                  return val !== undefined && val !== null;
+                }).length
                 const foundResult = testResults.find((r) => {
                   const val =
                     r[metric]?.normalizedValue ?? r[metric]?.value;
@@ -821,7 +833,7 @@ const Chart = () => {
                   labels,
                   datasets: [
                     {
-                      label: metric,
+                      label: `${metric} (${valueCount}/${testResults.length})`,
                       data: testResults.map(
                         (r) =>
                           r[metric]?.normalizedValue ??
