@@ -48,6 +48,13 @@ import DoneIcon from '@mui/icons-material/Done';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import {
+  Checkbox,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  Select,
+} from "@mui/material";
 
 
 import InputAdornment from "@mui/material/InputAdornment";
@@ -117,8 +124,9 @@ const Chart = () => {
   const [openEditValue, setOpenEditValue] = useState(false);
   const [ editOffering, setEditOffering ] = useState(false)
   const [ selectedOldPossi, setSelectedOldPossi ] = useState("")
-  
-  
+  const [selectedYears, setSelectedYears] = useState([]);
+
+
   let iniEditInput = {
     name: "",
     keyword: "",
@@ -135,7 +143,30 @@ const Chart = () => {
   const { chosenPetName } = useBloodTestContext();
   const { dateRangeRaw, handleDateRangePicker, testResults, generateColors, updatePossi } = useChartContext();
 
-  const labels = testResults.map((r) => r.date);
+  const availableYears = [
+    ...new Set(
+      testResults
+        .map((r) => {
+          if (!r.date) return null;
+
+          const parts = r.date.split(".");
+          return parts.length === 2 ? Number(parts[1]) : null;
+        })
+        .filter((year) => year !== null && !isNaN(year))
+    ),
+  ].sort((a, b) => b - a);
+
+  const filteredTestResults_byMainYears =
+  selectedYears.length === 0
+    ? testResults
+    : testResults.filter((r) => {
+        const parts = r.date?.split(".");
+        const year = parts?.length === 2 ? Number(parts[1]) : null;
+
+        return selectedYears.includes(year);
+      });
+  // const labels = testResults.map((r) => r.date);
+  const labels = filteredTestResults_byMainYears.map((r) => r.date);
 
   // const allMetrics = ['a_kaliumVal', 'a_Kreatinin'];
   const allMetrics = getForm.map(item => item.name); 
@@ -226,7 +257,6 @@ const Chart = () => {
 
   useEffect(() => {
       setVisibleMetrics(allMetrics);
-      console.log("all ", allMetrics)
   }, [chosenPetName, getForm]);
 
 
@@ -279,7 +309,7 @@ const Chart = () => {
   const datasets = visibleMetrics.map((metric) => ({
     label: metric,
     // data: testResults.map((r) => r[metric]),
-    data: testResults.map((r) => r[metric]?.normalizedValue ?? r[metric]?.value ?? null),
+    data: filteredTestResults_byMainYears.map((r) => r[metric]?.normalizedValue ?? r[metric]?.value ?? null),
     borderColor: datasetColors[metric],
     backgroundColor: datasetColors[metric],
     spanGaps: true 
@@ -494,6 +524,7 @@ const Chart = () => {
                   />
                 )}
               />
+
               <Button 
                 variant="contained" 
                 onClick={() => {
@@ -538,6 +569,29 @@ const Chart = () => {
                   </MenuItem>
               ))}
           </TextField>
+
+          <FormControl className="year-filter-wrapper" sx={{ minWidth: 180 }}>
+            <InputLabel id="year-filter-label">Years</InputLabel>
+
+            <Select
+              labelId="year-filter-label"
+              id="year-filter"
+              multiple
+              value={selectedYears}
+              onChange={(event) => {
+                setSelectedYears(event.target.value);
+              }}
+              label="Years"
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {availableYears.map((year) => (
+                <MenuItem key={year} value={year}>
+                  <Checkbox checked={selectedYears.includes(year)} />
+                  <ListItemText primary={year} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField 
             id="standard-basic" 
@@ -773,11 +827,11 @@ const Chart = () => {
                 return 0;
               })
               .map((metric) => {
-                const valueCount = testResults.filter((r) => {
+                const valueCount = filteredTestResults_byMainYears.filter((r) => {
                   const val = r[metric]?.normalizedValue ?? r[metric]?.value;
                   return val !== undefined && val !== null;
                 }).length
-                const foundResult = testResults.find((r) => {
+                const foundResult = filteredTestResults_byMainYears.find((r) => {
                   const val =
                     r[metric]?.normalizedValue ?? r[metric]?.value;
 
@@ -833,8 +887,8 @@ const Chart = () => {
                   labels,
                   datasets: [
                     {
-                      label: `${metric} (${valueCount}/${testResults.length})`,
-                      data: testResults.map(
+                      label: `${metric} (${valueCount}/${filteredTestResults_byMainYears.length})`,
+                      data: filteredTestResults_byMainYears.map(
                         (r) =>
                           r[metric]?.normalizedValue ??
                           r[metric]?.value ??

@@ -111,8 +111,17 @@ export default function Form({inView}) {
 
     if(usersValue == ""){
       setForm((prev) =>
-        prev.filter((field) => field.name !== name)
-      );
+        prev.map((field) =>
+          field.name === name
+            ? { 
+              ...field, 
+                value: "",
+                normalizedValue: "",
+                originalUnit: ""
+            }
+            : field
+        )
+      )
       return;
     }
 
@@ -131,6 +140,9 @@ export default function Form({inView}) {
     )
 
   };
+
+  
+
   
   const addUnitToForm = (name, chosenUnit, usersValue) => {
     const unitData = usersUnits.find(
@@ -172,7 +184,7 @@ export default function Form({inView}) {
   },[newUnitForm])
 
 
-   const [helperWidth, setHelperWidth] = useState(500);
+  const [helperWidth, setHelperWidth] = useState(500);
 
   const startResize = (e, side) => {
     e.preventDefault();
@@ -443,7 +455,7 @@ export default function Form({inView}) {
                 findName.name.toLowerCase().includes(searchFormInput.toLowerCase())
               )
               .map((f) => (
-              <>
+              <div key={f.name+"_wrap"}>
                 {!deleteOffering && 
                   <div className='form_wrapper'> 
                     <Typography
@@ -548,7 +560,7 @@ export default function Form({inView}) {
                   Remove {f.name} <RemoveCircleIcon />
                   </div>
                 }
-            </>
+            </div>
             ))}
             
                 {openAddUnit &&

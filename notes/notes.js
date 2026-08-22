@@ -126,13 +126,9 @@
   
 
 //done 
-  // form.js
-    // css - show long label name
-    // search input added
-    // val removed in getForm if no result in input - bug fix 
-  //chart.js
-    //show count of testresult of value (2/3)
-  
+  //charts.js with dropdown yearsfilter quick
+  //docs.js with autocomplete at search pet - consistent to other petname search inputs
+  //form.js mini bug fix form update from previous commit - by erasing value input
 
 //important
 //behavoir to keep in mind
@@ -170,6 +166,12 @@
 
 
 //old done
+  // form.js
+    // css - show long label name
+    // search input added
+    // val removed in getForm if no result in input - bug fix 
+  //chart.js
+    //show count of testresult of value (2/3)
   // charts.js filter to add -> priority
   // Form.js / TestResult.js 
     // exclude option for form

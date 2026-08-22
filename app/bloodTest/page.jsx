@@ -56,7 +56,7 @@ export default function bloodTest() {
                     <BloodTest />
                   </div>
 
-                  <Form inView={inView} />
+                  <Form key="formValues" inView={inView} />
                 </div>
               </div>
             </>
