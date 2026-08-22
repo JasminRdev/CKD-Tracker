@@ -1,16 +1,20 @@
 "use client"
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import MenuItem from '@mui/material/MenuItem';
-
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DownloadIcon from '@mui/icons-material/Download';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import {
+  Autocomplete,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
@@ -30,6 +34,7 @@ export default function Documents() {
 
   const [searchDocPet, setSearchDocPet] = useState("")
   const [selectedType_docs, setSelectedType_docs] = useState("")
+  const [docSort, setDocSort] = useState("lastAdded");
 
   function formatDate(isoString) {
     return new Date(isoString).toLocaleString("en-US", {
@@ -47,7 +52,7 @@ export default function Documents() {
     document.querySelector(".toggleVisibility").classList.toggle("upside")
   }
   
-  const {handleClickPreviewImg_fromDocs, getDocImg, delDocs, editDocs} = useBloodTestContext();
+  const {handleClickPreviewImg_fromDocs, getDocImg, delDocs, savedPetNames} = useBloodTestContext();
 
   
   const [dateRangeRaw_docs, setDateRangeRaw_docs] = useState();
@@ -117,19 +122,56 @@ export default function Documents() {
         url.test_type === selectedType_docs)
     ) ?? []);
 
+    const sortedDocs = [...filteredDocs].sort((a, b) => {
+      if (docSort === "lastAdded") {
+        return 0;
+      }
+
+      if (docSort === "date") {
+        return new Date(b.test_date) - new Date(a.test_date);
+      }
+
+      if (docSort === "name") {
+        const nameA = a.file_url?.split("/").pop() || "";
+        const nameB = b.file_url?.split("/").pop() || "";
+
+        return nameA.localeCompare(nameB, undefined, {
+          sensitivity: "base",
+        });
+      }
+
+      return 0;
+    });
+
+
   return (
   <div className="docs comp-wrapper">
     <h2 className='wrap'>
-      Uploaded files ({filteredDocs.length})
+      Uploaded files ({sortedDocs.length})
       <span className="toggleVisibility" onClick={toggleDocs}><KeyboardArrowUpIcon /></span>
     </h2>
     <div className="docs-filter">
-      <TextField 
-        size="small"
-        label="Search Pet"
-        value={searchDocPet}
-        onChange={(e) => setSearchDocPet(e.target.value)}
-      />
+      <div>
+        <Autocomplete
+          className="input-wide"
+          freeSolo
+          options={savedPetNames.map((opt) => opt.value)}
+          value={searchDocPet || ""}
+          onChange={(event, newValue) => {
+            setSearchDocPet(newValue || "");
+          }}
+          onInputChange={(event, newInputValue) => {
+            setSearchDocPet(newInputValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search Pet"
+              className="input-wide"
+            />
+          )}
+        />
+      </div>
 
       <DateRangePicker
         className="docs-date"
@@ -156,12 +198,35 @@ export default function Documents() {
             </MenuItem>
         ))}
       </TextField>
+
+      <FormControl className='doc-sort' >
+        <InputLabel id="doc-sort-label">Sort by</InputLabel>
+        <Select
+          labelId="doc-sort-label"
+          value={docSort}
+          label="Sort by"
+          onChange={(e) => setDocSort(e.target.value)}
+        >
+          <MenuItem value="lastAdded">
+            Last added
+          </MenuItem>
+
+          <MenuItem value="date">
+            Date
+          </MenuItem>
+
+          <MenuItem value="name">
+            Name A–Z
+          </MenuItem>
+        </Select>
+      </FormControl>
+
     </div>
 
     <div className='doc-wrapper'>
     {!getDocImg?.length && <p>Loading...</p>}
 
-      {filteredDocs && filteredDocs.map((url, i) => {
+      {sortedDocs && sortedDocs.map((url, i) => {
         const fileName = url.file_url.split('/').pop();
         const truncatedFileName = fileName.slice(0,17) + "...";
         //later filter also test type blood out

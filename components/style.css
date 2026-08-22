@@ -195,7 +195,7 @@ h1{
     margin: 0 !important;
     margin-bottom: 10px !important;
     position: fixed;
-    bottom: 189px;
+    bottom: 298px;
     left: 10px;
 
     transition:
@@ -207,7 +207,7 @@ h1{
 }
 
 .edit-possi.outView .possiSticky{
-    bottom: 248px;
+    bottom: 348px;
     background: var(--white);
     padding: 20px;
 }
@@ -432,7 +432,12 @@ h1{
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
 
+}
+
+.year-filter-wrapper{
+    width: fit-content;
 }
 
 .filter-badge-group{
@@ -471,13 +476,12 @@ h1{
     padding: 30px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     width: 100vw;
-    
     transition:
         opacity 0.25s ease,
         transform 0.25s ease;
     will-change: opacity, transform;
-
     transform: translateY(0);
+    z-index: 11;
 }
 
 
@@ -493,7 +497,7 @@ h1{
 
 .filter-badge-wrapper.outView + .filter-badges{
     position: fixed;
-    bottom: 105px;
+    bottom: 0px;
     left: 0;
     width: 100vw;
 }
@@ -558,7 +562,7 @@ h1{
 
     .filter-badge-wrapper.outView + .filter-badges{
         position: fixed;
-        bottom: 135px;
+        bottom: 0;
         left: 0;
         width: 100vw;
     }
@@ -1670,4 +1674,8 @@ h1{
 
 .extractedElement img{
     object-fit: contain !important;
+}
+
+.doc-sort{
+    width: 200px;
 }
