@@ -124,7 +124,7 @@ export default function Documents() {
 
     const sortedDocs = [...filteredDocs].sort((a, b) => {
       if (docSort === "lastAdded") {
-        return 0;
+        return new Date(b.created_at) - new Date(a.created_at);
       }
 
       if (docSort === "date") {

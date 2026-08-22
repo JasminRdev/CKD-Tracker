@@ -95,7 +95,6 @@ export default function Form({inView}) {
    } = useFormStore()
   
   const addValueToForm = (name, usersValue, chosenUnit) => {
-    console.log("usersV ", usersValue == "")
     const unitDB = usersUnits.find(
       (colDB) => colDB.name == name && colDB.fromUnit == chosenUnit
     );
