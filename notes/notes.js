@@ -76,7 +76,14 @@
 
 //             }
 
+
+
 // current
+
+
+
+  // date in docs img preview tiny for quick look
+  //persist filter by switching form to chart comp (date in form, doc filters, charts search filter)
 
 // next
   // units admins have to be useable for users who dont have that unit saved for themself
@@ -126,9 +133,18 @@
   
 
 //done 
-  //charts.js with dropdown yearsfilter quick
-  //docs.js with autocomplete at search pet - consistent to other petname search inputs
-  //form.js mini bug fix form update from previous commit - by erasing value input
+  // saavety overlay for actions
+    //  and save update test result, delete doc
+    //  and save test result
+  // bug fix : possi is not updated, possi db wrong update with 0 object
+  // docs - edit testresult data function
+    // show possi val, fill data from testresult
+    // allow only add unit and save new testresult data
+    // show img witth resize options
+    // with search input
+
+
+
 
 //important
 //behavoir to keep in mind
@@ -166,6 +182,9 @@
 
 
 //old done
+  //charts.js with dropdown yearsfilter quick
+  //docs.js with autocomplete at search pet - consistent to other petname search inputs
+  //form.js mini bug fix form update from previous commit - by erasing value input
   // form.js
     // css - show long label name
     // search input added

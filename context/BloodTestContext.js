@@ -103,7 +103,7 @@ export const BloodTestProvider = ({ children }) => {
     
     setIniForm(json.data) 
     setForm(json.data)
-    console.log("data hit", json.data)
+    console.log("getInputValues db fetch possiVals", json.data)
   };
 
   const resetForm = () => {
@@ -113,7 +113,7 @@ export const BloodTestProvider = ({ children }) => {
   function resetInputForm() {
     const fetchInputVal = async () => {
       let rawData = await fetchInitialForm();
-      console.log("raw ", rawData)
+      console.log("getInputValues db fetch possiVals", rawData)
       setIniForm(rawData)
       setForm(rawData)
     }

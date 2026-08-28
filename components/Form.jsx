@@ -69,6 +69,8 @@ export default function Form({inView}) {
   const [openAddUnit, setOpenAddUnit] = useState(false)
   const [searchFormInput, setSearchFormInput] = useState("");
   const [scale, setScale] = useState(140);
+  const [askToSave, setAskToSave] = useState();
+
 
   const zoomIn = () => {
     setScale((prev) => Math.min(prev + 20, 500));
@@ -215,10 +217,7 @@ export default function Form({inView}) {
   };
 
 
-  // useEffect(() => {
-  //   console.log("extractedText img filed", extractedText, selectedImage)
-  // },[extractedText, selectedImage])
-
+  
   //upload file to supabase storage
   const uploadFile = async () => {
     let buildedPath = `${user.id}/${chosenPetName}/${file.name}`;
@@ -350,17 +349,16 @@ export default function Form({inView}) {
         setNotification_warn_message("Name already exists for this pet. Please choose another.")
         setNotification_warn_color("warning")
       } else {
+
         setForm(prev => {
           const updatedForm = [
             ...prev,
             { ...newInput }
           ];
-
-          console.log("api fetch - update possi", updatedForm);
+          console.log("form before update", getForm)
+          console.log("api fetch - update possi by add new unit", updatedForm);
             
           updatePossi(updatedForm); //activly update possi db
-
-          console.log(("api fetch - add new unit"))
 
           return updatedForm;
         });
@@ -369,25 +367,6 @@ export default function Form({inView}) {
         setOpenAddValue(false)
         setNewInput(iniNewInput)
       };
-
-      // setForm(prev => [
-      //   ...prev,
-      //   { ...newInput }
-      // ]);
-      // setNewInput(iniNewInput)
-      // setForm(prev => [
-      //   ...prev,
-      //   {
-      //     name: "testNew",
-      //     value: "999999",
-      //     keyword: ["KreaTest"],
-      //     probe: "Labor",
-      //     material: "Urin",
-      //     datum: "2022-05-14"
-      // +min max
-      //   }
-      // ])
-      // console.log("updated ini ", getForm, openAddValue)
     }
 
 
@@ -718,7 +697,7 @@ export default function Form({inView}) {
                {openAddValue && (
 
                   <div className='form__add-container'>
-                    <span class="form__add-close">
+                    <span className="form__add-close">
                       <CloseIcon 
                         onClick={() => setOpenAddValue(false)} 
                       />
@@ -843,6 +822,29 @@ export default function Form({inView}) {
                         disabled
                       />
                       <TextField
+                        label="Value"
+                        value={newInput.value ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            value: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                      />
+                      <TextField
+                        label="Unit (mg/dL.. etc)"
+                        value={newInput.unit ?? ""}
+                        onChange={(e) =>
+                          setNewInput({
+                            ...newInput,
+                            unit: e.target.value,
+                          })
+                        }
+                        variant="outlined"
+                        required
+                      />
+                      <TextField
                         label="Min toleranz"
                         type="number"
                         value={newInput.min ?? ""}
@@ -862,29 +864,6 @@ export default function Form({inView}) {
                           setNewInput({
                             ...newInput,
                             max: e.target.value === "" ? null : Number(e.target.value),
-                          })
-                        }
-                        variant="outlined"
-                      />
-                      <TextField
-                        label="Unit (mg/dL.. etc)"
-                        value={newInput.unit ?? ""}
-                        onChange={(e) =>
-                          setNewInput({
-                            ...newInput,
-                            unit: e.target.value,
-                          })
-                        }
-                        variant="outlined"
-                        required
-                      />
-                      <TextField
-                        label="Value"
-                        value={newInput.value ?? ""}
-                        onChange={(e) =>
-                          setNewInput({
-                            ...newInput,
-                            value: e.target.value,
                           })
                         }
                         variant="outlined"
@@ -912,12 +891,13 @@ export default function Form({inView}) {
                           className="form__add-btn save"
                           onClick={() => {
                             if(!newInput.name || !newInput.unit){
-                              console.log("", newInput.unit, newInput.name)
                               setNotification_warn(true)
                               setNotification_warn_message("Please fill out required fields.")
                               setNotification_warn_color("warning")
                               return
                             }
+
+                            console.log("hit update newInput ", newInput)
                             addNewInputToForm()
                           }}
                           variant="contained"
@@ -947,7 +927,10 @@ export default function Form({inView}) {
                 ? (
                   <Button 
                     className="button-save-db" 
-                    onClick={saveData} 
+                    onClick={ () => {
+                      console.log("valuedate", valueDate?.format("DD.MM.YYYY"))
+                      setAskToSave(true)
+                    }} 
                     disabled={loading} 
                     variant="contained">
                   Save data</Button>
@@ -966,6 +949,61 @@ export default function Form({inView}) {
               }
             </div>
         </Box>
+        <div>
+              {askToSave && 
+        (   <>
+              <div className='validation_black'>
+              </div>   
+
+              <div className='validation_wrapper'>
+                  <div className='validation_headline'><h1>Confirm to save</h1> 
+                    <CloseIcon className="validation_close" onClick={() => setAskToSave(false)} /></div>
+                  <hr></hr>
+
+                  <div className='validation_text'>
+                    Are you sure you want to save? 
+                    <div>
+                      <div className='validation_label'>
+                        <span>Date:</span> {valueDate?.format("DD.MM.YYYY")}
+                      </div>
+                      
+                      <div className='validation_label'>
+                        <span>Test type:</span> {selectedType}
+                      </div>
+                      
+                      <div className='validation_label'>
+                        <span>Pet:</span> {chosenPetName}
+                      </div>
+
+                    </div>
+                  </div>
+                  <hr></hr>
+
+                  <div className='validation_btn' >
+                      <Button 
+                          className="cta_positive"
+                          onClick={() => {
+                            saveData()
+                            setAskToSave(false)
+                          }}
+                          variant="contained"
+                          sx={{ color: '#fff' }} >
+                          Save 
+                      </Button>
+                      <Button 
+                          className="cta_negative"
+                          onClick={() => setAskToSave(false)}
+                          variant="contained"
+                          sx={{ color: '#fff' }} 
+                          >
+                          Cancel 
+                      </Button>
+                  </div>
+              </div>
+            </>   
+        )
+    }
+        </div>
       </div>
   );
 }

@@ -4,11 +4,23 @@ import { supabase } from '../app/lib/supabaseClient'
 import { useFormStore } from "../app/stores/useFormStore";
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { useLoadingContext } from './LoadingContext';
+
 import useUser from '../app/lib/useUser'
+import { encode } from 'punycode';
 const ChartContext = createContext();
 
 export const ChartProvider = ({ children }) => {
-
+  const {
+    loading, 
+    showOverlay, 
+    setNotification_warn_message,
+    setNotification_warn_color,
+    setNotification_warn, 
+    setLoading, 
+    setShowOverlay, 
+    setOverlayerElement} = useLoadingContext();
+  
   const user = useUser();
   // setTestResults([
   //   { date: '01', Kreatinin: 139, Protein: 62.5, ...
@@ -24,27 +36,45 @@ export const ChartProvider = ({ children }) => {
 
   async function updatePossi(newestForm){
     let cleanedForm = newestForm.map(field => ({
-        ...field,
-        value: "",
-        normalizedValue: "",
-        originalUnit: ""
-      }));
-      //upload site
-      //this runs when we add new possi to existing row (update row)
-      // complete new row in possi
-      // or updating row by del something
-      //or in testresult if change attribute of value
+      ...field,
+      value: "",
+      normalizedValue: "",
+      originalUnit: ""
+    }));
 
     //update new form to own possi
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
-    const encoded = encodeURIComponent(JSON.stringify(cleanedForm));
 
-    await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&form=${encoded}&testtype=${selectedType}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const payload = {
+        form: cleanedForm
+      };
+
+      const res = await fetch(`/api/updateOwnPossi?pet=${chosenPetName}&testtype=${selectedType}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+          const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || `HTTP ${res.status}`);
+      }
+
+      console.log("update successful:", json);
+
+      return json;
+    } catch (error) {
+      console.error("updatePossi failed:", error);
+      
+      setNotification_warn(true)
+      setNotification_warn_message("Something went wrong. Data could not be saved.")
+      setNotification_warn_color("warning")
+    }
   };
   
   
