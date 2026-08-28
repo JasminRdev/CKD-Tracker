@@ -32,6 +32,7 @@ export default async function handler(req, res) {
     : { data: { user: null } });
 
 
+    //admins form
   if ((autoForm == "true")) {
     let queryAuto = dbClient
       .from("possible_values")

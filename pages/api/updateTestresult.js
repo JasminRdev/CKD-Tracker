@@ -2,18 +2,17 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase as publicClient } from "../../app/lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { pet, testtype } = req.query;
+    console.log("inside form ")
+  const { chosenFile } = req.query;
   const { form } = req.body;
-
-  if (!pet) {
-    return res.status(400).json({ error: "pet is required" });
-  }
 
   if (!Array.isArray(form)) {
     return res.status(400).json({
       error: "form must be an array",
     });
   }
+
+  console.log("form ", form)
 
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ")
@@ -43,19 +42,22 @@ export default async function handler(req, res) {
     : { data: { user: null } });
 
   const { data, error } = await dbClient
-    .from('possible_values')
+    .from('testResult_data')
     .update([{ 
-        inputValues: form,
+        data: form,
         created_at : new Date(), 
     }])
     .eq("user_id", user.id)
-    .eq("pet", pet) 
-    .eq("test_type", testtype)
+    .eq("file_url", chosenFile) 
 
     if (error) {
-      return res.status(400).json({ error: error.message })
+        return res.status(400).json({
+        error: error.message,
+        });
     };
-
-    return res.status(200).json(data);
+    
+    return res.status(200).json({
+    success: true,
+    });
   }
 
